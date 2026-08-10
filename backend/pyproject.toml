@@ -1,0 +1,23 @@
+[project]
+name = "copilotkit-aws-strands-backend"
+version = "0.1.0"
+description = "AG-UI agent server for the CopilotKit + AWS Strands test harness"
+# The Quickstart's prerequisites list says Python 3.12+.
+requires-python = ">=3.12"
+
+# Exactly the four packages the Quickstart's `uv add` line installs:
+#   uv add ag-ui-strands "strands-agents[OpenAI]" fastapi uvicorn
+# https://docs.copilotkit.ai/strands/quickstart?agent=bring-your-own
+dependencies = [
+    "ag-ui-strands>=0.2.4",
+    "strands-agents[openai]>=1.15.0",
+    "fastapi>=0.115.12",
+    "uvicorn>=0.34.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agents"]

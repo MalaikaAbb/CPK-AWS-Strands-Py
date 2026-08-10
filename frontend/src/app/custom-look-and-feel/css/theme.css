@@ -1,0 +1,76 @@
+/*
+ * Scoped theme for the CSS Customization route.
+ *
+ * Every selector sits under `.chat-css-demo-scope` so the overrides cannot
+ * leak into the rest of the harness — which is the point the doc makes about
+ * keeping a theme in a sibling stylesheet and importing it from the page.
+ *
+ * The palette is this repo's; what is reproduced from the doc is the
+ * *mechanism*: v2 shadcn design tokens on `[data-copilotkit]`, then the
+ * `.copilotKit*` class hooks for structure the tokens do not reach.
+ */
+
+/* ── 1. v2 design tokens ────────────────────────────────────────────────────
+   The v2 components are Tailwind + shadcn and read oklch tokens scoped to the
+   `[data-copilotkit]` root. Overriding a handful of custom properties re-skins
+   every nested component at once — no component knows it happened. */
+.chat-css-demo-scope [data-copilotkit] {
+  --primary: oklch(0.55 0.22 264);
+  --primary-foreground: oklch(0.99 0 0);
+  --background: oklch(0.99 0.01 85);
+  --foreground: oklch(0.21 0.02 60);
+  --muted: oklch(0.96 0.015 85);
+  --muted-foreground: oklch(0.5 0.02 60);
+  --border: oklch(0.89 0.02 80);
+  --radius: 0.25rem;
+}
+
+/* Dark mode is keyed off a `.dark` ancestor, per the doc. */
+.dark .chat-css-demo-scope [data-copilotkit] {
+  --background: oklch(0.19 0.01 60);
+  --foreground: oklch(0.96 0.01 85);
+  --muted: oklch(0.25 0.01 60);
+  --border: oklch(0.32 0.01 60);
+}
+
+/* ── 2. Class hooks ─────────────────────────────────────────────────────────
+   Tokens handle colour. Structure — padding, radius, borders, type — is what
+   the `.copilotKit*` classes are for. */
+.chat-css-demo-scope .copilotKitMessages {
+  padding: 1.5rem;
+}
+
+.chat-css-demo-scope .copilotKitInput {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+/* The user bubble's outer element is the right-aligning flex column, so it
+   stays transparent and the inner bubble (which carries `cpk:bg-muted`) is
+   what gets styled. Targeting the substring class is the stable hook. */
+.chat-css-demo-scope .copilotKitMessage.copilotKitUserMessage {
+  background: transparent;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.chat-css-demo-scope
+  .copilotKitMessage.copilotKitUserMessage
+  > [class*="bg-muted"] {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.85rem;
+  border-radius: 0;
+  border-left: 2px solid oklch(0.55 0.22 264);
+  padding: 0.75rem 1rem;
+}
+
+/* A mono "→" marker before the user's text, so it reads like a CLI prompt. */
+.chat-css-demo-scope
+  .copilotKitMessage.copilotKitUserMessage
+  > [class*="bg-muted"]::before {
+  content: "→";
+  display: inline-block;
+  margin-right: 0.6rem;
+  color: oklch(0.55 0.22 264);
+  font-weight: 500;
+}
