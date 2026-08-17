@@ -15,7 +15,13 @@
  * sidebar at all. They are marked `offNav`.
  */
 
-export const DOC_SYNC_DATE = "2026-08-07";
+/**
+ * There is exactly one doc-sync date in this repo, and it is not here: it is
+ * `syncedAt` in `doc-snapshot/manifest.json`, written every time the sync
+ * button runs. A hand-maintained date alongside it only ever drifted out of
+ * agreement with the machine one, so it was removed — `/doc-sync` is the
+ * single place that answers "how current are these docs".
+ */
 export const DOCS_ROOT = "https://docs.copilotkit.ai/strands";
 
 export type RouteStatus = "working" | "partial" | "reference" | "broken" | "not-started";
@@ -412,6 +418,19 @@ export const NAV: NavGroup[] = [
         summary:
           "useAgent as the AbstractAgent handle, and agent.subscribe walking the full event stream live.",
         status: "working",
+      },
+    ],
+  },
+  {
+    title: "Doc Sync",
+    routes: [
+      {
+        path: "/doc-sync",
+        title: "Doc drift",
+        docPath: "/strands",
+        summary:
+          "Re-fetches the markdown behind every tracked doc page and diffs it against the stored snapshot, flagging changes inside code blocks.",
+        status: "reference",
       },
     ],
   },
