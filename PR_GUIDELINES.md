@@ -65,13 +65,16 @@ Rules:
 **Description** — use this template:
 
 ```markdown
-## What
+## What is in the PR
 One or two sentences. What changed and which routes/doc pages it touches.
+
+## Changes Explanation
+Explain the changes you made in bullets
 
 ## Doc pages covered
 - https://docs.copilotkit.ai/{framework}/{page}  → route `/{route}`
 
-## Why
+## Why were these changes necessary?
 The reason. If this is a fix, describe the broken behaviour first,
 then the corrected behaviour.
 
