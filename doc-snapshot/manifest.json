@@ -1,0 +1,456 @@
+{
+  "schema": 1,
+  "docsRoot": "https://docs.copilotkit.ai/strands",
+  "syncedAt": "2026-08-17T12:32:04.090Z",
+  "pages": {
+    "/strands": {
+      "file": "strands.md",
+      "sha256": "89134e43aa0b6f0d585d85c1390908318dc6942983b34c3ad0e51439df8bc012",
+      "bytes": 3139,
+      "lines": 53,
+      "routes": [
+        "/",
+        "/doc-sync"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/ag-ui": {
+      "file": "strands__ag-ui.md",
+      "sha256": "53146297885f5d6ddd860bbd6b201adcdd537e189521493a2cac7df58fa89a62",
+      "bytes": 3930,
+      "lines": 123,
+      "routes": [
+        "/ag-ui"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/agent-config": {
+      "file": "strands__agent-config.md",
+      "sha256": "7d142249bd7b1a3f729905107a15016f241e45ba93227c9469cf2d6bc0beebba",
+      "bytes": 5015,
+      "lines": 134,
+      "routes": [
+        "/agent-config"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/copilot-runtime": {
+      "file": "strands__copilot-runtime.md",
+      "sha256": "ea5267e79b0aea893c84997022f5405220e95c80c2404469246146bc8b2965a7",
+      "bytes": 6673,
+      "lines": 180,
+      "routes": [
+        "/copilot-runtime"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/custom-look-and-feel/css": {
+      "file": "strands__custom-look-and-feel__css.md",
+      "sha256": "6fd426968bed11786e5e8c11f77ff9f9f60061712a04a8799e3fd7b5d9fce3ec",
+      "bytes": 10188,
+      "lines": 301,
+      "routes": [
+        "/custom-look-and-feel/css"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/custom-look-and-feel/headless-ui": {
+      "file": "strands__custom-look-and-feel__headless-ui.md",
+      "sha256": "8cbe81e8cb95857fdff9bb4fb7abb065a72bea2ebc16d2512c9202fdc7589f55",
+      "bytes": 13628,
+      "lines": 363,
+      "routes": [
+        "/custom-look-and-feel/headless-ui"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/custom-look-and-feel/slots": {
+      "file": "strands__custom-look-and-feel__slots.md",
+      "sha256": "eb4d3b13128ef9fcf2d58e0224e3a32bf7d14afc8250cf9ea9e9729846cd8e95",
+      "bytes": 6867,
+      "lines": 235,
+      "routes": [
+        "/custom-look-and-feel/slots"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/frontend-tools": {
+      "file": "strands__frontend-tools.md",
+      "sha256": "e49d697e136598e109705789843704499c216b0ba112dbba7bb7f0957d015c26",
+      "bytes": 2781,
+      "lines": 77,
+      "routes": [
+        "/frontend-tools"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/generative-ui/a2ui/dynamic-schema": {
+      "file": "strands__generative-ui__a2ui__dynamic-schema.md",
+      "sha256": "0fe51c0e39a90c0e1382df2ffcc44d9267bda5e51c5e88ea1696eb6b34e1900e",
+      "bytes": 22954,
+      "lines": 688,
+      "routes": [
+        "/generative-ui/a2ui/dynamic-schema"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/generative-ui/a2ui/fixed-schema": {
+      "file": "strands__generative-ui__a2ui__fixed-schema.md",
+      "sha256": "a411181922218c1b49f447cecbc0413dbf14bef7959dd17fe02a8019ca07ecce",
+      "bytes": 79720,
+      "lines": 2198,
+      "routes": [
+        "/generative-ui/a2ui/fixed-schema"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/generative-ui/tool-based": {
+      "file": "strands__generative-ui__tool-based.md",
+      "sha256": "f52fcd2d6bc4050ab5c390c2e90e868f430992bda5b862764bc737455624cd42",
+      "bytes": 2433,
+      "lines": 66,
+      "routes": [
+        "/generative-ui/tool-based"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/generative-ui/tool-rendering": {
+      "file": "strands__generative-ui__tool-rendering.md",
+      "sha256": "5aac52a3733eff8e0ae099474495c970d5631f652e230a0219999108c3235d76",
+      "bytes": 22251,
+      "lines": 670,
+      "routes": [
+        "/generative-ui/tool-rendering"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:04 GMT"
+    },
+    "/strands/generative-ui/your-components/display-only": {
+      "file": "strands__generative-ui__your-components__display-only.md",
+      "sha256": "d00340f6adce0a22a6dff5779c9bd2f6d008384d3ee2ba403e8e1964e22d789a",
+      "bytes": 2474,
+      "lines": 89,
+      "routes": [
+        "/generative-ui/your-components/display-only"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/generative-ui/your-components/interactive": {
+      "file": "strands__generative-ui__your-components__interactive.md",
+      "sha256": "973164f3ba8c56150d94f938adc705bb2c4678d6f6b8ab5404433ad59499508f",
+      "bytes": 156,
+      "lines": 5,
+      "routes": [
+        "/generative-ui/your-components/interactive"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/human-in-the-loop": {
+      "file": "strands__human-in-the-loop.md",
+      "sha256": "95e8deb0f93f3b8286c37a992306df2d80e9f184175838702fe6ca3401e2075d",
+      "bytes": 6751,
+      "lines": 189,
+      "routes": [
+        "/human-in-the-loop"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/multi-agent/subagents": {
+      "file": "strands__multi-agent__subagents.md",
+      "sha256": "32c07a7ebbf894ed251bacbd7901245cdd872eeed7e86da3f215ae8812dca7c5",
+      "bytes": 72600,
+      "lines": 1950,
+      "routes": [
+        "/multi-agent/subagents"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/multimodal-attachments": {
+      "file": "strands__multimodal-attachments.md",
+      "sha256": "7237dfd40119e56ee3057445eaf61f34ef8328b32acd750c95f2857d9defc1ae",
+      "bytes": 6144,
+      "lines": 176,
+      "routes": [
+        "/multimodal-attachments"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/prebuilt-components/chat": {
+      "file": "strands__prebuilt-components__chat.md",
+      "sha256": "93552e10bdcd46f6c357b1f45a505a03c2d684cd35fc757bd27e4a0ef98f8963",
+      "bytes": 2843,
+      "lines": 77,
+      "routes": [
+        "/prebuilt-components/chat"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/prebuilt-components/chat-controls": {
+      "file": "strands__prebuilt-components__chat-controls.md",
+      "sha256": "7b1e06ab4328d6cdce83eebe8370ed7664f0ee362e4ce0f8b760705a6a889e21",
+      "bytes": 3829,
+      "lines": 101,
+      "routes": [
+        "/prebuilt-components/chat-controls"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/prebuilt-components/popup": {
+      "file": "strands__prebuilt-components__popup.md",
+      "sha256": "1c24565c091dfe9ecf674440e2418bfba6c89281d3abcf845e8fd547b70e4d0d",
+      "bytes": 2435,
+      "lines": 70,
+      "routes": [
+        "/prebuilt-components/popup"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/prebuilt-components/sidebar": {
+      "file": "strands__prebuilt-components__sidebar.md",
+      "sha256": "254bfd3e6d14c0baf8791a4ae17a3305ec76a00b7bf8213bc2ce6380fc5f66c8",
+      "bytes": 2486,
+      "lines": 70,
+      "routes": [
+        "/prebuilt-components/sidebar"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/programmatic-control": {
+      "file": "strands__programmatic-control.md",
+      "sha256": "e719fb8798c833668b7abdedd4f17d4d2b92203363d57e98231f6dc9c6942255",
+      "bytes": 11909,
+      "lines": 341,
+      "routes": [
+        "/programmatic-control"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/quickstart": {
+      "file": "strands__quickstart.md",
+      "sha256": "6b21c39b2569a2185c0b55d8c6b79f5305f64b05e45a9e213e3364d1155a370d",
+      "bytes": 17053,
+      "lines": 474,
+      "routes": [
+        "/quickstart"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/shared-state/agent-readonly": {
+      "file": "strands__shared-state__agent-readonly.md",
+      "sha256": "528b412af6c8620b62ac6ba3f5205e95a8147fc767a97d4382054a6ddfcccdfc",
+      "bytes": 4430,
+      "lines": 129,
+      "routes": [
+        "/shared-state/agent-readonly"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/shared-state/in-app-agent-read": {
+      "file": "strands__shared-state__in-app-agent-read.md",
+      "sha256": "5d92cc8f63e77ea794746f48cf1ad5169035ae6e36ebbb386c641ceb252bcdd7",
+      "bytes": 7036,
+      "lines": 208,
+      "routes": [
+        "/shared-state/in-app-agent-read"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/shared-state/in-app-agent-write": {
+      "file": "strands__shared-state__in-app-agent-write.md",
+      "sha256": "c5a0126489510120168a3997cb0033f5efe557e69e48375d224a2bbdec8b2eed",
+      "bytes": 6757,
+      "lines": 185,
+      "routes": [
+        "/shared-state/in-app-agent-write"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/shared-state/rendering-in-app": {
+      "file": "strands__shared-state__rendering-in-app.md",
+      "sha256": "76c30c95777d8defef05bf5552e0db4b719da703e706a2c17dad8ee0ef452cea",
+      "bytes": 4167,
+      "lines": 115,
+      "routes": [
+        "/shared-state/rendering-in-app"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:05 GMT"
+    },
+    "/strands/voice": {
+      "file": "strands__voice.md",
+      "sha256": "4ec28f63c21728871417fd245146889201a47e05d4a9b69af24a28500a453f67",
+      "bytes": 9054,
+      "lines": 210,
+      "routes": [
+        "/voice"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Mon, 17 Aug 2026 12:32:06 GMT"
+    }
+  },
+  "sitemap": {
+    "fetchedAt": "2026-08-17T12:32:04.090Z",
+    "urlsUnderRoot": 133,
+    "knownUnmapped": [
+      "https://docs.copilotkit.ai/strands/agent-spec",
+      "https://docs.copilotkit.ai/strands/agent-spec/human-in-the-loop",
+      "https://docs.copilotkit.ai/strands/agent-spec/langgraph",
+      "https://docs.copilotkit.ai/strands/agent-spec/quickstart",
+      "https://docs.copilotkit.ai/strands/agent-spec/wayflow",
+      "https://docs.copilotkit.ai/strands/agentic-chat-ui",
+      "https://docs.copilotkit.ai/strands/agentic-protocols",
+      "https://docs.copilotkit.ai/strands/agentic-protocols/a2a",
+      "https://docs.copilotkit.ai/strands/agentic-protocols/ag-ui",
+      "https://docs.copilotkit.ai/strands/agentic-protocols/ag-ui-middleware",
+      "https://docs.copilotkit.ai/strands/agentic-protocols/mcp",
+      "https://docs.copilotkit.ai/strands/auth",
+      "https://docs.copilotkit.ai/strands/backend/ag-ui",
+      "https://docs.copilotkit.ai/strands/backend/agent-runner",
+      "https://docs.copilotkit.ai/strands/backend/copilot-runtime",
+      "https://docs.copilotkit.ai/strands/backend/custom-agent",
+      "https://docs.copilotkit.ai/strands/backend/runtime-endpoints",
+      "https://docs.copilotkit.ai/strands/backend/self-managed-agents",
+      "https://docs.copilotkit.ai/strands/build-with-agents",
+      "https://docs.copilotkit.ai/strands/built-in-agent",
+      "https://docs.copilotkit.ai/strands/cli",
+      "https://docs.copilotkit.ai/strands/concepts/architecture",
+      "https://docs.copilotkit.ai/strands/concepts/generative-ui-overview",
+      "https://docs.copilotkit.ai/strands/concepts/oss-vs-enterprise",
+      "https://docs.copilotkit.ai/strands/concepts/which-hook",
+      "https://docs.copilotkit.ai/strands/contributing/code-contributions",
+      "https://docs.copilotkit.ai/strands/contributing/code-contributions/package-linking",
+      "https://docs.copilotkit.ai/strands/contributing/docs-contributions",
+      "https://docs.copilotkit.ai/strands/cookbook",
+      "https://docs.copilotkit.ai/strands/cookbook/angular-adk-agentic-app",
+      "https://docs.copilotkit.ai/strands/cookbook/arcade",
+      "https://docs.copilotkit.ai/strands/cookbook/daytona",
+      "https://docs.copilotkit.ai/strands/cookbook/openbox-governed-copilotkit",
+      "https://docs.copilotkit.ai/strands/cookbook/oracle-agent-spec-memory",
+      "https://docs.copilotkit.ai/strands/custom-look-and-feel/reasoning-messages",
+      "https://docs.copilotkit.ai/strands/deepagents",
+      "https://docs.copilotkit.ai/strands/deploy-agentcore",
+      "https://docs.copilotkit.ai/strands/deploy/agentcore",
+      "https://docs.copilotkit.ai/strands/examples",
+      "https://docs.copilotkit.ai/strands/faq",
+      "https://docs.copilotkit.ai/strands/generative-ui",
+      "https://docs.copilotkit.ai/strands/generative-ui/a2ui",
+      "https://docs.copilotkit.ai/strands/generative-ui/display",
+      "https://docs.copilotkit.ai/strands/generative-ui/hashbrown",
+      "https://docs.copilotkit.ai/strands/generative-ui/interactive",
+      "https://docs.copilotkit.ai/strands/generative-ui/json-render",
+      "https://docs.copilotkit.ai/strands/generative-ui/mcp-apps",
+      "https://docs.copilotkit.ai/strands/generative-ui/open-generative-ui",
+      "https://docs.copilotkit.ai/strands/generative-ui/open-json-ui",
+      "https://docs.copilotkit.ai/strands/generative-ui/reasoning",
+      "https://docs.copilotkit.ai/strands/generative-ui/state-rendering",
+      "https://docs.copilotkit.ai/strands/headless",
+      "https://docs.copilotkit.ai/strands/headless-threads",
+      "https://docs.copilotkit.ai/strands/human-in-the-loop/headless",
+      "https://docs.copilotkit.ai/strands/human-in-the-loop/useInterrupt",
+      "https://docs.copilotkit.ai/strands/inspector",
+      "https://docs.copilotkit.ai/strands/migrate/1.10.X",
+      "https://docs.copilotkit.ai/strands/migrate/1.8.2",
+      "https://docs.copilotkit.ai/strands/migrate/v2",
+      "https://docs.copilotkit.ai/strands/prebuilt-components",
+      "https://docs.copilotkit.ai/strands/prebuilt-components/copilot-threads-drawer",
+      "https://docs.copilotkit.ai/strands/premium/headless-ui",
+      "https://docs.copilotkit.ai/strands/premium/intelligence-platform",
+      "https://docs.copilotkit.ai/strands/premium/managed-intelligence-platform",
+      "https://docs.copilotkit.ai/strands/premium/overview",
+      "https://docs.copilotkit.ai/strands/premium/self-hosting",
+      "https://docs.copilotkit.ai/strands/premium/threads-explained",
+      "https://docs.copilotkit.ai/strands/reference/v2/hooks/useCapabilities",
+      "https://docs.copilotkit.ai/strands/runtime-server-adapter",
+      "https://docs.copilotkit.ai/strands/shared-state",
+      "https://docs.copilotkit.ai/strands/shared-state/streaming",
+      "https://docs.copilotkit.ai/strands/telemetry",
+      "https://docs.copilotkit.ai/strands/threads",
+      "https://docs.copilotkit.ai/strands/threads-import",
+      "https://docs.copilotkit.ai/strands/threads-lifecycle",
+      "https://docs.copilotkit.ai/strands/troubleshooting/common-issues",
+      "https://docs.copilotkit.ai/strands/troubleshooting/debug-mode",
+      "https://docs.copilotkit.ai/strands/troubleshooting/error-debugging",
+      "https://docs.copilotkit.ai/strands/troubleshooting/error-reference",
+      "https://docs.copilotkit.ai/strands/troubleshooting/event-inspector",
+      "https://docs.copilotkit.ai/strands/troubleshooting/hook-explorer",
+      "https://docs.copilotkit.ai/strands/troubleshooting/inspector-dev-console",
+      "https://docs.copilotkit.ai/strands/troubleshooting/migrate-to-1.10.X",
+      "https://docs.copilotkit.ai/strands/troubleshooting/migrate-to-1.8.2",
+      "https://docs.copilotkit.ai/strands/troubleshooting/migrate-to-v2",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-powered-textarea/next-steps",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-powered-textarea/overview",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-powered-textarea/step-1-checkout-repo",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-powered-textarea/step-2-setup-copilotkit",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-powered-textarea/step-3-copilot-textarea",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-powered-textarea/step-4-copilot-readable-state",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-todo-app/next-steps",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-todo-app/overview",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-todo-app/step-1-checkout-repo",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-todo-app/step-2-setup-copilotkit",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-todo-app/step-3-copilot-readable-state",
+      "https://docs.copilotkit.ai/strands/tutorials/ai-todo-app/step-4-frontend-tools",
+      "https://docs.copilotkit.ai/strands/tutorials/multi-conversation-chat",
+      "https://docs.copilotkit.ai/strands/vs-code-extension",
+      "https://docs.copilotkit.ai/strands/whats-new",
+      "https://docs.copilotkit.ai/strands/whats-new/a2a-mcp-handshake",
+      "https://docs.copilotkit.ai/strands/whats-new/a2ui-launch",
+      "https://docs.copilotkit.ai/strands/whats-new/generative-ui-spec-support",
+      "https://docs.copilotkit.ai/strands/whats-new/langgraph-deep-agents",
+      "https://docs.copilotkit.ai/strands/whats-new/mcp-apps-support",
+      "https://docs.copilotkit.ai/strands/whats-new/v1-50"
+    ]
+  }
+}

@@ -3,6 +3,10 @@ import Link from "next/link";
 import { KeyValue, Panel } from "@/components/ui";
 import { AGENT_IDS } from "@/lib/agents";
 import { ALL_ROUTES, DOCS_ROOT } from "@/lib/nav-config";
+import { DocDriftPanel } from "@/components/doc-drift-panel";
+
+/** Dynamic: the doc-sync readouts below read the snapshot off disk. */
+export const dynamic = "force-dynamic";
 
 export default function Page() {
   const counts = ALL_ROUTES.reduce<Record<string, number>>((acc, r) => {
@@ -32,6 +36,9 @@ export default function Page() {
           enough to run it, says exactly where it stopped.
         </p>
       </header>
+
+
+      <DocDriftPanel />
 
       <Panel title="Where things stand">
         <KeyValue
