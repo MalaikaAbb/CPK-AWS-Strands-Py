@@ -419,6 +419,26 @@ Both Shared State pages say "follow the instructions in the Getting Started guid
 - `useAgent` has no `render` — the read page's "Rendering agent state in the chat" section passes one. That prop does not exist.
 - The `<CopilotChat>` page's sample calls `useAgenticChatSuggestions()`, a helper local to CopilotKit's own demo app and exported by no package. It wraps `useConfigureSuggestions`, which *is* exported, so this repo calls that directly.
 
+### 9.17 Every prompt logs two OpenTelemetry `Failed to detach context` tracebacks
+Two packages share the blame, and neither is this repo.
+
+**Strands is the underlying defect.** `Agent.stream_async` and `event_loop_cycle` both wrap their `yield`s in `trace_api.use_span(...)` — attaching a `contextvars` token that can only be reset from the same `Context`. OTel documents that as unsafe in generators, because a generator can be resumed or closed anywhere. Compounding it, `stream_async` drives `self._run_loop(...)` with a bare `async for` and never `aclose()`s it on early exit: there is no `aclose` call anywhere in `strands/agent/agent.py` or `strands/event_loop/event_loop.py`. So an early exit strands the inner generator for the GC.
+
+**`ag-ui-strands` is the trigger.** It stops consuming `stream_async` the moment Strands emits `complete` and `break`s out instead of draining. Its own teardown then no-ops, because it gates the explicit `aclose()` on `agent_stream.ag_running` — which is `False` for a *suspended* generator, not only an exhausted one. Both generators are finalized later by asyncio's async-generator hook, in a different `Context` than the one that attached the span, and the token reset raises `ValueError: <Token ...> was created in a different Context`.
+
+Measured on the same nested-`use_span` shape (`backend/.venv`, `strands-agents` 1.52.0):
+
+| Consumer behaviour | Detach errors |
+| --- | --- |
+| Drain to exhaustion | 0 |
+| Break, let the GC finalize — *what `ag-ui-strands` does today* | 2 |
+| Break, then `aclose()` in the same task | **1** |
+| Break, then `aclose()` from another task | 2 |
+
+So fixing `ag-ui-strands` alone only halves the noise: closing the outer generator does not close the inner one, and that leftover is Strands' to fix.
+
+Harmless either way. `opentelemetry.context.detach` catches the ValueError itself and only logs it, so it never reaches the request, and the break happens *after* the terminal event — the client already has the full stream. `backend/src/agent_server.py` filters exactly that one message off the `opentelemetry.context` logger; set `OTEL_DETACH_NOISE=1` to see the records again. Not Windows-specific: the same two errors reproduce on Linux.
+
 ---
 
 ## 10. Troubleshooting
@@ -434,6 +454,7 @@ The Strands tree has no Common Issues page; its troubleshooting content is the Q
 | Mic button missing on `/voice` | Runtime advertises no transcription | `transcriptionService` exists only on the **v2** runtime; the v1 wrapper drops it silently. Also check `basePath` matches the route directory exactly. |
 | Mic button present, transcription 4xx | `OPENAI_API_KEY` not visible to Next | It must be in `frontend/.env.local`, not only `backend/.env`. The sample-audio button works without it. |
 | Two inspectors on one page / a hung dev server | Two `CopilotKitProvider`s each mounting an inspector | Fatal — two lit custom elements spin into an assert loop. Any route with a nested provider must be listed in `frontend/src/lib/inspector.ts`. |
+| `ERROR:opentelemetry.context:Failed to detach context` after every prompt | Not a bug — `ag-ui-strands` breaks out of Strands' stream, so its trace spans are torn down by the GC in another context | Cosmetic; the reply still streams in full. Already filtered in `agent_server.py` — §9.17. Unfilter with `OTEL_DETACH_NOISE=1`. |
 | Tool-shaped features do nothing | Not a bug here | §9.3. Six routes are blocked on one undocumented step. |
 | `@copilotkit/react-ui` not found | Following the Quickstart's install line | It names `@copilotkit/react-ui` (v1) and then imports everything from `@copilotkit/react-core/v2`. This repo does not depend on the v1 package. See the framework's [migrate-to-v2](https://docs.copilotkit.ai/strands/troubleshooting/migrate-to-v2) guide. |
 

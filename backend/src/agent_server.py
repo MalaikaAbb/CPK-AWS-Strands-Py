@@ -34,6 +34,45 @@ from agents.registry import REGISTRY
 logging.basicConfig(level=os.environ.get("LOG_LEVEL", "INFO"))
 logger = logging.getLogger(__name__)
 
+
+#region otel-noise
+class _DetachNoiseFilter(logging.Filter):
+    """Drops OpenTelemetry's ``Failed to detach context`` records.
+
+    Every prompt logs two of these, each with a full traceback ending in
+    ``ValueError: <Token ...> was created in a different Context``. They look
+    fatal and are not. Neither package at fault is this one:
+
+    Strands wraps the ``yield``s in ``Agent.stream_async`` and in
+    ``event_loop_cycle`` with ``trace_api.use_span(...)``, attaching a
+    contextvars token that can only be reset from the same ``Context`` — the
+    pattern OTel warns against in generators — and ``stream_async`` never
+    ``aclose()``s the ``_run_loop`` generator it drives, so an early exit
+    leaves it to the GC. ``ag_ui_strands`` then supplies the early exit: it
+    breaks out of the stream on Strands' ``complete`` event, and its teardown
+    gates the explicit ``aclose()`` on ``ag_running``, which is False for a
+    *suspended* generator and not only an exhausted one. Both generators are
+    finalized by asyncio's async-generator hook in a different Context, and the
+    token reset raises.
+
+    Fixing only the adapter would not silence this: measured on the same nested
+    shape, break-then-``aclose()``-in-task still logs 1 of the 2 (closing the
+    outer generator does not close the inner one). See README §9.17.
+
+    Harmless regardless — OTel's ``detach()`` catches the ValueError and only
+    logs it, and the break happens after the terminal event, so the client
+    already has the whole stream. Filter exactly this message and nothing else;
+    set ``OTEL_DETACH_NOISE=1`` to see the records again while debugging.
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        return record.getMessage() != "Failed to detach context"
+
+
+if os.environ.get("OTEL_DETACH_NOISE") != "1":
+    logging.getLogger("opentelemetry.context").addFilter(_DetachNoiseFilter())
+#endregion
+
 HOST = os.environ.get("AGENT_HOST", "0.0.0.0")
 PORT = int(os.environ.get("AGENT_PORT", "8000"))
 
