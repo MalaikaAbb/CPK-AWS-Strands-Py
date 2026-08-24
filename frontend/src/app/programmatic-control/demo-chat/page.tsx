@@ -1,68 +1,166 @@
+"use client";
+
+import { useCallback, useState } from "react";
+import { useAgent, useCopilotKit } from "@copilotkit/react-core/v2";
+
 import { DemoFrame } from "@/components/demo-frame";
-import { SourceCode } from "@/components/source-code";
-import { Callout } from "@/components/ui";
 
 const AGENT_ID = "programmatic-control";
 
-/**
- * The demo that cannot run.
- *
- * The doc's `headless-complete` snippet references `useAgent` and
- * `useCopilotKit` without importing them, so as a route file it throws at
- * prerender and takes the whole build down with it. Rather than add the import
- * the docs omit, the snippet lives beside this file as `page.snippet.tsx` —
- * a name Next does not treat as a route, so it is never compiled or executed —
- * and this page renders it verbatim instead.
- *
- * Nothing was corrected to make that work. What you read below is what the
- * page publishes.
- */
 export default function Page() {
   return (
     <DemoFrame
       parentPath="/programmatic-control"
-      subtitle={`agent: ${AGENT_ID} — snippet does not run`}
+      subtitle={`agent: ${AGENT_ID}`}
     >
-      <div className="h-full space-y-4 overflow-y-auto p-6">
-        <Callout tone="warn" title="This snippet cannot run as published">
-          <p>
-            The doc&apos;s <code>headless-complete</code> pipeline is the whole
-            point of the Programmatic Control page, and it is printed in a form
-            that does not execute. Three pieces are missing, none of them
-            supplied here:
-          </p>
-          <ul className="mt-2 list-disc space-y-1 pl-5">
-            <li>
-              <strong>The import line.</strong> The snippet opens mid-file at{" "}
-              <code>const {"{ agent }"} = useAgent({"{ agentId }"});</code> with
-              no imports at all, so <code>useAgent</code> and{" "}
-              <code>useCopilotKit</code> are unresolved.
-            </li>
-            <li>
-              <strong>Three helpers.</strong>{" "}
-              <code>useAttachmentsConfig</code> (ten destructured values),{" "}
-              <code>useAutoScroll</code> and <code>buildContent</code> appear on
-              no doc page. They are reconstructed in{" "}
-              <code>../headless-helpers.ts</code> so the shape is legible.
-            </li>
-            <li>
-              <strong>A <code>return</code>.</strong> The body ends at{" "}
-              <code>handleReset</code>, so the component renders nothing even
-              once the names resolve.
-            </li>
-          </ul>
-          <p className="mt-2">
-            The three primitives the page is actually about —{" "}
-            <code>agent.addMessage</code>,{" "}
-            <code>copilotkit.runAgent</code> and{" "}
-            <code>copilotkit.stopAgent</code> — are all visible in the source
-            below, and all three work. It is the scaffolding around them that
-            was never published.
-          </p>
-        </Callout>
-
-        <SourceCode file="frontend/src/app/programmatic-control/demo-chat/page.snippet.tsx" />
-      </div>
+      <AgentTrigger agentId={AGENT_ID} />
     </DemoFrame>
+  );
+}
+
+function AgentTrigger({ agentId }: { agentId: string }) {
+  const { agent } = useAgent({ agentId });
+  const { copilotkit } = useCopilotKit();
+
+  // Stores logs so they can be displayed directly in the UI.
+  const [logs, setLogs] = useState<string[]>([]);
+
+  const addLog = useCallback((message: string) => {
+    const timestamp = new Date().toLocaleTimeString();
+
+    setLogs((previousLogs) => [...previousLogs, `[${timestamp}] ${message}`]);
+  }, []);
+
+  const run = async () => {
+    addLog("Run agent clicked.");
+
+    if (agent.isRunning) {
+      addLog("Agent is already running. Ignoring request.");
+      return;
+    }
+
+    addLog("Adding user message to agent.");
+
+    agent.addMessage({
+      id: crypto.randomUUID(),
+      role: "user",
+      content: "Summarize the latest sales data",
+    });
+
+    addLog("User message added successfully.");
+    addLog("Calling copilotkit.runAgent().");
+
+    try {
+      await copilotkit.runAgent({ agent });
+
+      addLog("copilotkit.runAgent() completed successfully.");
+    } catch (error) {
+      addLog(
+        `copilotkit.runAgent() failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+
+      console.error("CopilotKit runAgent failed:", error);
+    }
+  };
+
+  const stop = () => {
+    addLog("Stop agent clicked.");
+
+    if (!agent.isRunning) {
+      addLog("Agent is not currently running. Nothing to stop.");
+      return;
+    }
+
+    try {
+      copilotkit.stopAgent({ agent });
+
+      addLog("copilotkit.stopAgent() called successfully.");
+    } catch (error) {
+      addLog(
+        `copilotkit.stopAgent() failed: ${
+          error instanceof Error ? error.message : String(error)
+        }`,
+      );
+
+      console.error("CopilotKit stopAgent failed:", error);
+    }
+  };
+
+  const clearLogs = () => {
+    setLogs([]);
+  };
+
+  return (
+    <div className="flex h-full flex-col gap-6 p-6">
+      {/* Programmatic controls */}
+      <div className="flex gap-3">
+        <button
+          onClick={run}
+          disabled={agent.isRunning}
+          className="rounded-md border px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Run agent
+        </button>
+
+        <button
+          onClick={stop}
+          disabled={!agent.isRunning}
+          className="rounded-md border px-4 py-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Stop agent
+        </button>
+
+        <button onClick={clearLogs} className="rounded-md border px-4 py-2">
+          Clear logs
+        </button>
+      </div>
+
+      {/* Current agent state */}
+      <div className="rounded-md border p-4">
+        <h2 className="mb-2 font-semibold">Agent State</h2>
+
+        <div className="text-sm">
+          <div>
+            <strong>Agent ID:</strong> {agentId}
+          </div>
+
+          <div>
+            <strong>Running:</strong> {agent.isRunning ? "true" : "false"}
+          </div>
+        </div>
+      </div>
+
+      {/* Frontend logs */}
+      <div className="flex min-h-0 flex-1 flex-col rounded-md border">
+        <div className="flex items-center justify-between border-b p-4">
+          <h2 className="font-semibold">Programmatic Control Logs</h2>
+
+          <span className="text-sm text-muted-foreground">
+            {logs.length} {logs.length === 1 ? "log" : "logs"}
+          </span>
+        </div>
+
+        <div className="min-h-[300px] flex-1 overflow-y-auto p-4">
+          {logs.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No logs yet. Click &quot;Run agent&quot; to start.
+            </p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {logs.map((log, index) => (
+                <div
+                  key={`${log}-${index}`}
+                  className="rounded-md border p-2 font-mono text-sm"
+                >
+                  {log}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
