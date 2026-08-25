@@ -7,7 +7,7 @@ import {
 } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
-
+import { useEffect } from "react";
 import { type Preferences } from "../../notes-card";
 
 const AGENT_ID = "shared-state-read-write";
@@ -17,16 +17,14 @@ type CanvasState = {
   items: { id: string; label: string; done: boolean }[];
 };
 
-
-/**
- * The same agent and the same state as /shared-state, laid out the other way
- * round: the canvas is the primary content and the chat is docked beside it.
- *
- * That is the entire point of the page. `<Canvas>` and `<CopilotSidebar>` both
- * call `useAgent` for the same id, so they share one agent instance and one
- * state object. There is nothing chat-specific about reading `agent.state` —
- * the sidebar is not special.
- */
+const INITIAL_CANVAS_STATE: CanvasState = {
+  title: "Project launch",
+  items: [
+    { id: "research", label: "Research user needs", done: true },
+    { id: "prototype", label: "Build a prototype", done: false },
+  ],
+};
+ 
 export default function Page() {
 
 
@@ -43,15 +41,26 @@ export default function Page() {
   );
 }
 
-function Canvas() {
-  
+export function Canvas() {
   // No agentId means the "default" agent. Pass { agentId } to target another.
-  const { agent } = useAgent({agentId: AGENT_ID});
+  const { agent, isReady } = useAgent({agentId: AGENT_ID});
   const state = (agent.state ?? {}) as Partial<CanvasState>;
 
-  // The doc writes this as `agent.state?.items`, which is untyped — `it` comes
-  // out implicitly `any` and the build fails. Mapping over the already-narrowed
-  // `state` above gives the same result with real types. See README §9.
+  useEffect(() => {
+    if (!isReady) return;
+    const current = (agent.state ?? {}) as Partial<CanvasState>;
+    const updates: Partial<CanvasState> = {};
+    if (current.title === undefined) {
+      updates.title = INITIAL_CANVAS_STATE.title;
+    }
+    if (current.items === undefined) {
+      updates.items = INITIAL_CANVAS_STATE.items;
+    }
+    if (Object.keys(updates).length > 0) {
+      agent.setState({ ...(agent.state ?? {}), ...updates });
+    }
+  }, [agent, isReady, state.title, state.items]);
+
   function toggleItem(id: string) {
     agent.setState({
       ...agent.state,
@@ -66,7 +75,12 @@ function Canvas() {
       <h1>{state.title ?? "Untitled"}</h1>
       <ul>
         {(state.items ?? []).map((item) => (
-          <li key={item.id} data-done={item.done}>
+          <li
+            key={item.id}
+            data-done={item.done}
+            onClick={() => toggleItem(item.id)}
+            className="cursor-pointer data-[done=true]:line-through data-[done=true]:opacity-60"
+          >
             {item.label}
           </li>
         ))}
@@ -74,3 +88,35 @@ function Canvas() {
     </main>
   );
 }
+
+// function Canvas() {
+  
+//   // No agentId means the "default" agent. Pass { agentId } to target another.
+//   const { agent } = useAgent({agentId: AGENT_ID});
+//   const state = (agent.state ?? {}) as Partial<CanvasState>;
+
+//   // The doc writes this as `agent.state?.items`, which is untyped — `it` comes
+//   // out implicitly `any` and the build fails. Mapping over the already-narrowed
+//   // `state` above gives the same result with real types. See README §9.
+//   function toggleItem(id: string) {
+//     agent.setState({
+//       ...agent.state,
+//       items: (state.items ?? []).map((it) =>
+//         it.id === id ? { ...it, done: !it.done } : it,
+//       ),
+//     });
+//   }
+
+//   return (
+//     <main className="canvas">
+//       <h1>{state.title ?? "Untitled"}</h1>
+//       <ul>
+//         {(state.items ?? []).map((item) => (
+//           <li key={item.id} data-done={item.done}>
+//             {item.label}
+//           </li>
+//         ))}
+//       </ul>
+//     </main>
+//   );
+// }
