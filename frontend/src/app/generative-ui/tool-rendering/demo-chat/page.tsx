@@ -10,10 +10,13 @@ import { z } from "zod";
 import { DemoFrame } from "@/components/demo-frame";
 
 import {
+  type CatchallToolStatus,
   CustomCatchallRenderer,
+  type Flight,
+  FlightListCard,
   WeatherCard,
   parseJsonResult,
-} from "../weather-card";
+} from "../components";
 
 const AGENT_ID = "tool-rendering";
 
@@ -23,6 +26,12 @@ interface WeatherResult {
   humidity?: number;
   wind_speed?: number;
   conditions?: string;
+}
+
+interface FlightSearchResult {
+  origin?: string;
+  destination?: string;
+  flights?: Flight[];
 }
 
 export default function Page() {
@@ -63,6 +72,32 @@ function Chat() {
     [],
   );
 
+  // Named renderer #2: search_flights. Added by the 2026-08-26 rewrite, which
+  // also published the FlightListCard it draws into. Nothing on the Strands
+  // side exposes a search_flights tool, so this one registers and waits — the
+  // page prints the renderer and never a matching backend tool.
+  useRenderTool(
+    {
+      name: "search_flights",
+      parameters: z.object({
+        origin: z.string(),
+        destination: z.string(),
+      }),
+      render: ({ parameters, result, status }) => {
+        const parsed = parseJsonResult<FlightSearchResult>(result);
+        return (
+          <FlightListCard
+            loading={status !== "complete"}
+            origin={parameters?.origin ?? parsed.origin ?? ""}
+            destination={parameters?.destination ?? parsed.destination ?? ""}
+            flights={parsed.flights ?? []}
+          />
+        );
+      },
+    },
+    [],
+  );
+
   // Wildcard catch-all for anything a named renderer above did not claim.
   // `useDefaultRenderTool` is a convenience wrapper around
   // `useRenderTool({ name: "*", ... })`.
@@ -72,7 +107,7 @@ function Chat() {
         <CustomCatchallRenderer
           name={name}
           parameters={parameters}
-          status={status}
+          status={status as CatchallToolStatus}
           result={result}
         />
       ),

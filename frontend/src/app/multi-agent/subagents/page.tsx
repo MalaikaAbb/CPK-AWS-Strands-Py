@@ -25,8 +25,8 @@ export default function Page() {
               "Write a short paragraph explaining why agent-native UIs beat chatbots",
               "Draft an announcement for a new pricing tier",
             ]}
-            expect="Three tool calls in order — research_agent, writing_agent, critique_agent — then a final answer carrying the draft and a line about the critique. The delegation log beside the chat stays empty, which is expected: see below."
-            fail="A direct answer with no tool calls at all — the supervisor skipped delegation. Or the same sub-agent firing repeatedly, which is what the 'EXACTLY ONCE' language in its prompt exists to prevent."
+            expect="Three cards in the delegation log in order — Researcher, Writer, Critic — each with its task and the sub-agent's output, then a final answer carrying the draft and a line about the critique. The role chips light up as each fires."
+            fail="A direct answer with no tool calls at all — the supervisor skipped delegation. Or the log stays empty while the tool calls happen, which means the state hook is not registered."
           />
         </div>
       </Panel>
@@ -42,15 +42,16 @@ export default function Page() {
 
       <Panel
         title="The longest surviving prefix of the Strands backend"
-        description="947 lines — enough to delegate, one function short of a live log."
+        description="794 lines after the 2026-08-26 sync — 153 fewer than before, and still one function short of a live log."
       >
         
         <SourceCodeGroup
           files={[
             { file: "backend/src/agents/subagents.py", region: "subagents" },
+            { file: "backend/src/agents/subagents.py", region: "state-hook" },
             { file: "backend/src/agents/chat_agents.py", region: "subagents-agent" },
           ]}
-          note="The first file is the doc excerpt, unmodified. The second is the wiring no Strands page shows — tools=[…] on a Strands Agent, plus a supervisor system prompt the page never prints and without which the model answers directly instead of delegating."
+          note="First: the doc excerpt, byte-for-byte — re-checked against the live page after the 2026-08-26 sync, which shortened it from 947 lines to 794 by pulling the A2UI machinery out. Second: _make_subagent_state_from_result, the hook the page names three times and never prints, written here and deliberately kept outside the verbatim region. Third: the wiring no Strands page shows — tools=[…] and ToolBehavior(state_from_result=…) on a Strands Agent, plus a supervisor system prompt without which the model answers directly instead of delegating."
         />
       </Panel>
 

@@ -20,15 +20,16 @@ name two functions that the page never prints:
   * `build_showcase_agent(...)` — where each tool's
     `ToolBehavior(state_from_result=…)` would be registered.
 
-Neither is reconstructed here. The consequence is precise and worth stating:
-**delegation works, the live log does not.** The supervisor calls the three
-tools, each sub-agent runs, and the results come back as tool results the
-supervisor summarises — but nothing writes `state["delegations"]`, so the log
-panel stays empty for the whole run.
+Both are now reconstructed, but **not in the verbatim region** — the hook lives
+under `#region state-hook` at the bottom of this file, behind a banner saying
+so, and the registration lives in `chat_agents.subagents_agent`. Everything
+inside `#region subagents` is still byte-identical to the page (checked against
+the live markdown), so the route can render the two side by side: what the page
+publishes, then what had to be written to make it run.
 
-`_seed_delegations_from_state` below is published in full and called by
-nothing. Its only caller would have been the missing hook. It is kept because
-removing it would misrepresent what the page ships.
+With the hook in place the delegation log fills in as each sub-agent returns.
+`_seed_delegations_from_state`, which the page publishes in full and never
+calls, finally has its caller.
 
 One more thing the page does not supply: a system prompt for the supervisor.
 That lives in `chat_agents.subagents_agent` and is this repo's.
@@ -207,6 +208,70 @@ def _run_subagent(name: str, task: str) -> str:
         return f"{_SUBAGENT_FAILURE_MARKER}{exc.__class__.__name__}"
 
 
+# Each @tool wraps a sub-agent invocation. The supervisor LLM "calls"
+# these tools to delegate work; ``_run_subagent`` synchronously runs the
+# matching sub-agent (a single-shot OpenAI completion), and the result
+# string is returned to the supervisor as the tool result. The matching
+# ``ToolBehavior(state_from_result=...)`` hook on each tool (registered
+# in ``build_showcase_agent``) appends a Delegation entry to shared
+# state so the UI's <DelegationLog/> reflects the call in real time.
+@tool
+def research_agent(task: str) -> str:
+    """Delegate a research task to the research sub-agent.
+
+    Use for: gathering facts, background, definitions, statistics.
+    Returns a bulleted list of key facts as plain text.
+
+    Args:
+        task: The research brief to hand off.
+    """
+    return _run_subagent("research_agent", task)
+
+
+@tool
+def writing_agent(task: str) -> str:
+    """Delegate a drafting task to the writing sub-agent.
+
+    Use for: producing a polished paragraph, draft, or summary. Pass
+    relevant facts from prior research inside ``task``.
+
+    Args:
+        task: The writing brief to hand off.
+    """
+    return _run_subagent("writing_agent", task)
+
+
+@tool
+def critique_agent(task: str) -> str:
+    """Delegate a critique task to the critique sub-agent.
+
+    Use for: reviewing a draft and suggesting concrete improvements.
+
+    Args:
+        task: The draft to critique.
+    """
+    return _run_subagent("critique_agent", task)
+#endregion
+
+
+#region state-hook
+# ---------------------------------------------------------------------------
+# BELOW THIS LINE IS NOT DOC CODE.
+# ---------------------------------------------------------------------------
+#
+# `_make_subagent_state_from_result` is the hook the Sub-Agents section names
+# three times in its comments and never prints — the thing that turns a
+# delegation into the ``StateSnapshotEvent`` the UI's <DelegationLog/> reads.
+# `build_showcase_agent`, where the page says it would be registered, is also
+# never printed; `chat_agents.subagents_agent` does that registration instead.
+#
+# It is kept outside the `subagents` region above so the route page can render
+# the doc excerpt verbatim without this mixed in. Reviewing the two together is
+# the point: everything above is what the page publishes, this is what had to
+# be written to make it run.
+# ---------------------------------------------------------------------------
+
+
 def _make_subagent_state_from_result(sub_agent_name: str):
     """Factory for a ``state_from_result`` hook bound to a sub-agent name.
     Returns a coroutine function suitable for ``ToolBehavior.state_from_result``.
@@ -290,49 +355,4 @@ def _flatten_tool_result(result_data) -> str:
             return result_data["text"]
         return json.dumps(result_data)
     return str(result_data)
-
-
-# Each @tool wraps a sub-agent invocation. The supervisor LLM "calls"
-# these tools to delegate work; ``_run_subagent`` synchronously runs the
-# matching sub-agent (a single-shot OpenAI completion), and the result
-# string is returned to the supervisor as the tool result. The matching
-# ``ToolBehavior(state_from_result=...)`` hook on each tool (registered
-# in ``build_showcase_agent``) appends a Delegation entry to shared
-# state so the UI's <DelegationLog/> reflects the call in real time.
-@tool
-def research_agent(task: str) -> str:
-    """Delegate a research task to the research sub-agent.
-
-    Use for: gathering facts, background, definitions, statistics.
-    Returns a bulleted list of key facts as plain text.
-
-    Args:
-        task: The research brief to hand off.
-    """
-    return _run_subagent("research_agent", task)
-
-
-@tool
-def writing_agent(task: str) -> str:
-    """Delegate a drafting task to the writing sub-agent.
-
-    Use for: producing a polished paragraph, draft, or summary. Pass
-    relevant facts from prior research inside ``task``.
-
-    Args:
-        task: The writing brief to hand off.
-    """
-    return _run_subagent("writing_agent", task)
-
-
-@tool
-def critique_agent(task: str) -> str:
-    """Delegate a critique task to the critique sub-agent.
-
-    Use for: reviewing a draft and suggesting concrete improvements.
-
-    Args:
-        task: The draft to critique.
-    """
-    return _run_subagent("critique_agent", task)
 #endregion

@@ -97,6 +97,14 @@ export default function Page() {
           page is the plain case: a handler that runs and returns.
         </p>
       </Callout>
+      <Callout tone="info" title="See it in the Inspector">
+        <p>
+          Added to this doc page by the 2026-08-26 sync. On localhost, open the
+          Inspector overlay (bottom-left), go to <strong>Agents</strong> → 
+          <strong>Frontend Tools</strong>. Your tool and its schema are listed — the fastest way to confirm change_background registered before you go looking at the model.
+        </p>
+      </Callout>
+
     </>
   );
 }

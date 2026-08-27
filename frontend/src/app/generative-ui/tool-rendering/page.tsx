@@ -34,7 +34,7 @@ export default function Page() {
       </Panel>
 
       <Panel title="The components">
-        <SourceCode file="frontend/src/app/generative-ui/tool-rendering/weather-card.tsx" />
+        <SourceCode file="frontend/src/app/generative-ui/tool-rendering/components.tsx" />
       </Panel>
 
       <Panel

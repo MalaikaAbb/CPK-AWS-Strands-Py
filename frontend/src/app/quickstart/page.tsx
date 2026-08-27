@@ -33,6 +33,22 @@ export default function Page() {
         <SourceCode file="frontend/src/app/quickstart/demo-chat/page.tsx" />
       </Panel>
 
+      <Callout tone="info" title="This page's runtime step was rewritten">
+        <p>
+          The Quickstart used to build a <strong>v1</strong> endpoint at{" "}
+          <code>app/api/copilotkit/route.ts</code> with{" "}
+          <code>copilotRuntimeNextJSAppRouterEndpoint</code> and an{" "}
+          <code>ExperimentalEmptyAdapter</code>, exporting only{" "}
+          <code>POST</code>. It now builds a <strong>v2</strong> handler at a{" "}
+          <code>[[...slug]]</code> catch-all, drops the service adapter, exports{" "}
+          <code>GET</code> and <code>POST</code>, and adds{" "}
+          <code>CopilotKitIntelligence</code>. The route below follows all of
+          that; the provider&apos;s matching{" "}
+          <code>useSingleEndpoint={"{false}"}</code> is the client half. Full
+          before/after in README §9.17.
+        </p>
+      </Callout>
+
       <Panel
         title="The four files that make it work"
         description="Read from this repo, so they can be diffed against the doc's samples directly."
@@ -42,7 +58,7 @@ export default function Page() {
             { file: "backend/src/agents/model.py", region: "model" },
             { file: "backend/src/agents/chat_agents.py", region: "quickstart" },
             { file: "backend/src/agent_server.py", region: "mount" },
-            { file: "frontend/src/app/api/copilotkit/route.ts" },
+            { file: "frontend/src/app/api/copilotkit/[[...slug]]/route.ts" },
           ]}
         />
       </Panel>
@@ -66,6 +82,23 @@ export default function Page() {
             and mounts each result with Starlette&apos;s{" "}
             <code>app.mount</code>. The documented call is untouched; the
             composition around it is this repo&apos;s.
+          </li>
+          <li>
+            <strong>Intelligence is opt-in rather than asserted.</strong> The
+            page writes{" "}
+            <code>apiKey: process.env.INTELLIGENCE_API_KEY!</code> — a non-null
+            assertion on a key most people cloning this repo will not have. Its
+            own callout says dropping <code>intelligence</code> and{" "}
+            <code>identifyUser</code> falls back to SSE mode, so{" "}
+            <code>lib/intelligence.ts</code> omits them when the key is absent
+            and the harness stays runnable keyless.{" "}
+            <a
+              href="/copilot-runtime"
+              className="text-[var(--accent)] underline underline-offset-4"
+            >
+              Copilot Runtime
+            </a>{" "}
+            reports which mode is live.
           </li>
           <li>
             <strong>Frontend install line names a package that is not used.</strong>{" "}

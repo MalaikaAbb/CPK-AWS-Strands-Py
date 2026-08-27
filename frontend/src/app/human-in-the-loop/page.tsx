@@ -1,6 +1,6 @@
 import { RouteHeader } from "@/components/route-header";
 import { SourceCode, SourceCodeGroup } from "@/components/source-code";
-import { Panel, TryIt } from "@/components/ui";
+import { Callout, Panel, TryIt } from "@/components/ui";
 
 export default function Page() {
   return (
@@ -97,6 +97,14 @@ export default function Page() {
           to document. One option of two, not the two it advertises.
         </p>
       </Panel>
+      <Callout tone="info" title="See it in the Inspector">
+        <p>
+          Added to this doc page by the 2026-08-26 sync. On localhost, open the
+          Inspector overlay (bottom-left), go to <strong>Agents</strong> → 
+          <strong>Frontend Tools</strong>. book_call and its Zod schema are listed there. If the picker never appears, this tells you whether the problem is registration or the model declining to call it.
+        </p>
+      </Callout>
+
     </>
   );
 }

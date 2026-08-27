@@ -109,7 +109,7 @@ export default function Page() {
         <SourceCodeGroup
           files={[
             { file: "frontend/src/app/generative-ui/a2ui/dynamic-schema/demo-chat/page.tsx" },
-            { file: "frontend/src/app/api/copilotkit-declarative-gen-ui/route.ts" },
+            { file: "frontend/src/app/api/copilotkit-declarative-gen-ui/[[...slug]]/route.ts" },
             { file: "backend/src/agents/chat_agents.py", region: "builder" },
           ]}
           note="The agent is the Quickstart's, unchanged. The page's own backend snippet is the truncated agent.py, whose generate_a2ui tool ends in a call to build_a2ui_operations_from_tool_call — imported from an unpublished module, and never attached to an agent."

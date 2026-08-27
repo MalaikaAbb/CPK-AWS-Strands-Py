@@ -58,3 +58,14 @@ export function agentUrl(id: string): string {
 
 /** The one agent the A2UI fixed-schema route scopes its runtime middleware to. */
 export const A2UI_FIXED_AGENT_ID = "a2ui-fixed-schema";
+
+/**
+ * The one agent the Rich Threads routes bind to, and the only agent registered
+ * on the Intelligence-mode runtime.
+ *
+ * Threads are listed per agent, and the client opens a realtime channel for
+ * every agent an Intelligence runtime advertises — see
+ * `src/app/api/copilotkit-threads/[[...slug]]/route.ts` for why that forces a
+ * separate, single-agent endpoint.
+ */
+export const THREADS_AGENT_ID = "agentic_chat";

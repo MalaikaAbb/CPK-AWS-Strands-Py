@@ -73,6 +73,14 @@ export default function Page() {
           length; <code>&quot;tz&quot;</code> would not.
         </p>
       </Callout>
+      <Callout tone="info" title="See it in the Inspector">
+        <p>
+          Added to this doc page by the 2026-08-26 sync. On localhost, open the
+          Inspector overlay (bottom-left), go to <strong>Agents</strong> → 
+          <strong>Context</strong>. The three values published with useAgentContext appear there, and disappear when the component unmounts — which is the one half of this page that is observable on Strands.
+        </p>
+      </Callout>
+
     </>
   );
 }

@@ -165,6 +165,57 @@ export const NAV: NavGroup[] = [
     ],
   },
   {
+    title: "Rich Threads",
+    routes: [
+      {
+        path: "/prebuilt-components/copilot-threads-drawer",
+        hasDemo: true,
+        agentId: "agentic_chat",
+        title: "Threads Drawer",
+        docPath: "/strands/prebuilt-components/copilot-threads-drawer",
+        summary:
+          "The drop-in conversation sidebar: list, switch, archive and delete threads with no active-thread state of your own.",
+        status: "working",
+        statusNote:
+          "The page's integration is reproduced in full and compiles. Threads need CopilotKit Intelligence — without a key the drawer renders its documented locked view, which is what this route currently shows.",
+      },
+      {
+        path: "/headless-threads",
+        hasDemo: true,
+        agentId: "agentic_chat",
+        title: "Headless Threads",
+        docPath: "/strands/headless-threads",
+        summary:
+          "The same thread data behind your own UI, via useThreads — and the only route where rename is reachable.",
+        status: "working",
+        statusNote:
+          "All three of the page's snippets run, with its own step-2/step-3 prop mismatch reconciled. Without an Intelligence key useThreads returns an empty list beside a working chat, which the page calls a quiet failure.",
+      },
+      {
+        path: "/threads-lifecycle",
+        hasDemo: true,
+        agentId: "agentic_chat",
+        title: "Thread & History Lifecycle",
+        docPath: "/strands/threads-lifecycle",
+        summary:
+          "Where a threadId comes from, what makes history replay, and the two setters that silently no-op if you also pass the prop.",
+        status: "working",
+        statusNote:
+          "Reference-heavy: one runnable component out of everything published. Three of its snippets call symbols it never defines; none is reconstructed here.",
+      },
+      {
+        path: "/threads-import",
+        title: "Import & Synchronize History",
+        docPath: "/strands/threads-import",
+        summary:
+          "Moving existing framework conversations into Intelligence as Rich Threads — a CLI migration with no React surface.",
+        status: "reference",
+        statusNote:
+          "Nothing to run: the page's own supported-sources table is Google ADK and LangGraph only. There is no Strands importer.",
+      },
+    ],
+  },
+  {
     title: "Input Modalities",
     routes: [
       {
@@ -305,9 +356,9 @@ export const NAV: NavGroup[] = [
         docPath: "/strands/programmatic-control",
         summary:
           "Driving runs from code with addMessage, runAgent, stopAgent and subscribe — no chat component.",
-        status: "partial",
+        status: "working",
         statusNote:
-          "Google ADK's implementation of this page, carried over on request. It runs the doc's headless-complete send pipeline, which destructures three helpers the docs never define, and its render body returns nothing.",
+          "The 2026-08-26 rewrite replaced the unrunnable headless-complete snippet with a self-contained AgentTrigger; the demo runs it verbatim. The page's interrupt half is still a skipped snippet.",
       },
     ],
   },
@@ -322,9 +373,9 @@ export const NAV: NavGroup[] = [
         docPath: "/strands/shared-state/rendering-in-app",
         summary:
           "useAgent read outside the chat: a main-view canvas subscribing to the same agent state the chat uses.",
-        status: "partial",
+        status: "working",
         statusNote:
-          "Google ADK's implementation, carried over on request. The read path and setState both work; nothing on the Strands side can write state back, so the canvas only ever shows what the UI put there.",
+          "The 2026-08-26 rewrite added a seeded initial state, so the canvas renders on first paint. Reads and setState both round-trip; nothing on the Strands side writes state back, so the agent still cannot drive it.",
       },
       {
         path: "/shared-state/agent-readonly",
@@ -373,9 +424,9 @@ export const NAV: NavGroup[] = [
         docPath: "/strands/multi-agent/subagents",
         summary:
           "A supervisor delegating to research, writing and critique sub-agents, with a live delegation log.",
-        status: "partial",
+        status: "working",
         statusNote:
-          "Delegation runs — all three published sub-agent tools are wired and fire. The live log does not fill in: the state hook that would write state[\"delegations\"] is named in the page's comments and never printed.",
+          "Delegation runs and the live log fills in. The state hook the page names three times and never prints is written locally, outside the verbatim region — see backend/src/agents/subagents.py.",
       },
     ],
   },
