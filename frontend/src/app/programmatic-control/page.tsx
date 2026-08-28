@@ -17,9 +17,9 @@ export default function Page() {
         </p>
         <div className="mt-4">
           <TryIt
-            prompts={["Open the demo"]}
-            expect="A blank pane under the demo header. That is faithful: the doc's headless-complete snippet is a hook body with no JSX, so the component it defines returns nothing renderable, and the carried-over implementation returns an empty fragment rather than inventing a UI for it. What the route is for is the source panel below."
-            fail="A build error, or a runtime error from useAgent / useCopilotKit — the hooks themselves should resolve cleanly."
+            prompts={["Press Run agent, then press Stop while it streams"]}
+            expect="A user message appears in the transcript with the doc's hardcoded prompt, the reply streams in under it, and Stop is enabled only while isRunning. No composer is involved — the run is dispatched from a click handler."
+            fail="Nothing happens on Run — check the Python server is up. Or Stop stays disabled through the whole run, which means isRunning is not tracking."
           />
         </div>
       </Panel>
@@ -62,7 +62,7 @@ export default function Page() {
       
 
       <Panel title="The demo">
-        <SourceCode file="frontend/src/app/programmatic-control/demo-chat/page.snippet.tsx" />
+        <SourceCode file="frontend/src/app/programmatic-control/demo-chat/page.tsx" region="agent-trigger" />
       </Panel>
 
 
@@ -109,16 +109,24 @@ export default function Page() {
         </p>
       </Callout>
 
-      <Callout tone="warn" title="Carried over verbatim, including its problems">
+      <Callout tone="success" title="The gap on this page was fixed upstream">
         <p>
-          Two of them, both the doc&apos;s. The snippet opens by destructuring
-          ten values from a <code>useAttachmentsConfig()</code> that is never
-          printed on any page, and also calls <code>useAutoScroll</code> and{" "}
-          <code>buildContent</code> — likewise never printed. All three are
-          reconstructed in <code>headless-helpers.ts</code>. And the function
-          body it gives ends at <code>handleReset</code> with no{" "}
-          <code>return</code>, so there is no UI to render. Both were left as
-          they are rather than papered over.
+          Until the 2026-08-26 sync this route was Partial, and the reason was
+          the page&apos;s own snippet. It printed the{" "}
+          <code>headless-complete</code> cell: a hook body that destructured ten
+          values out of a <code>useAttachmentsConfig()</code> no page defined,
+          called <code>useAutoScroll</code> and <code>buildContent</code>{" "}
+          (likewise never printed), and ended at <code>handleReset</code> with
+          no <code>return</code>. It neither compiled nor rendered anything, so
+          this repo had to reconstruct three helpers and park the snippet in a
+          non-route file just to keep the build green.
+        </p>
+        <p className="mt-2">
+          All of that is gone. The page now prints an{" "}
+          <code>AgentTrigger</code> component it describes as
+          &quot;intentionally self-contained&quot; — imports, hooks, handlers
+          and JSX — and the demo runs it verbatim. The reconstructed helpers and
+          the parked snippet have been deleted.
         </p>
       </Callout>
 

@@ -63,9 +63,18 @@ export default function Page() {
           LangGraph types, a node function is a LangGraph shape, and{" "}
           <code>state[&quot;copilotkit&quot;][&quot;context&quot;]</code> is
           where LangGraph&apos;s middleware puts context entries. Strands has
-          none of the three. The framework-gated slot beside it, the one that
-          should hold the Strands version, is the{" "}
-          <code>setup skipped</code> placeholder.
+          none of the three.
+        </p>
+        <p className="mb-4 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+          The 2026-08-26 sync made this worse rather than better. That sample
+          used to sit inside{" "}
+          <code>&lt;WhenFrameworkHas flag=&quot;agent_config_pattern&quot; equals=&quot;shared-state&quot;&gt;</code>
+          , with a <code>runtime-properties</code> branch beside it — so a
+          reader could at least tell it was one framework&apos;s answer among
+          several. Both gates were deleted. The LangGraph code is now presented
+          unconditionally as <em>the</em> backend for this page, directly under
+          the <code>setup skipped</code> placeholder that stands in for the
+          Strands one.
         </p>
         <SourceCodeGroup
           files={[

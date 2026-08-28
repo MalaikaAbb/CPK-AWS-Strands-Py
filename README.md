@@ -4,13 +4,13 @@ A navigable, running harness for the CopilotKit ↔ AWS Strands (Python) integra
 
 | | |
 | --- | --- |
-| **Doc-sync date** | 2026-08-07 — every claim in this repo was checked against the live docs on that day |
+| **Doc-sync date** | 2026-08-26 — see `doc-snapshot/CHANGELOG.md` for what moved, and §9.17 for the Quickstart rewrite this repo followed |
 | **Docs tracked** | <https://docs.copilotkit.ai/strands> |
 | **CopilotKit packages** | `@copilotkit/react-core` 1.66.2 · `@copilotkit/runtime` 1.66.2 · `@copilotkit/a2ui-renderer` 1.66.2 · `@copilotkit/voice` 1.66.2 |
-| **AG-UI / Strands packages** | `ag-ui-strands` 0.2.4 · `strands-agents` 1.50.2 · `@ag-ui/client` 0.0.57 |
+| **AG-UI / Strands packages** | `ag-ui-strands` 0.2.4 · `strands-agents` 1.50.2 · `@ag-ui/client` 0.0.57 (pinned exactly — see §10) |
 | **Frontend** | Next.js 16.3.0 (App Router, Turbopack) · React 19.2.8 · TypeScript 5 · Tailwind 4 |
-| **Routes** | 28 tracked doc pages · 61 built pages · 25 registered agents |
-| **Status** | ✅ 20 working · ⚠️ 3 partial · ❌ 4 broken · 📘 1 reference |
+| **Routes** | 32 tracked doc pages · 25 registered agents |
+| **Status** | ✅ 23 working · ⚠️ 3 partial · ❌ 4 broken · 📘 3 reference |
 | **Build** | `npm run build` and `tsc --noEmit` both clean; no CI configured |
 
 ---
@@ -34,9 +34,10 @@ Browser
   │  CopilotChat / CopilotSidebar / CopilotPopup / your own hooks
   │  @copilotkit/react-core/v2
   ▼
-Next.js route handler  ── frontend/src/app/api/copilotkit/route.ts
-  │  CopilotRuntime { agents: { <id>: HttpAgent(AGENT_URL/<id>/) } }
-  │  (+ two extra endpoints — see §7, /copilot-runtime)
+Next.js route handler  ── frontend/src/app/api/copilotkit/[[...slug]]/route.ts
+  │  CopilotRuntime { agents, a2ui, intelligence?, identifyUser? }   @copilotkit/runtime/v2
+  │  createCopilotRuntimeHandler({ runtime, basePath })  →  GET + POST
+  │  (+ two extra endpoints, same shape — see §7, /copilot-runtime)
   ▼  AG-UI over HTTP/SSE
 FastAPI parent app  ── backend/src/agent_server.py
   │  app.mount("/<agent-id>", create_strands_app(agui_agent, "/"))  × 25
@@ -93,6 +94,8 @@ Then open both copies and set the one required value:
 | `LOG_LEVEL` | backend | Python logging level. Defaults to `INFO`. |
 | `AGENT_URL` | frontend | Where the Next runtime looks for the agent server. Defaults to `http://localhost:8000`. |
 | `NEXT_PUBLIC_COPILOTKIT_INSPECTOR` | frontend | Set to `off` to disable the inspector overlay everywhere. Localhost-only by default. |
+| `INTELLIGENCE_API_KEY` | frontend | CopilotKit Intelligence project key — turns on persistent threads and the inspector. Optional; without it every runtime falls back to SSE mode. **Server-side secret — never prefix it `NEXT_PUBLIC_`.** See §9.17. |
+| `NEXT_PUBLIC_COPILOTKIT_PUBLIC_LICENSE_KEY` | frontend | The **client** half of Intelligence — the Threads Drawer page's `publicLicenseKey="ck_pub_..."`. Threads need this *and* `INTELLIGENCE_API_KEY`; with only one you get a silent half-failure. Genuinely public, hence the prefix. See §9.21. |
 | `COPILOTKIT_TELEMETRY_DISABLED` | frontend | Set to `true` to opt out of the runtime's anonymous telemetry. |
 
 **Default ports: frontend `3000`, backend `8000`.**
@@ -150,7 +153,16 @@ curl -s -X POST http://localhost:8000/strands_agent/ \
 
 Step 3 should stream `RUN_STARTED → STATE_SNAPSHOT → MESSAGES_SNAPSHOT → … → RUN_FINISHED`. A `404` on step 2 or 3 means you dropped the trailing slash.
 
-There is also `GET /gaps`, which returns the per-agent list of what the docs omit — the same list the frontend carries, so the two can be diffed.
+There is also `GET /gaps`, which returns the per-agent list of what the docs omit.
+
+**Confirming CopilotKit Intelligence.** Open `/copilot-runtime` — the banner at
+the top reports whether the runtimes constructed a `CopilotKitIntelligence`
+client or fell back to SSE mode. Note that a working chat is *not* evidence
+either way: `premium/connect-your-runtime` is explicit that a runtime in SSE
+mode replies normally with the key unread. The only real confirmation is a
+thread appearing in the
+[dashboard](https://dashboard.operations.copilotkit.ai) after you send a
+message.
 
 ---
 
@@ -218,6 +230,24 @@ Try attaching a screenshot and asking `What is in this image?`, then attaching a
 Needs `OPENAI_API_KEY` in `frontend/.env.local`.
 ✅ A mic button appears in the composer (that is the runtime advertising `audioFileTranscriptionEnabled` on `/info`). Recording transcribes and auto-sends. The "Try a sample audio" button works with no key at all.
 ❌ No mic button — the runtime has no `transcriptionService`, or `basePath` does not match the route directory.
+
+### Rich Threads
+
+All four need CopilotKit Intelligence. Without it they compile and render, and the feature is locked — which is itself the thing these routes document.
+
+**`/prebuilt-components/copilot-threads-drawer`** ⚠️ — the drop-in conversation sidebar, with the page's integration reproduced in full. Send a message, press "New Conversation", send another, then click back to the first row.
+✅ Two auto-named rows; clicking one replays its history into the chat. Nothing in the demo tracks an active `threadId` — that is the page's actual claim.
+❌ A locked panel where the list should be: that is the no-license state the page documents, not a bug. An empty list *with* a key means the runtime is in SSE mode — check `/copilot-runtime`.
+
+**`/headless-threads`** ⚠️ — the same data behind your own UI via `useThreads`, and the only place `renameThread` is reachable. Send a message, then press Rename on the row.
+✅ A row per conversation, most recent first; Rename sets the literal string `"Renamed"` (the doc's own handler), Archive hides it from the default list.
+❌ An empty sidebar beside a working chat — the page calls this out as a quiet failure. A thrown error from `useThreads` would be a real one.
+
+**`/threads-lifecycle`** ⚠️ — where a `threadId` comes from and what makes history replay. Send a message, press "New chat", then paste the earlier id back and press "Open conversation".
+✅ "New chat" clears to a welcome screen; reopening the id replays that conversation.
+❌ Open conversation clears instead of replaying — with no store to replay from, which the page states plainly, that is expected.
+
+**`/threads-import`** 📘 — reference only, and not because of this repo: the page's own supported-sources table is Google ADK and LangGraph. There is no Strands importer, so there is nothing to run. See §9.20.
 
 ### Generative UI
 
@@ -296,7 +326,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 
 ### AWS Strands (Python)
 
-**`/copilot-runtime`** ✅ — this repo's live runtime config, all 25 agents, and a split demo with three agent tabs: raw AG-UI events on the left, the reply those events carry on the right. The tabs (`agentic_chat`, `tool-rendering`, `shared-state-language`) were picked so the event streams differ visibly — text only, then `TOOL_CALL_*` rows, then a non-empty `STATE_SNAPSHOT`. Type `Hello` and press Run, then switch tabs.
+**`/copilot-runtime`** ✅ — this repo's live runtime config, whether Intelligence is on, all 25 agents, and a split demo with three agent tabs: raw AG-UI events on the left, the reply those events carry on the right. The tabs (`agentic_chat`, `tool-rendering`, `shared-state-language`) were picked so the event streams differ visibly — text only, then `TOOL_CALL_*` rows, then a non-empty `STATE_SNAPSHOT`. Type `Hello` and press Run, then switch tabs.
 ✅ Left: `RUN_STARTED → TEXT_MESSAGE_START → a collapsing TEXT_MESSAGE_CONTENT row → TEXT_MESSAGE_END → RUN_FINISHED`. Right: your prompt, then the reply filling in a few characters at a time in step with the delta counter, with a "streaming" pill until the run finishes. No chat component is involved — the text is rebuilt from `textMessageBuffer` off the subscriber.
 ❌ `RUN_FAILED`, or nothing. Deltas climbing on the left with the right pane empty means the buffer is not being read.
 
@@ -319,22 +349,26 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | Not in the doc sidebar. v1/v2 token split — §9.10. |
 | `/strands/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | Not in the doc sidebar. |
 | `/strands/custom-look-and-feel/headless-ui` | `/custom-look-and-feel/headless-ui` | ✅ Working | Not in the doc sidebar. |
+| `/strands/prebuilt-components/copilot-threads-drawer` | `/prebuilt-components/copilot-threads-drawer` | ⚠️ Partial | Integration reproduced in full; locked without an Intelligence key. |
+| `/strands/headless-threads` | `/headless-threads` | ⚠️ Partial | All three snippets run; the page's own step-2/step-3 prop mismatch reconciled — §9.21. |
+| `/strands/threads-lifecycle` | `/threads-lifecycle` | ⚠️ Partial | One runnable component; three snippets call undefined symbols — §9.21. |
+| `/strands/threads-import` | `/threads-import` | 📘 Reference | No Strands importer exists — §9.20. |
 | `/strands/multimodal-attachments` | `/multimodal-attachments` | ✅ Working | Images fine on gpt-4o; audio parts are refused by the model. |
 | `/strands/voice` | `/voice` | ✅ Working | Mic needs `OPENAI_API_KEY` in the Next process too. |
 | `/strands/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | Works with no documented backend wiring — see §9.3. |
-| `/strands/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ✅ Working | `get_weather` only; its `_impl` borrowed and its `tools=` wiring repo-authored — §9.4. |
+| `/strands/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ✅ Working | Doc now publishes WeatherCard, FlightListCard and parseJsonResult; search_flights renderer added. |
 | `/strands/generative-ui/your-components/display-only` | `/generative-ui/your-components/display-only` | ✅ Working | Not in the doc sidebar. Needs no backend section — see §9.3. |
 | `/strands/generative-ui/your-components/interactive` | `/generative-ui/your-components/interactive` | ✅ Working | Not in the doc sidebar. Page is still four lines — §9.7. |
 | `/strands/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ❌ Broken | `renderers.tsx` has no imports — §9.6. A2UI tool unattached. |
 | `/strands/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ❌ Broken | No `display_flight`, no schema JSON. Action handlers documented as unsupported. |
 | `/strands/frontend-tools` | `/frontend-tools` | ✅ Working | Works despite `setup skipped` — §9.3. |
 | `/strands/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | Works despite `setup skipped`; the page's other pattern is LangGraph-only. |
-| `/strands/programmatic-control` | `/programmatic-control` | ⚠️ Partial | Google ADK's implementation, on request. Helpers undefined, no `return` — §9.9. |
-| `/strands/shared-state/rendering-in-app` | `/shared-state/rendering-in-app` | ⚠️ Partial | Google ADK's implementation, on request. Read path works; nothing writes back. |
+| `/strands/programmatic-control` | `/programmatic-control` | ✅ Working | Doc replaced the unrunnable snippet with a self-contained AgentTrigger — §9.9. |
+| `/strands/shared-state/rendering-in-app` | `/shared-state/rendering-in-app` | ✅ Working | Doc added a seeded initial state, so the canvas renders on first paint. |
 | `/strands/shared-state/agent-readonly` | `/shared-state/agent-readonly` | ❌ Broken | `setup skipped`; `CopilotKitMiddleware` named but never shown. |
 | `/strands/shared-state/in-app-agent-read` | `/shared-state/in-app-agent-read` | ✅ Working | Page's own `agentId` contradicts its own backend — §9.11. |
 | `/strands/shared-state/in-app-agent-write` | `/shared-state/in-app-agent-write` | ✅ Working | The only documented UI → agent data path. Missing `import os` — §9.12. |
-| `/strands/multi-agent/subagents` | `/multi-agent/subagents` | ⚠️ Partial | Delegation works; the live log does not — the state hook is past the cut. §9.4. |
+| `/strands/multi-agent/subagents` | `/multi-agent/subagents` | ✅ Working | Delegation log fills in; the state hook the docs never print is written locally, outside the verbatim region. |
 | `/strands/agent-config` | `/agent-config` | ❌ Broken | Backend sample is LangGraph — §9.5. |
 | `/strands/copilot-runtime` | `/copilot-runtime` | ✅ Working | Page never mentions Strands — §9.13. |
 | `/strands/ag-ui` | `/ag-ui` | ✅ Working | Also the probe for which AG-UI events the adapter emits. |
@@ -377,7 +411,7 @@ The mechanism is visible on the adapter: `ag_ui_strands.StrandsAgent` carries a 
 **What would fix the docs:** one sentence on each of those five pages saying the frontend registration is sufficient on Strands and no agent-side wiring is required.
 
 ### 9.4 The published backend file is a truncated prefix, and imports two modules that do not exist
-`src/agents/agent.py` appears on three pages at 332, 585 and 947 lines. Each shorter one is byte-identical to the head of the next (verified), and even the longest stops mid-file. It imports `from tools import get_weather_impl, …` — a module a comment locates at `../../shared/python/tools`, outside anything the docs ship — and `from agents.gen_ui_agent import …`, likewise unpublished. Every published `@tool` body delegates to one of those `_impl` functions, so none can execute as printed. `build_showcase_agent(...)`, the function that would attach the `@tool`s to an agent and register their `ToolBehavior(state_from_result=…)` hooks, is referenced twice in comments and never printed.
+`src/agents/agent.py` appears across two pages at 322, 626 and 794 lines — all prefixes of one file, and even the longest stops mid-file. **The 2026-08-26 sync shrank it:** it used to be 332 / 585 / 947 across three pages, then `a2ui/fixed-schema` stopped printing it entirely and the docs pulled `_A2uiError` and the whole 145-line `generate_a2ui` tool out of the file. The longest published prefix went from 947 lines to 794. It imports `from tools import get_weather_impl, …` — a module a comment locates at `../../shared/python/tools`, outside anything the docs ship — and `from agents.gen_ui_agent import …`, likewise unpublished. Every published `@tool` body delegates to one of those `_impl` functions, so none can execute as printed. `build_showcase_agent(...)`, the function that would attach the `@tool`s to an agent and register their `ToolBehavior(state_from_result=…)` hooks, is referenced twice in comments and never printed.
 
 **What this repo does about it, for one tool only.** [`backend/src/agents/doc_tools.py`](backend/src/agents/doc_tools.py) reproduces the `get_weather` declaration verbatim and supplies `get_weather_impl` from the **Google ADK** version of the same page, which prints the payload inline rather than behind an `_impl` indirection. Its five keys (`city`, `temperature`, `humidity`, `wind_speed`, `conditions`) are exactly the ones the Strands page's own frontend renderer reads, so the shape is confirmed by published Strands code even though the values are not. `chat_agents.tool_rendering_agent` then does `Agent(…, tools=[get_weather])` — plain Strands SDK, but a composition no Strands page shows. Nothing equivalent was done for the other thirteen `@tool`s. `ToolBehavior`, `HookProvider`, `HookRegistry` and `StateSnapshotEvent` are all imported and never used in the printed lines. `_seed_delegations_from_state` is fully defined and called by nothing. Full inventory: [`backend/docs_verbatim/README.md`](backend/docs_verbatim/README.md), with the excerpt kept byte-for-byte beside it.
 
@@ -393,8 +427,42 @@ The entire published source of [your-components/interactive](https://docs.copilo
 ### 9.8 The `MessagesSnapshotEvent` workaround is stale — and this one resolves in your favour
 The published `agent.py` states that `ag_ui_strands` "through at least v0.1.7" emits no `MessagesSnapshotEvent`, that without it "responses that include tool calls never render as assistant messages in the DOM", and then prints a 200-line `_MessagesSnapshotWrapper` to inject them by hand. **Verified false against `ag-ui-strands` 0.2.4:** a raw AG-UI POST returns `RUN_STARTED → STATE_SNAPSHOT → MESSAGES_SNAPSHOT → STATE_SNAPSHOT → RUN_FINISHED` with no wrapper in the call path (reproduce it with step 3 of the §6 smoke test). The adapter handles it natively; the doc has not caught up. This harness does not install the wrapper.
 
-### 9.9 The headless send pipeline destructures helpers that are never printed
+### 9.9 ~~The headless send pipeline destructures helpers that are never printed~~ — FIXED 2026-08-26
 [programmatic-control](https://docs.copilotkit.ai/strands/programmatic-control)'s `headless-complete` snippet opens by destructuring ten values from a `useAttachmentsConfig()` that appears on no page, and also calls `useAutoScroll` and `buildContent`. All three are reconstructed in `frontend/src/app/programmatic-control/headless-helpers.ts`. The snippet's function body also ends at `handleReset` with no `return`, so it renders nothing — carried over as-is, which is why the route is Partial. The page's interrupt-resolution half matches neither of its own framework branches for Strands: the `native` branch is LangGraph's, and the promise-based one collapses to `<!-- snippet skipped: region 'headless-promise-primitives' missing in strands::interrupt-headless -->`.
+
+### 9.19 What the 2026-08-26 sync changed, page by page
+
+The repo carries a doc-drift tracker (`doc-snapshot/`, surfaced at `/doc-sync`). Its 2026-08-26 run flagged 14 pages; the snapshot has since been verified byte-identical to live for every one of them. What each meant here:
+
+| Page | Change | Effect on this repo |
+| --- | --- | --- |
+| Quickstart | Runtime step rewritten to a v2 `[[...slug]]` handler + `CopilotKitIntelligence` | All three endpoints moved; Intelligence wired — §9.17, §9.18 |
+| Copilot Runtime | Same v2 shape, plus `InMemoryAgentRunner`, `/info`, and a `useSingleEndpoint` warning | Warning verified against 1.66.2; every nested provider passes the prop |
+| Programmatic Control | Unrunnable snippet replaced with a self-contained `AgentTrigger` | Route ⚠️ → ✅; helpers and parked snippet deleted — §9.9 |
+| Render state in your app | Added `INITIAL_CANVAS_STATE`, `isReady`, seeding effect | Route ⚠️ → ✅; canvas now renders on first paint |
+| Tool Call Rendering | Now publishes `WeatherCard`, `FlightListCard`, `parseJsonResult` | Those stopped being repo-authored; `search_flights` renderer added |
+| Sub-Agents | `agent.py` excerpt reorganised and **shortened** | Excerpt refreshed 947 → 794 lines — §9.4 |
+| A2UI · Fixed Schema | Stopped printing `agent.py` at all | One fewer published prefix; A2UI backend still undocumented |
+| Agent Config | `WhenFrameworkHas` gates deleted | The LangGraph sample is now presented unconditionally as *the* backend — §9.5 got worse |
+| Frontend Tools · Human-in-the-Loop · Agent Read-Only Context | Each gained a "See this in Inspector" callout | Added to all three routes |
+| Voice | The ADK-specific extra-hop paragraph was deleted | Route now notes the trailing slash is the only surviving clue |
+| Open, close, and feedback | Prose on `rawEvent` metadata reaching thumbs callbacks | Informational; no code change |
+| AG-UI | "Enterprise Intelligence Platform" → "CopilotKit Intelligence" | Rebrand only |
+| CopilotPopup | Flagged as a **local snapshot edit, not an upstream change** | No action; snapshot re-verified against live |
+
+### 9.20 There is no Strands thread importer
+
+[`threads-import`](https://docs.copilotkit.ai/strands/threads-import) sits under `/strands/`, and its own "Supported sources" table lists exactly two: **Google ADK** and **LangGraph**. The prose says "Built-in import currently supports Google ADK and LangGraph, with more sources coming soon," and every link out of the import flow points at `/google-adk/threads-import` or `/langgraph-python/threads-import`. `--source strands` is not an option the CLI offers.
+
+The page is otherwise complete and correct — it is just describing a feature this integration cannot use. `/threads-import` records the commands and says so rather than pretending there is something to run.
+
+### 9.21 Three smaller findings across the thread pages
+
+**Two credentials, introduced separately, and neither page mentions the other.** `INTELLIGENCE_API_KEY` is server-side and goes to `new CopilotKitIntelligence({ apiKey })`. `publicLicenseKey` is client-side and appears inline as `ck_pub_...` on the Threads Drawer page only. Having just one produces a silent half-failure — a locked drawer with a working runtime, or an empty list with a working client. Both are wired here, the second from `NEXT_PUBLIC_COPILOTKIT_PUBLIC_LICENSE_KEY`.
+
+**The Headless Threads snippets do not compose as printed.** Step 2 defines `function ThreadSidebar()` with no parameters; step 3 renders `<ThreadSidebar onSelectThread={setActiveThreadId} />`. The prop exists only at the call site. Pasting both — which step 3 tells you to do — gives a sidebar that lists threads and cannot select one. The demo adds the parameter, the smallest change that makes step 3 mean what it says.
+
+**Three lifecycle snippets call symbols the page never defines.** `ThreadControls` passes a bare `existingId`; the mint-up-front and headless submit-time examples call `myApi.createThread()`; the `identifyUser` example calls `verifyAppSession(request)`. The last two are openly stand-ins for your backend, but `ThreadControls` is presented as a working component. Only `existingId` is supplied here (from an input); the other two are not reconstructed.
 
 ### 9.10 The CSS page mixes v1 and v2 token systems
 Its inline-override example does `import { CopilotKitCSSProperties } from "@copilotkit/react-ui"` and sets `--copilot-kit-primary-color`. Those are the **v1** tokens; the v2 components this repo uses read the shadcn set (`--primary`, `--background`, …) documented lower down the same page. Both halves are correct in isolation and cannot be combined. This repo uses the v2 half.
@@ -407,6 +475,44 @@ Both print the same `agent/main.py`, which ends `name="languageAgent"`. The writ
 
 ### 9.13 Two pages never mention Strands
 `/strands/copilot-runtime` is framework-neutral apart from cross-links — its runtime snippet registers `// your agents go here`, its default-agent example points an `HttpAgent` at `https://my-agent.example.com` without importing `HttpAgent`, and it never connects either to the `create_strands_app` endpoint the Quickstart produces. `/strands/ag-ui` is the same. This repo infers the wiring from the Quickstart.
+
+### 9.17 The Quickstart's runtime route was rewritten (2026-08-26 sync)
+
+The page this harness tracks most closely changed shape. What it used to publish, and what this repo was built on:
+
+```ts title="app/api/copilotkit/route.ts — the old shape"
+import { CopilotRuntime, ExperimentalEmptyAdapter,
+         copilotRuntimeNextJSAppRouterEndpoint } from "@copilotkit/runtime";
+const serviceAdapter = new ExperimentalEmptyAdapter();
+export const POST = async (req: NextRequest) => { /* … */ };
+```
+
+What it publishes now:
+
+```ts title="app/api/copilotkit/[[...slug]]/route.ts — the current shape"
+import { CopilotKitIntelligence, CopilotRuntime,
+         createCopilotRuntimeHandler } from "@copilotkit/runtime/v2";
+const runtime = new CopilotRuntime({ agents, intelligence, identifyUser });
+const handler = createCopilotRuntimeHandler({ runtime, basePath: "/api/copilotkit" });
+export const GET = handler;
+export const POST = handler;
+```
+
+Four changes, all of them followed here:
+
+1. **`[[...slug]]` catch-all**, so the runtime owns its own sub-routing (`/info`, `/agent/:id/run`, `/transcribe`) under `basePath`. All three endpoints in this repo moved.
+2. **v2 factory**, and the `ExperimentalEmptyAdapter` is gone — there is no service adapter any more.
+3. **`GET` as well as `POST`.** The old route exported only `POST`; the client's `/info` probe is a `GET`, which is why single-endpoint mode had worked before.
+4. **`useSingleEndpoint={false}` on the provider** — the client half of (1). A catch-all route with single-endpoint mode still on gets no `/info`. Set on the root provider and on all three nested ones.
+
+The rebrand rode along with it: "Enterprise Intelligence Platform" is now **CopilotKit Intelligence** throughout, and the CLI is `npx copilotkit@latest create --framework aws-strands-py`.
+
+### 9.18 Intelligence is wired but unproven here
+
+`intelligence` and `identifyUser` are set on all three runtimes from [`frontend/src/lib/intelligence.ts`](frontend/src/lib/intelligence.ts). Two honest caveats:
+
+- **The options are conditional, and the doc sanctions that.** The page writes `process.env.INTELLIGENCE_API_KEY!` — a non-null assertion on a key most people cloning this will not have. Its own callout says dropping `intelligence` and `identifyUser` falls back to SSE mode with an in-memory runner, so they are omitted rather than passed empty when the key is absent. `/copilot-runtime` reports which mode is live.
+- **No key was available to test against.** `premium/connect-your-runtime` is explicit that this cannot be confirmed from the client: "A build that compiles and a chat that replies both prove nothing about Intelligence — a runtime in SSE mode does all of that with the key unread." So what is verified here is that the wiring typechecks, builds, and routes; that threads actually persist needs a key and a look at the dashboard.
 
 ### 9.14 Broken cross-framework links
 Both Shared State pages say "follow the instructions in the Getting Started guide" and link to `/langgraph/quickstart` rather than `/strands/quickstart`. The Quickstart's own "What's next" cards link to `/aws-strands/generative-ui/tool-rendering` and `/aws-strands/frontend-tools` — a path prefix that does not exist; the live tree is `/strands/...`.
@@ -435,6 +541,9 @@ The Strands tree has no Common Issues page; its troubleshooting content is the Q
 | Mic button present, transcription 4xx | `OPENAI_API_KEY` not visible to Next | It must be in `frontend/.env.local`, not only `backend/.env`. The sample-audio button works without it. |
 | Two inspectors on one page / a hung dev server | Two `CopilotKitProvider`s each mounting an inspector | Fatal — two lit custom elements spin into an assert loop. Any route with a nested provider must be listed in `frontend/src/lib/inspector.ts`. |
 | Tool-shaped features do nothing | Not a bug here | §9.3. Six routes are blocked on one undocumented step. |
+| `Type 'HttpAgent' is not assignable to type 'AbstractAgent'` | Two copies of `@ag-ui/client` | Every CopilotKit package hard-pins `0.0.57`; a `^0.0.57` range in `package.json` floats to `0.0.58` and the two classes stop being assignable (`separate declarations of a private property '_debug'`). `@ag-ui/client` and `@ag-ui/core` are pinned exactly here for that reason. Check with `find node_modules -path '*@ag-ui/client/package.json'`. |
+| `404` from `/api/copilotkit/info` | Endpoint mode and route shape disagree | The runtime is a `[[...slug]]` catch-all, so the provider needs `useSingleEndpoint={false}`. Set one without the other and the client either probes a path the route does not serve, or posts everything to a route expecting sub-paths. |
+| Chat works, no threads in the dashboard | `intelligence` never reached the runtime | The runtime is in SSE mode. Check `INTELLIGENCE_API_KEY` is set **in `frontend/.env.local`**, then read the banner on `/copilot-runtime` — it reports the live mode. |
 | `@copilotkit/react-ui` not found | Following the Quickstart's install line | It names `@copilotkit/react-ui` (v1) and then imports everything from `@copilotkit/react-core/v2`. This repo does not depend on the v1 package. See the framework's [migrate-to-v2](https://docs.copilotkit.ai/strands/troubleshooting/migrate-to-v2) guide. |
 
 ---
@@ -488,6 +597,7 @@ aws-strands-py/
 │
 └── frontend/
     ├── src/lib/
+    │   ├── intelligence.ts      # CopilotKitIntelligence + identifyUser, shared by all 3 runtimes
     │   ├── nav-config.ts        # THE spine: routes, doc links, statuses
     │   ├── doc-gaps.ts          # every doc-gap finding, and which routes it hits
     │   ├── agents.ts            # agent ids + agentUrl() (trailing slash lives here)
@@ -499,9 +609,9 @@ aws-strands-py/
     │   ├── nav-sidebar.tsx      # nav, dot-coloured by status
     │   └── providers.tsx        # the single app-wide CopilotKitProvider
     └── src/app/
-        ├── api/copilotkit/route.ts                  # main runtime, 25 agents
+        ├── api/copilotkit/[[...slug]]/route.ts      # main runtime, 25 agents
         ├── api/copilotkit-voice/[[...slug]]/route.ts # v2 runtime + transcription
-        ├── api/copilotkit-declarative-gen-ui/route.ts # A2UI auto-inject
+        ├── api/copilotkit-declarative-gen-ui/[[...slug]]/route.ts # A2UI auto-inject
         ├── <doc-route>/page.tsx                     # notes + real source
         ├── <doc-route>/demo-chat/page.tsx           # the live, chrome-free surface
         └── status/page.tsx                          # status table + doc-gap ledger
@@ -517,7 +627,7 @@ Grouped as the Strands doc sidebar groups them, with the pages this repo tracks 
 
 **Concepts** — [Architecture](https://docs.copilotkit.ai/strands/concepts/architecture) · [Generative UI](https://docs.copilotkit.ai/strands/concepts/generative-ui-overview) · [Which Hook for Which Job](https://docs.copilotkit.ai/strands/concepts/which-hook) · [OSS vs Enterprise](https://docs.copilotkit.ai/strands/concepts/oss-vs-enterprise) · [Agentic Protocols](https://docs.copilotkit.ai/strands/agentic-protocols)
 
-**Build Chat UIs — Rich Threads** — [Overview](https://docs.copilotkit.ai/strands/threads) · [Threads Drawer](https://docs.copilotkit.ai/strands/prebuilt-components/copilot-threads-drawer) · [Headless Threads](https://docs.copilotkit.ai/strands/headless-threads) · [Thread & History Lifecycle](https://docs.copilotkit.ai/strands/threads-lifecycle) · [Synchronize Thread History](https://docs.copilotkit.ai/strands/threads-import) · [Threads & Persistence Architecture](https://docs.copilotkit.ai/strands/premium/threads-explained)
+**Build Chat UIs — Rich Threads** — [Overview](https://docs.copilotkit.ai/strands/threads) · ▸ [Threads Drawer](https://docs.copilotkit.ai/strands/prebuilt-components/copilot-threads-drawer) · ▸ [Headless Threads](https://docs.copilotkit.ai/strands/headless-threads) · ▸ [Thread & History Lifecycle](https://docs.copilotkit.ai/strands/threads-lifecycle) · ▸ [Synchronize Thread History](https://docs.copilotkit.ai/strands/threads-import) · [Threads & Persistence Architecture](https://docs.copilotkit.ai/strands/premium/threads-explained)
 
 **Build Chat UIs — Custom Look and Feel** — ▸ [Multimodal Attachments](https://docs.copilotkit.ai/strands/multimodal-attachments) · ▸ [Voice](https://docs.copilotkit.ai/strands/voice) · [Reasoning](https://docs.copilotkit.ai/strands/generative-ui/reasoning)
 

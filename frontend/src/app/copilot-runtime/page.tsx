@@ -2,11 +2,51 @@ import { RouteHeader } from "@/components/route-header";
 import { SourceCode, SourceCodeGroup } from "@/components/source-code";
 import { Callout, KeyValue, Panel, TryIt } from "@/components/ui";
 import { AGENT_IDS, AGENT_URL } from "@/lib/agents";
+import { intelligenceStatus } from "@/lib/intelligence-status";
 
 export default function Page() {
+  // Server component, so this reads the real process env rather than a guess.
+  const intel = intelligenceStatus();
+
   return (
     <>
       <RouteHeader path="/copilot-runtime" />
+
+      <Callout
+        tone={intel.enabled ? "success" : "info"}
+        title={
+          intel.enabled
+            ? "Running in Intelligence mode"
+            : "Running in SSE mode — Intelligence is off"
+        }
+      >
+        <p>
+          Every runtime in this app takes the Quickstart&apos;s{" "}
+          <code>intelligence</code> and <code>identifyUser</code> options from{" "}
+          <code>lib/intelligence.ts</code>, which supplies them only when{" "}
+          <code>{intel.envVar}</code> is set.{" "}
+          {intel.enabled ? (
+            <>
+              It is set here, so the runtimes construct a{" "}
+              <code>CopilotKitIntelligence</code> client and threads persist to
+              the platform.
+            </>
+          ) : (
+            <>
+              It is not set here, so the options are omitted and the runtimes
+              fall back to an in-memory runner. Chat works; Threads and the
+              Inspector stay locked and the key is never read — which is the
+              fallback the Quickstart&apos;s own callout describes.
+            </>
+          )}
+        </p>
+        <p className="mt-2">
+          <strong>A green chat proves nothing about this.</strong> The
+          Intelligence doc is explicit that a runtime in SSE mode replies
+          normally with the key unread, so the only real confirmation is a
+          thread appearing in the dashboard.
+        </p>
+      </Callout>
 
       <Panel title="What it demonstrates">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
@@ -53,7 +93,17 @@ export default function Page() {
         <div className="mb-4">
           <KeyValue
             rows={[
-              ["Main endpoint", <code key="a">/api/copilotkit</code>],
+              [
+                "Main endpoint",
+                <code key="a">/api/copilotkit/[[...slug]]</code>,
+              ],
+              [
+                "Intelligence",
+                <span key="i">
+                  {intel.enabled ? "on" : "off"} — runtime mode{" "}
+                  <code>{intel.mode}</code>
+                </span>,
+              ],
               ["Agent server", <code key="b">{AGENT_URL}</code>],
               ["Agents routed", `${AGENT_IDS.length}`],
               [
@@ -68,7 +118,7 @@ export default function Page() {
             ]}
           />
         </div>
-        <SourceCode file="frontend/src/app/api/copilotkit/route.ts" />
+        <SourceCode file="frontend/src/app/api/copilotkit/[[...slug]]/route.ts" />
       </Panel>
 
       <Panel title="The demo">
@@ -158,16 +208,42 @@ export default function Page() {
         </p>
       </Callout>
 
-      <Callout tone="warn" title="Legacy vs v2 endpoint factories">
+      <Callout tone="info" title="What the 2026-08-26 rewrite added here">
+        <p>
+          The page&apos;s minimal example moved to the same v2 catch-all shape
+          the Quickstart now uses, and gained two things worth copying: an
+          explicit <code>runner: new InMemoryAgentRunner()</code>, and the note
+          that <code>GET /api/copilotkit/info</code> returns a JSON description
+          of the runtime and its agents — &quot;the quickest way to confirm the
+          endpoint is wired up&quot;.
+        </p>
+        <p className="mt-2">
+          It also added a warning this repo had to check.{" "}
+          <code>useSingleEndpoint={"{false}"}</code> selects the REST transport;
+          in released versions <code>&lt;CopilotKit&gt;</code> pins the flag to{" "}
+          <code>true</code>, and a multi-route runtime answers that with a 404
+          while <code>GET /info</code> still returns 200 — so the app looks
+          connected and is not. Verified against 1.66.2:{" "}
+          <code>&lt;CopilotKit&gt;</code> resolves{" "}
+          <code>props.useSingleEndpoint ?? true</code>, so it honours the prop
+          but defaults to the broken combination, while{" "}
+          <code>CopilotKitProvider</code> defaults to{" "}
+          <code>&quot;auto&quot;</code> and negotiates from <code>/info</code>.
+          Every nested provider in this repo passes the prop explicitly for that
+          reason.
+        </p>
+      </Callout>
+
+      <Callout tone="info" title="Legacy vs v2 endpoint factories">
         <p>
           <code>copilotRuntimeNextJSAppRouterEndpoint</code> from{" "}
           <code>@copilotkit/runtime</code> is the <strong>v1</strong> factory.
           The v2 equivalent is <code>createCopilotRuntimeHandler</code> from{" "}
-          <code>@copilotkit/runtime/v2</code>. Both work in 1.66; the docs
-          recommend v2 for new projects. This repo uses the v1 factory for the
-          main endpoint — which is what the Quickstart and this page both show —
-          and v2 for the voice endpoint, because <code>transcriptionService</code>{" "}
-          leaves it no choice.
+          <code>@copilotkit/runtime/v2</code>. All three endpoints here are on
+          v2 now: voice always was, because <code>transcriptionService</code>{" "}
+          exists nowhere else, and the other two moved when the Quickstart
+          rewrote its runtime step around the v2 handler (README §9.17). The v1
+          factory is no longer used anywhere in this repo.
         </p>
       </Callout>
 

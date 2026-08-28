@@ -15,10 +15,10 @@ export default function Page() {
           re-render from one state object.
         </p>
         <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          The frontend here is Google ADK&apos;s implementation of this page,
-          carried over unchanged on request — the two doc pages are
-          byte-identical apart from their link slugs, so there was nothing to
-          port. It is the doc&apos;s <code>&lt;Canvas&gt;</code> snippet, its{" "}
+          The frontend here is the page&apos;s own <code>Canvas</code>, and it
+          is still byte-for-byte what Google ADK&apos;s version of this page
+          publishes — both moved together in the 2026-08-26 rewrite, so the
+          earlier &quot;same code as google-adk&quot; pin still holds. It is the doc&apos;s <code>&lt;Canvas&gt;</code> snippet, its{" "}
           <code>toggleItem</code> write-back, and its{" "}
           <code>&lt;CopilotSidebar&gt;</code> layout, with{" "}
           <code>agentId</code> supplied because a 25-agent runtime has no{" "}
@@ -27,11 +27,11 @@ export default function Page() {
         <div className="mt-4">
           <TryIt
             prompts={[
-              "Open the demo, then use the write route to set some state",
-              "Ask the agent to add an item to the canvas like - Add an item with label 'go shopping' and done as false",
+              "Open the demo — the canvas should already show two items",
+              "Click a row to toggle it, then ask the agent what it sees",
             ]}
-            expect="Whatever the UI writes with setState shows up in the canvas immediately, and survives a chat turn. Asking the agent to add an item gets a refusal or a prose answer — it has no tool to write state with."
-            fail="setState writes vanish on the next agent turn, meaning the run is clobbering client state rather than merging it."
+            expect="A 'Project launch' heading and two seeded items on first paint, before anything is typed. Clicking a row flips it and the change survives a chat turn."
+            fail="'Untitled' with an empty list — the seeding effect never ran, which usually means isReady stayed false. Or a toggle vanishes on the next agent turn, meaning the run is clobbering client state rather than merging it."
           />
         </div>
       </Panel>
@@ -62,23 +62,29 @@ export default function Page() {
         </ul>
       </Callout>
 
-      <Callout tone="warn" title="What the doc's own snippet does not survive">
+      <Callout tone="info" title="What the 2026-08-26 rewrite added, and why it matters more here">
         <p>
-          <code>toggleItem</code> as printed is{" "}
-          <code>(agent.state?.items ?? []).map((it) =&gt; …)</code>. That{" "}
-          <code>it</code> is implicitly <code>any</code>, and under{" "}
-          <code>strict</code> the build fails. The demo maps over the
-          already-narrowed local instead — same result, real types.
+          The page gained an <code>INITIAL_CANVAS_STATE</code> constant, an{" "}
+          <code>isReady</code> flag off <code>useAgent</code>, and an effect
+          that fills only the fields still <code>undefined</code>. The page
+          explains it as making &quot;the canvas visible before the agent writes
+          state&quot;.
         </p>
         <p className="mt-2">
-          The larger gap is the other side of the channel. The page&apos;s whole
-          premise is that &quot;every time the agent mutates its state … {" "}
-          <code>useAgent</code> re-renders this component&quot;. Nothing
-          published for Strands mutates agent state: the two{" "}
-          <code>*_state_from_args</code> hooks exist in the excerpt, and the{" "}
+          On Strands that is doing more work than the sentence suggests.
+          Nothing published for this integration ever writes agent state — the
+          two <code>*_state_from_args</code> hooks exist in the excerpt and the{" "}
           <code>ToolBehavior(state_from_result=…)</code> that would attach one
-          to a tool does not. So the canvas here is a faithful reader with
-          nothing to read but its own writes.
+          does not. Before the rewrite this canvas rendered{" "}
+          <code>Untitled</code> over an empty list and stayed that way for the
+          whole session. The seed is what gives it anything to mirror.
+        </p>
+        <p className="mt-2">
+          One deviation kept from before: the doc writes{" "}
+          <code>agent.state?.items</code> inside <code>toggleItem</code>, which
+          leaves <code>it</code> implicitly <code>any</code> and fails the build
+          under <code>strict</code>. The demo maps over the already-narrowed
+          local instead — same result, real types.
         </p>
       </Callout>
     </>

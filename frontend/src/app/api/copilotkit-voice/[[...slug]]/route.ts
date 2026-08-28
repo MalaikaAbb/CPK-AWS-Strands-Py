@@ -10,6 +10,7 @@ import { TranscriptionServiceOpenAI } from "@copilotkit/voice";
 import OpenAI from "openai";
 
 import { agentUrl } from "@/lib/agents";
+import { intelligenceOptions } from "@/lib/intelligence";
 
 // The voice route, per https://docs.copilotkit.ai/strands/voice
 //
@@ -75,6 +76,7 @@ function getHandler(): (req: Request) => Promise<Response> {
       default: voiceDemoAgent,
     },
     transcriptionService: new GuardedOpenAITranscriptionService(),
+    ...intelligenceOptions,
   });
 
   cachedHandler = createCopilotRuntimeHandler({
@@ -84,7 +86,11 @@ function getHandler(): (req: Request) => Promise<Response> {
   return cachedHandler;
 }
 
+// Same full verb set as the other two runtimes — PATCH and DELETE are what
+// the thread mutations use, and a missing export is a 405 from Next before the
+// handler runs. See the main route for the detail.
 export const POST = (req: NextRequest) => getHandler()(req);
 export const GET = (req: NextRequest) => getHandler()(req);
 export const PUT = (req: NextRequest) => getHandler()(req);
+export const PATCH = (req: NextRequest) => getHandler()(req);
 export const DELETE = (req: NextRequest) => getHandler()(req);

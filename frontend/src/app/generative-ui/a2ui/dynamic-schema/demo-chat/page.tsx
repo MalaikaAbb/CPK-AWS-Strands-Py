@@ -26,6 +26,8 @@ export default function Page() {
       <CopilotKit
         runtimeUrl="/api/copilotkit-declarative-gen-ui"
         agent={AGENT_ID}
+        // Matches the catch-all runtime this endpoint now uses.
+        useSingleEndpoint={false}
         a2ui={{ catalog: myCatalog }}
         // Owns the inspector on this route — see the fixed-schema demo and
         // `lib/inspector.ts`.

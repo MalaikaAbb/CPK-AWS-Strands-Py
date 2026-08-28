@@ -108,7 +108,7 @@ export default function Page() {
       <Panel title="The runtime and the provider">
         <SourceCodeGroup
           files={[
-            { file: "frontend/src/app/api/copilotkit/route.ts" },
+            { file: "frontend/src/app/api/copilotkit/[[...slug]]/route.ts" },
             { file: "frontend/src/app/generative-ui/a2ui/fixed-schema/demo-chat/page.tsx" },
           ]}
           note="Both are the page's own snippets: injectA2UITool: false scoped to this agent on the runtime, and the catalog passed on a nested provider. The agent side has no published counterpart — see backend/docs_verbatim/."

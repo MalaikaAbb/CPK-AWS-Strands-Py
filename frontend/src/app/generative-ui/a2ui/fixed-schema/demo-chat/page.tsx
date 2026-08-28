@@ -27,6 +27,8 @@ export default function Page() {
       <CopilotKit
         runtimeUrl="/api/copilotkit"
         agent={AGENT_ID}
+        // Matches the catch-all runtime this endpoint now uses.
+        useSingleEndpoint={false}
         a2ui={{ catalog }}
         // This provider owns the inspector on this route, because the chat
         // below runs on *its* core — the app-wide one would show an empty

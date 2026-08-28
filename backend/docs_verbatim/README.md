@@ -6,20 +6,26 @@ leave out.
 
 ## `agent_py_published_excerpt.py`
 
-Three doc pages print a file called `src/agents/agent.py` from CopilotKit's own
+Two doc pages print a file called `src/agents/agent.py` from CopilotKit's own
 AWS Strands showcase:
 
 | Page | Lines printed |
 | --- | --- |
-| [`generative-ui/tool-rendering`](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering) | 1–332 |
-| [`generative-ui/a2ui/fixed-schema`](https://docs.copilotkit.ai/strands/generative-ui/a2ui/fixed-schema) | 1–585 |
-| [`multi-agent/subagents`](https://docs.copilotkit.ai/strands/multi-agent/subagents) | 1–947 |
+| [`generative-ui/tool-rendering`](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering) | 1–322 |
+| [`multi-agent/subagents`](https://docs.copilotkit.ai/strands/multi-agent/subagents) | 1–626 **and** 1–794 |
 
-They are not three files. They are **three progressively longer prefixes of one
-file** (verified: each shorter one is byte-identical to the head of the next),
-and the longest of them — the 947 lines in this directory, taken from the
-subagents page — is still a prefix. The file is cut off mid-way; the rest
-is never published anywhere.
+**Updated for the 2026-08-26 sync, and the file got shorter.** It used to appear
+at 332 / 585 / 947 lines across three pages. `generative-ui/a2ui/fixed-schema`
+stopped printing it entirely, and the docs pulled the A2UI machinery out of the
+file itself: `_A2uiError` (16 lines), the whole `generate_a2ui` tool (145
+lines), and the `TypedDict` import are gone. Net effect — **the longest
+published prefix shrank from 947 lines to 794.** The copy in this directory is
+the current 794-line one.
+
+They are still prefixes of one file — the subagents page prints it twice, at
+626 and 794 lines — and the longest of them, the 794 lines in this directory,
+is still a prefix. It stops mid-file exactly where it used to; the rest is
+never published anywhere.
 
 This copy is byte-identical to what the subagents page serves. It does not run.
 
@@ -49,6 +55,10 @@ tool in the file can execute.
   Without it there is no documented path from a `@tool` to a running agent.
 - `subagent_state_from_result` / `_make_subagent_state_from_result` — named in
   comments as the hook that turns each delegation into a `StateSnapshotEvent`.
+  **Written locally** since, under `#region state-hook` in
+  `src/agents/subagents.py` — outside the verbatim region, behind a banner, and
+  registered by `chat_agents.subagents_agent`. That is what makes the delegation
+  log fill in.
 - `build_state_prompt` — named in the Shared State comment block as the reader
   of `input_data.state`.
 
@@ -63,12 +73,13 @@ off — which is a fair signal of how much of the file is missing.
 **Dead code in the prefix**
 
 `_seed_delegations_from_state` and the `_delegations_by_thread` scratchpad are
-fully defined but never called; the only caller would be the missing
-`state_from_result` hook.
+fully defined and called by nothing *in the excerpt* — their only caller is the
+`state_from_result` hook the page never prints. In this repo the locally-written
+hook calls them, so they are dead only as published.
 
 ### The one complete thing here — and it is already obsolete
 
-`_MessagesSnapshotWrapper` (lines 99–302 of the excerpt) is the only complete,
+`_MessagesSnapshotWrapper` (lines 99–306 of the excerpt) is the only complete,
 self-contained unit in the file. Its comment block states that `ag_ui_strands`
 "through at least v0.1.7" does not emit `MessagesSnapshotEvent`, and that
 without those events "responses that include tool calls never render as

@@ -83,6 +83,14 @@ export default function Page() {
           tree that acknowledges the mounted-sub-app form this harness relies on
           everywhere.
         </p>
+        <p className="mt-2">
+          The 2026-08-26 sync deleted the paragraph that explained this. It used
+          to sit behind{" "}
+          <code>&lt;WhenFrameworkHas flag=&quot;voice_backend_pattern&quot;&gt;</code>{" "}
+          and describe the extra hop for the Google ADK showcase; the gate and
+          its contents are gone, so the trailing slash in the snippet is now the
+          only clue left.
+        </p>
       </Callout>
     </>
   );

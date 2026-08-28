@@ -53,7 +53,7 @@ const GAP_LIST: DocGap[] = [
     id: "truncated-agent-py",
     title: "The published backend file is a truncated prefix",
     detail:
-      "`src/agents/agent.py` appears on three pages at 332, 585 and 947 lines. They are not three files — each shorter one is byte-identical to the head of the next, and even the longest stops mid-file. `ToolBehavior`, `HookProvider`, `HookRegistry`, `StateSnapshotEvent` and a dozen other imports are declared at the top and first used only in the part that is cut off. Full analysis in `backend/docs_verbatim/README.md`.",
+      "`src/agents/agent.py` appears across two pages at 322, 626 and 794 lines — all prefixes of one file, and even the longest stops mid-file. The 2026-08-26 sync made this *worse*: it used to be 332 / 585 / 947 across three pages, and the docs then pulled `_A2uiError` and the entire 145-line `generate_a2ui` tool out of the file while `a2ui/fixed-schema` stopped printing it at all. The longest published prefix shrank from 947 lines to 794. `HookProvider`, `HookRegistry`, `StateSnapshotEvent` and a dozen other imports are still declared at the top and first used only past the cut. Full analysis in `backend/docs_verbatim/README.md`.",
     severity: "blocking",
     docPath: "/strands/multi-agent/subagents",
   },
@@ -77,7 +77,7 @@ const GAP_LIST: DocGap[] = [
     id: "no-state-from-result",
     title: "The tool → state binding is imported but never constructed",
     detail:
-      "`ToolBehavior` is in the import block of the published `agent.py` and appears in no expression in the 947 printed lines. The `*_state_from_args` hooks (`notes_state_from_args`, `document_state_from_args`) are printed in full, but the `ToolBehavior(state_from_result=…)` that would attach one to a tool is only described in a comment.",
+      "`ToolBehavior` is in the import block of the published `agent.py` and appears in no expression in the 794 printed lines. The `*_state_from_args` hooks (`notes_state_from_args`, `document_state_from_args`) are printed in full, but the `ToolBehavior(state_from_result=…)` that would attach one to a tool is only described in a comment. For Sub-Agents the hook has been written locally — `#region state-hook` in `backend/src/agents/subagents.py`, kept outside the verbatim region — so that route now works; the doc gap is unchanged.",
     severity: "blocking",
     docPath: "/strands/multi-agent/subagents",
   },
@@ -147,10 +147,10 @@ const GAP_LIST: DocGap[] = [
   },
   {
     id: "headless-helpers-undefined",
-    title: "The headless send pipeline destructures helpers it never defines",
+    title: "FIXED 2026-08-26 — the headless send pipeline used to destructure helpers it never defined",
     detail:
-      "The `headless-complete` snippet opens with `const { attachments, fileInputRef, containerRef, handleFileUpload, handleDragOver, handleDragLeave, handleDrop, dragOver, removeAttachment, consumeAttachments } = useAttachmentsConfig();` and also calls `useAutoScroll` and `buildContent`. None of the three is printed on any page. This repo reconstructs them in `headless-helpers.ts`, which is why the route is Partial.",
-    severity: "degraded",
+      "Until the 2026-08-26 rewrite, the `headless-complete` snippet opened with `const { attachments, fileInputRef, containerRef, handleFileUpload, handleDragOver, handleDragLeave, handleDrop, dragOver, removeAttachment, consumeAttachments } = useAttachmentsConfig();`, also called `useAutoScroll` and `buildContent` — none of the three printed on any page — and ended with no `return`. The page now prints a self-contained `AgentTrigger` instead, which this repo runs verbatim; the reconstructed helpers have been deleted. Kept on the ledger as a record of what moved.",
+    severity: "note",
     docPath: "/strands/programmatic-control",
   },
   {
@@ -176,6 +176,54 @@ const GAP_LIST: DocGap[] = [
       "Every published example ends at `create_strands_app(agui_agent, \"/\")` — one app, one agent, one root. Nothing documents how to serve a second agent from the same process. `agent_server.py` here mounts one `create_strands_app` per agent with plain Starlette `app.mount`, leaving the documented call untouched, but the composition is this repo's.",
     severity: "note",
     docPath: "/strands/quickstart?agent=bring-your-own",
+  },
+  {
+    id: "runtime-route-missing-verbs",
+    title: "The published runtime route exports only GET and POST, so every thread mutation 405s",
+    detail:
+      "Both the Quickstart and the Copilot Runtime page end their `[[...slug]]/route.ts` at `export const GET = handler; export const POST = handler;`. That is enough for chat, which is why the omission survives. It is not enough for threads: the runtime's `threads/update` route dispatches on `PATCH` (rename, archive, unarchive) and `DELETE` (delete), and Next rejects a verb with no export with a 405 *before* the handler runs — so the runtime never answers and nothing reaches the server logs. `deleteThread()` fails with `Request failed: 405`. The Threads pages tell you to call those mutations and never mention the extra exports. Fixed here by exporting the runtime's own `DEFAULT_METHODS` set (minus HEAD/OPTIONS, which Next handles) on all three endpoints.",
+    severity: "blocking",
+    docPath: "/strands/copilot-runtime",
+  },
+  {
+    id: "threads-import-no-strands",
+    title: "The thread-import page has no Strands importer",
+    detail:
+      'The page sits under `/strands/` and its own "Supported sources" table lists exactly two: Google ADK and LangGraph. The prose says "Built-in import currently supports Google ADK and LangGraph, with more sources coming soon," and every link out of the flow points at `/google-adk/threads-import` or `/langgraph-python/threads-import`. `--source strands` is not an option the CLI offers, so the whole page is unreachable from this integration.',
+    severity: "blocking",
+    docPath: "/strands/threads-import",
+  },
+  {
+    id: "threads-new-thread-shadowed",
+    title: "Following both thread pages literally gives you a New-conversation button that silently does nothing",
+    detail:
+      'Headless Threads step 3 drives the chat with `<CopilotChat threadId={activeThreadId} />`. The lifecycle page warns that `setActiveThreadId` and `startNewThread` "no-op and log a warning when the `threadId` is prop-controlled — pick one source of truth". Compose the two as published and a `startNewThread()` button is shadowed by the prop and does nothing visible. Neither page mentions the other\'s constraint, and Headless Threads never destructures `startNewThread` at all — its availability on `useThreads` is stated only on the lifecycle page. Handled here by clearing the parent `activeThreadId` back to `undefined` before minting.',
+    severity: "degraded",
+    docPath: "/strands/headless-threads",
+  },
+  {
+    id: "threads-sidebar-prop-mismatch",
+    title: "The Headless Threads snippets do not compose as printed",
+    detail:
+      "Step 2 defines `function ThreadSidebar()` with no parameters. Step 3 then renders `<ThreadSidebar onSelectThread={setActiveThreadId} />`. The prop appears only at the call site and is never added to the definition, so pasting both snippets — which step 3 explicitly tells you to do — yields a sidebar that lists threads and cannot select one.",
+    severity: "degraded",
+    docPath: "/strands/headless-threads",
+  },
+  {
+    id: "threads-lifecycle-undefined-symbols",
+    title: "Three lifecycle snippets call symbols the page never defines",
+    detail:
+      "`ThreadControls` passes a bare `existingId` that is never declared; the mint-up-front and headless submit-time examples both call `myApi.createThread()`; the `identifyUser` example calls `verifyAppSession(request)`. The last two are explicitly stand-ins for your own backend, but the first is presented as a working component.",
+    severity: "degraded",
+    docPath: "/strands/threads-lifecycle",
+  },
+  {
+    id: "threads-two-credentials",
+    title: "Threads need two different keys, introduced on different pages",
+    detail:
+      "`INTELLIGENCE_API_KEY` is server-side and goes to `new CopilotKitIntelligence({ apiKey })`; `publicLicenseKey` is client-side and goes on `<CopilotKitProvider>`, shown inline as `ck_pub_...` on the Threads Drawer page only. Neither page names the other credential, and having just one produces a silent half-failure: a locked drawer with a configured runtime, or an empty list with a configured client.",
+    severity: "note",
+    docPath: "/strands/prebuilt-components/copilot-threads-drawer",
   },
   {
     id: "runtime-page-frameworkless",
@@ -209,12 +257,19 @@ export type GapId = string;
  * the /status ledger — a documentation gap, not a broken feature, so it no
  * longer flags a route as impaired.
  *
+ * The four Rich Threads routes have no entries either. Their findings stay in
+ * `GAP_LIST` and on the /status ledger, but each route already explains its own
+ * caveats in prose — a panel repeating them above the page was saying the same
+ * thing twice.
+ *
  * Quickstart deliberately has no entry. Its two findings — the model id and the
  * one-app-per-agent composition — are already spelled out in that route's own
  * "What this repo changed, and why" callout, so a panel above it would only say
  * the same thing twice. Both remain on the /status ledger.
  */
 export const ROUTE_GAPS: Record<string, GapId[]> = {
+  "/copilot-runtime": ["runtime-route-missing-verbs"],
+
   "/custom-look-and-feel/css": ["css-v1-import"],
 
   "/generative-ui/a2ui/dynamic-schema": [
