@@ -8,6 +8,7 @@ import {
 } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
+import { useEffect } from "react";
 
 const AGENT_ID = "shared-state-language";
 
@@ -46,31 +47,26 @@ export default function Page() {
 }
 
 function YourMainContent() {
-  const { agent } = useAgent({
-    agentId: AGENT_ID,
-    updates: [UseAgentUpdate.OnStateChanged, UseAgentUpdate.OnRunStatusChanged],
-  });
-  const { copilotkit } = useCopilotKit();
 
-  const state = agent.state as AgentState | undefined;
+  const { agent, isReady } = useAgent({
+    agentId: AGENT_ID,
+  });
+  const state = (agent.state ?? {}) as Partial<AgentState>;
+
+  useEffect(() => {
+  if (!isReady || state.language !== undefined) return;
+      agent.setState({ ...(agent.state ?? {}), language: "spanish" });
+    }, [agent, isReady, state.language]);
+
+  const toggleLanguage = () => {
+    agent.setState({ ...(agent.state ?? {}), language: state.language === "english" ? "spanish" : "english" }); 
+  };
+  
+
+  
   const language = state?.language ?? "-";
   const next = language === "english" ? "spanish" : "english";
-
-  /** The basic form: stage the value and let the next turn pick it up. */
-  const toggleLanguage = () => {
-    agent.setState({ language: next });
-  };
-
-  /** The advanced form: stage it, then say so and re-run immediately. */
-  const toggleAndRerun = async () => {
-    agent.setState({ language: next });
-    agent.addMessage({
-      id: crypto.randomUUID(),
-      role: "user",
-      content: `the language has been updated to ${next}`,
-    });
-    await copilotkit.runAgent({ agent });
-  };
+;
 
   return (
     <main className="h-full overflow-y-auto p-10">
