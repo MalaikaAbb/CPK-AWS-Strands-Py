@@ -14,18 +14,6 @@
   More detail: [Inspector](/strands/inspector).
 </Callout>
 
-<Callout type="info" title="See this in Inspector">
-  Open Inspector on localhost. Go to **Inspect**, then **Event Snippets**.
-  You can compile a tool call, reasoning, text, or activity, run it on the live
-  agent, and save it. Saved snippets are grouped by recipe. On localhost chat,
-  **Save as snippet** uses the recipe for the thing you click and fills the form.
-  On a tool call, generative UI, or A2UI, the bookmark sits to the right of the
-  block (or to the left if there is no room on the right).
-  Run of a `generateSandboxedUi` tool call paints the sandbox UI in chat.
-
-  More detail: [Inspector](/strands/inspector).
-</Callout>
-
 
 ## What is this?
 
@@ -46,7 +34,58 @@ Use frontend tools when your agent needs to:
 
 ## How it works in code
 
-<!-- setup skipped: frontend-tools-setup is not bundled for strands -->
+<Steps>
+  <Step>
+    ### Nothing to wire on the agent
+
+    On every run the AG-UI Strands adapter registers a proxy tool in the
+    agent's tool registry for each tool the request carries, so the agent
+    declares none of its own. A component registered with `useComponent`
+    reaches the model by name, and the browser executes the call.
+
+    ```python title="src/agents/chart_agent.py"
+    from strands import Agent
+    from strands.models.openai import OpenAIModel
+
+    from ag_ui_strands import StrandsAgent
+
+    strands_agent = Agent(
+        model=OpenAIModel(model_id="gpt-4o"),
+        system_prompt=SYSTEM_PROMPT,
+        tools=[],
+    )
+
+    agui_agent = StrandsAgent(
+        agent=strands_agent,
+        name="chart_agent",
+        description="Renders charts from data.",
+    )
+    ```
+
+    A backend tool that already owns the name wins: the adapter never replaces
+    a native tool with a proxy. Keep the `useComponent` name distinct from
+    every tool in `tools=`.
+
+  </Step>
+  <Step>
+    ### Tell the model when to call it
+
+    This is the part that is easy to miss. The tool arrives on every run, but a
+    model with no instruction about it will answer in prose and never call it.
+    Name the tool in `system_prompt` and say what it is for.
+
+    ```python title="src/agents/chart_agent.py"
+    SYSTEM_PROMPT = (
+        "You are a data visualization assistant.\n"
+        "When the user asks for a chart, call the frontend `render_bar_chart` "
+        "tool with a concise title and a `data` array of `{label, value}` "
+        "items.\n"
+        "Keep chat responses brief and let the chart do the talking."
+    )
+    ```
+
+  </Step>
+</Steps>
 
 Register a frontend tool with `useFrontendTool`. Give it a name, a Zod schema for parameters, and a handler. The agent can then call it like any other tool and your frontend runs it in the browser.
 
