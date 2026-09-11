@@ -40,6 +40,7 @@ export default function Page() {
               // rejection path is reachable without hunting for a huge file.
               accept: "image/*,application/pdf,text/plain",
               maxSize: 5 * 1024 * 1024,
+              maxConcurrentUploads: 3, // three files at a time
               onUploadFailed: (error) => {
                 setRejected((r) => [
                   ...r,
