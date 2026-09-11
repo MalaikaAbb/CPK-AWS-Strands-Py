@@ -2,6 +2,7 @@
 
 import {
   CopilotChatConfigurationProvider,
+  CopilotPopup,
   CopilotSidebar,
   useCopilotChatConfiguration,
 } from "@copilotkit/react-core/v2";
@@ -43,6 +44,7 @@ export default function Page() {
           <CopilotSidebar
             agentId="chat-controls"
             defaultOpen={false}
+            position="left"
             messageView={{
               assistantMessage: {
                 onThumbsUp: (message: { id: string }) =>
@@ -108,18 +110,27 @@ function MainContent({ feedback }: { feedback: Feedback[] }) {
 
 function OpenChatButton() {
   const config = useCopilotChatConfiguration();
+  const [chatOpen, setChatOpen] = useState(false);
 
   // setModalOpen is only present when a provider in the tree owns modal state
   // (the prebuilt CopilotPopup / CopilotSidebar create it for you).
   if (!config?.setModalOpen) return null;
 
   return (
-    <button
-      onClick={() => config.setModalOpen?.(true)}
-      className="rounded-md bg-[var(--accent)] px-3 py-1.5 text-sm font-medium text-white"
-    >
-      Ask the assistant
-    </button>
+    // <button
+    //   onClick={() => config.setModalOpen?.(true)}
+    //   className="rounded-md bg-[var(--accent)] px-3 py-1.5 text-sm font-medium text-white"
+    // >
+    //   Ask the assistant
+    // </button>
+     <>
+      <nav>
+        <button onClick={() => setChatOpen(!chatOpen)} className="rounded-md bg-[var(--accent)] px-3 py-1.5 text-sm font-medium text-white">
+          Ask the assistant (Popup)
+        </button>
+      </nav>
+      <CopilotPopup open={chatOpen} onOpenChange={setChatOpen} />
+    </>
   );
 }
 
@@ -132,7 +143,7 @@ function ToggleChatButton() {
       onClick={() => config.setModalOpen?.(!config.isModalOpen)}
       className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 dark:border-slate-700 dark:text-slate-200"
     >
-      {config.isModalOpen ? "Close chat" : "Open chat"}
+      {config.isModalOpen ? "Close Sidebar" : "Open Sidebar"}
     </button>
   );
 }
