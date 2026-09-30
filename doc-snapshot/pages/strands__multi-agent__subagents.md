@@ -424,18 +424,19 @@ def get_sales_todos():
     return "Check the sales pipeline provided in the context."
 
 
-# Strands has no native interrupt primitive, so the gen-ui-interrupt and
-# interrupt-headless demos register `schedule_meeting` as a frontend tool
-# through the frontend's tool registration API. Its async handler returns a
-# Promise that only resolves once the user picks a slot or cancels in the
-# in-chat picker
-# (the Strands shim for LangGraph's `interrupt()` / `resolve()` pair).
+# `hitl-in-chat` registers `schedule_meeting` as a FRONTEND tool, so its async
+# handler resolves only once the user picks a slot or cancels in the in-chat
+# picker.
 #
 # This `@tool` declaration is the backend's contract with the LLM: the
 # docstring and signature are what the model sees when deciding to call
 # `schedule_meeting`. CopilotKit's runtime routes the call to the frontend
 # handler registered with the same name, so the local
 # `schedule_meeting_impl` body acts as a fallback for non-UI invocations.
+#
+# The interrupt demos do NOT use this tool. They run against the dedicated
+# `agents/interrupt_agent.py`, whose `schedule_meeting` pauses itself with
+# Strands' native `tool_context.interrupt(...)`.
 @tool
 def schedule_meeting(reason: str):
     """Schedule a meeting with user approval.
@@ -1069,18 +1070,19 @@ def get_sales_todos():
     return "Check the sales pipeline provided in the context."
 
 
-# Strands has no native interrupt primitive, so the gen-ui-interrupt and
-# interrupt-headless demos register `schedule_meeting` as a frontend tool
-# through the frontend's tool registration API. Its async handler returns a
-# Promise that only resolves once the user picks a slot or cancels in the
-# in-chat picker
-# (the Strands shim for LangGraph's `interrupt()` / `resolve()` pair).
+# `hitl-in-chat` registers `schedule_meeting` as a FRONTEND tool, so its async
+# handler resolves only once the user picks a slot or cancels in the in-chat
+# picker.
 #
 # This `@tool` declaration is the backend's contract with the LLM: the
 # docstring and signature are what the model sees when deciding to call
 # `schedule_meeting`. CopilotKit's runtime routes the call to the frontend
 # handler registered with the same name, so the local
 # `schedule_meeting_impl` body acts as a fallback for non-UI invocations.
+#
+# The interrupt demos do NOT use this tool. They run against the dedicated
+# `agents/interrupt_agent.py`, whose `schedule_meeting` pauses itself with
+# Strands' native `tool_context.interrupt(...)`.
 @tool
 def schedule_meeting(reason: str):
     """Schedule a meeting with user approval.
@@ -1391,7 +1393,7 @@ def _invoke_subagent_llm(system_prompt: str, task: str) -> str:
     try:
         client = _openai_mod.OpenAI()
         response = client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-5-mini",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": task},
@@ -1488,6 +1490,15 @@ def critique_agent(task: str) -> str:
 This is where CopilotKit's shared-state channel earns its keep: the
 supervisor's tool calls mutate `delegations` as they happen, and the
 frontend renders every new entry live.
+
+<Callout type="warn">
+  Give every delegation a stable `id` and merge new entries by that `id`. The
+  client sends its copy of shared state back as run input on every run, so a
+  slot that blindly appends whatever it receives — a LangGraph
+  `Annotated[list, operator.add]` reducer, for example — concatenates the
+  entries the client just echoed onto the ones the agent already has, and the
+  log doubles when a thread is continued.
+</Callout>
 
 ## Rendering a live delegation log
 

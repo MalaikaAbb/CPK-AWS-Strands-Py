@@ -21,6 +21,10 @@ from typing import Callable
 from ag_ui_strands import StrandsAgent
 
 from agents import chat_agents
+from agents import hitl_agents, interrupt_agent
+from agents import gen_ui_agents
+from agents.byoc_hashbrown import build_byoc_hashbrown_agent
+from agents.byoc_json_render import build_byoc_json_render_agent
 from agents.language_agent import shared_state_language_agent
 
 #: Reusable gap descriptions. Each string is a fact about the docs, not about
@@ -60,6 +64,34 @@ NO_A2UI_BACKEND = (
     "`tools` module, and the `generate_a2ui` tool that calls it is never "
     "attached to an agent."
 )
+NO_OGUI_AGENT = (
+    "The Open Generative UI runtime snippet registers `agents` with the ids "
+    "`open-gen-ui` / `open-gen-ui-advanced` but never shows either agent. "
+    "This repo serves the Quickstart agent at both; `generateSandboxedUi` is a "
+    "frontend tool the provider registers, so it arrives via the proxied-tool "
+    "channel."
+)
+NO_MCP_APPS_AGENT = (
+    "The MCP Apps runtime snippet registers `agents` with the id `mcp-apps` "
+    "but never shows the agent. This repo serves the Quickstart agent; the "
+    "MCP server's UI tools are appended to each run by the runtime middleware."
+)
+
+GOVERNED_NO_BACKEND = (
+    "Governed Action Approval UI publishes no backend half, not even a "
+    "`setup skipped` placeholder. No published tool emits a `GovernedAction`, "
+    "and no policy engine produces `verdict`."
+)
+GOVERNED_NO_SIDE_EFFECT = (
+    "The page's `handleApproval` calls `executeSideEffect(action.tool, "
+    "action.arguments)`, which no page defines."
+)
+BYOC_BUILD_MODEL_UNPUBLISHED = (
+    "The JSON Render and Hashbrown pages embed their Strands agent modules "
+    "(`byoc_json_render.py`, `byoc_hashbrown.py`), but both build their model "
+    "with `from agents.agent import _build_model`, which no page prints. "
+    "`agents/agent.py` here is a one-function shim onto `get_model()`."
+)
 
 
 @dataclass(frozen=True)
@@ -77,6 +109,12 @@ REGISTRY: dict[str, RegisteredAgent] = {
     # The Quickstart's agent, verbatim. The only fully documented route.
     "strands_agent": RegisteredAgent(
         chat_agents.quickstart_agent,
+        "/strands/quickstart?agent=bring-your-own",
+    ),
+    # The same agent on the callout's `AnthropicModel`. Needs ANTHROPIC_API_KEY
+    # at request time; without it the server still starts and runs 401.
+    "strands_agent_anthropic": RegisteredAgent(
+        chat_agents.quickstart_anthropic_agent,
         "/strands/quickstart?agent=bring-your-own",
     ),
 
@@ -102,6 +140,9 @@ REGISTRY: dict[str, RegisteredAgent] = {
     ),
     "chat-slots": RegisteredAgent(
         chat_agents.slots_agent, "/strands/custom-look-and-feel/slots"
+    ),
+    "chat-markdown": RegisteredAgent(
+        chat_agents.markdown_agent, "/strands/custom-look-and-feel/markdown"
     ),
     "headless-simple": RegisteredAgent(
         chat_agents.headless_simple_agent,
@@ -151,6 +192,38 @@ REGISTRY: dict[str, RegisteredAgent] = {
         "/strands/generative-ui/a2ui/dynamic-schema",
         gaps=(NO_A2UI_BACKEND,),
     ),
+    # JSON Render and Hashbrown. Both agents are the doc's embedded demo
+    # modules verbatim (`agents/byoc_*.py`); keys match the `/byoc-*/` paths
+    # the doc's own route.ts files proxy to. Served only through their own
+    # runtimes (`/api/copilotkit-byoc-*`, `/api/copilotkit-declarative-*`).
+    "byoc-json-render": RegisteredAgent(
+        build_byoc_json_render_agent,
+        "/strands/generative-ui/json-render",
+        gaps=(BYOC_BUILD_MODEL_UNPUBLISHED,),
+    ),
+    "byoc-hashbrown": RegisteredAgent(
+        build_byoc_hashbrown_agent,
+        "/strands/generative-ui/hashbrown",
+        gaps=(BYOC_BUILD_MODEL_UNPUBLISHED,),
+    ),
+    # Open Generative UI and MCP Apps. Both are served only through their own
+    # runtimes (`/api/copilotkit-ogui`, `/api/copilotkit-mcp-apps`), which
+    # attach the middleware; see `agents/gen_ui_agents.py`.
+    "open-gen-ui": RegisteredAgent(
+        gen_ui_agents.open_gen_ui_agent,
+        "/strands/generative-ui/open-generative-ui",
+        gaps=(NO_OGUI_AGENT,),
+    ),
+    "open-gen-ui-advanced": RegisteredAgent(
+        gen_ui_agents.open_gen_ui_advanced_agent,
+        "/strands/generative-ui/open-generative-ui",
+        gaps=(NO_OGUI_AGENT,),
+    ),
+    "mcp-apps": RegisteredAgent(
+        gen_ui_agents.mcp_apps_agent,
+        "/strands/generative-ui/mcp-apps",
+        gaps=(NO_MCP_APPS_AGENT,),
+    ),
 
     # --- App control ------------------------------------------------------
     # Neither carries gaps: `useFrontendTool` and `useHumanInTheLoop` both
@@ -161,6 +234,28 @@ REGISTRY: dict[str, RegisteredAgent] = {
     ),
     "hitl-in-chat": RegisteredAgent(
         chat_agents.hitl_agent, "/strands/human-in-the-loop"
+    ),
+    # Headless Interrupts prints this agent in full. One import is swapped;
+    # see the header of `agents/interrupt_agent.py`.
+    "interrupt-headless": RegisteredAgent(
+        interrupt_agent.build_interrupt_agent,
+        "/strands/human-in-the-loop/headless",
+        gaps=(
+            "`interrupt_agent.py` imports `_build_model` from `agents.agent`, "
+            "and no published part of that file defines it.",
+        ),
+    ),
+    # Governed Action Approval UI publishes no backend. Both agents are this
+    # repo's; see `agents/hitl_agents.py`.
+    "governed-actions": RegisteredAgent(
+        hitl_agents.governed_actions_agent,
+        "/strands/human-in-the-loop/governed-actions",
+        gaps=(GOVERNED_NO_BACKEND, GOVERNED_NO_SIDE_EFFECT),
+    ),
+    "governed-actions-interrupt": RegisteredAgent(
+        hitl_agents.governed_actions_interrupt_agent,
+        "/strands/human-in-the-loop/governed-actions",
+        gaps=(GOVERNED_NO_BACKEND, GOVERNED_NO_SIDE_EFFECT),
     ),
     "programmatic-control": RegisteredAgent(
         chat_agents.programmatic_control_agent,

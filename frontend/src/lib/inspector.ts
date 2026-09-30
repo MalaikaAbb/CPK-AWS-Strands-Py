@@ -13,7 +13,7 @@
  *     server, taking out the tab, the server, and potentially the machine.
  *
  * Together those mean: exactly one inspector per page, and it must be the one
- * attached to the provider the page's chat actually runs on. Three demo routes
+ * attached to the provider the page's chat actually runs on. Several demo routes
  * mount their own `<CopilotKit>`, so on those the root provider stands down and
  * the nested one takes over.
  */
@@ -29,12 +29,23 @@ export const INSPECTOR_ENABLED =
  * be the second one on the page.
  */
 export const NESTED_PROVIDER_ROUTES = [
+  "/quickstart/demo-chat",
   "/voice/demo-chat",
   "/generative-ui/a2ui/fixed-schema/demo-chat",
   "/generative-ui/a2ui/dynamic-schema/demo-chat",
+  // Doc code verbatim: these nested providers cannot take
+  // `enableInspector={nestedInspectorSetting}`, so they keep the package
+  // default (localhost-only) and ignore the kill switch. One mounted at a time.
+  "/generative-ui/json-render/demo-chat",
+  "/generative-ui/hashbrown/demo-chat",
+  "/generative-ui/open-generative-ui/demo-chat",
+  "/generative-ui/mcp-apps/demo-chat",
   "/prebuilt-components/copilot-threads-drawer/demo-chat",
   "/headless-threads/demo-chat",
   "/threads-lifecycle/demo-chat",
+  "/human-in-the-loop/headless/demo-chat",
+  "/human-in-the-loop/headless/plain-ui/demo-chat",
+  "/human-in-the-loop/governed-actions/interrupt/demo-chat",
 ] as const;
 
 /**

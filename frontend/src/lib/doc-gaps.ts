@@ -34,6 +34,62 @@ export interface DocGap {
 
 const GAP_LIST: DocGap[] = [
   {
+    id: "governed-interrupt-metadata-path",
+    title: "The useInterrupt snippet reads the action from a key the Strands bridge never sets",
+    detail:
+      "`GovernedActionApproval` reads `interrupt?.metadata?.action` and renders nothing when that is undefined. `ag_ui_strands` 0.4.1 publishes a custom interrupt's reason as `metadata: { reason: … }` (`_strands_interrupt_to_agui`), and the Headless Interrupts page's own demo reads `metadata.reason` for exactly this reason. Whatever the backend puts in the reason, `metadata.action` is undefined, so the card never renders and the run stays paused with nothing on screen. The page publishes no backend, so it never says where the envelope should go.",
+    severity: "blocking",
+    docPath: "/strands/human-in-the-loop/governed-actions",
+  },
+  {
+    id: "governed-no-backend",
+    title: "Governed Actions publishes no backend at all",
+    detail:
+      "The page has no Strands code and not even a `setup skipped` placeholder. No published tool emits a `GovernedAction`, no policy engine produces `verdict`, and nothing raises the interrupt its `useInterrupt` half waits for. Both agents here (`governed-actions` and `governed-actions-interrupt` in `backend/src/agents/hitl_agents.py`) are this repo's.",
+    severity: "degraded",
+    docPath: "/strands/human-in-the-loop/governed-actions",
+  },
+  {
+    id: "governed-execute-side-effect",
+    title: "`executeSideEffect` is called and never defined",
+    detail:
+      "The page's `handleApproval` returns `executeSideEffect(action.tool, action.arguments)` on the approved branch. No page defines it. It is also TypeScript server code, while the Strands Python Quickstart's backend is Python. This repo ports the check into its own tool and uses a stand-in that only reports what would have run.",
+    severity: "note",
+    docPath: "/strands/human-in-the-loop/governed-actions",
+  },
+  {
+    id: "governed-render-returns-null",
+    title: "The useInterrupt snippet fails typecheck against the installed package",
+    detail:
+      "`useInterrupt`'s `render` is typed `(props) => React.ReactElement` in @copilotkit/react-core 1.75.1. The snippet returns `null` when there is no action, so `tsc` reports TS2322. It is kept as published under `@ts-expect-error`. At runtime, React renders the `null` fine.",
+    severity: "note",
+    docPath: "/strands/human-in-the-loop/governed-actions",
+  },
+  {
+    id: "headless-demo-file-truncated",
+    title: "The Headless Interrupts demo file stops before the components it renders",
+    detail:
+      "`src/app/demos/interrupt-headless/page.tsx` is printed only up to the end of `Layout`. It renders `<TimeSlotPopup>` and `<AppSurface>` and imports `generateFallbackSlots` and `TimeSlot` from `../_shared/interrupt-fallback-slots`. None of them appear on the page. The file also has no `\"use client\"`, although every hook in it needs one. The demo widget's Code tab also lists `page.tsx` and `route.ts`, but neither the served HTML nor the markdown export includes their content. All four missing pieces are reconstructed outside the verbatim region.",
+    severity: "degraded",
+    docPath: "/strands/human-in-the-loop/headless",
+  },
+  {
+    id: "headless-undefined-hook",
+    title: "`useHeadlessInterrupt` is \"defined above\" but defined nowhere",
+    detail:
+      "`HeadlessInterruptPanelRaw` calls `useHeadlessInterrupt(\"interrupt-headless\")`, and the text points back to an earlier definition. For Strands, that earlier region shows the `useInterrupt` demo instead, which the page itself explains. The hook is not exported by @copilotkit/react-core/v2 1.75.1. Mounting the snippet as published throws `ReferenceError: useHeadlessInterrupt is not defined`. The snippets also map over `SLOTS`, which the page never defines.",
+    severity: "degraded",
+    docPath: "/strands/human-in-the-loop/headless",
+  },
+  {
+    id: "headless-build-model-unpublished",
+    title: "`interrupt_agent.py` imports a model factory no page publishes",
+    detail:
+      "The agent file begins with `from agents.agent import _build_model`. The only published parts of `src/agents/agent.py` do not define `_build_model`. Everything else in the file is complete and runs as printed. Here the import resolves to a repo-authored `agents/agent.py` shim (shared with the JSON Render and Hashbrown agents) that returns this repo's `get_model()`.",
+    severity: "note",
+    docPath: "/strands/human-in-the-loop/headless",
+  },
+  {
     id: "setup-skipped",
     title: "The page emits a placeholder where the backend snippet should be",
     detail:
@@ -233,6 +289,110 @@ const GAP_LIST: DocGap[] = [
     severity: "note",
     docPath: "/strands/copilot-runtime",
   },
+  {
+    id: "ogui-no-agent",
+    title: "Open Generative UI publishes no agent behind either runtime id",
+    detail:
+      "The runtime fragment registers an undefined `agents` and scopes the middleware to `open-gen-ui` and `open-gen-ui-advanced`, but no Strands agent (or `HttpAgent` URL) is shown for either. This repo serves the Quickstart agent, prompt unchanged, at both. `generateSandboxedUi` is a provider-registered frontend tool, so it reaches that agent through the proxied-tool channel.",
+    severity: "degraded",
+    docPath: "/strands/generative-ui/open-generative-ui",
+  },
+  {
+    id: "ogui-undefined-symbols",
+    title: "The Open Generative UI frontend snippets reference symbols the page never defines",
+    detail:
+      "`Chat` is rendered by both snippets and never defined (a bare `<CopilotChat />` here). The minimal snippet passes `designSkill: VISUALIZATION_DESIGN_SKILL`, which is never defined or imported; kept live it would throw `ReferenceError` on render, so that one line is commented out and the provider's default design skill applies. The advanced snippet imports `openGenUiSuggestions` from `./suggestions`, a module the page never publishes (and the value is never used); that import is commented out so the bundle builds. The runtime fragment is a bare `runtime:` property of an enclosing object the page does not show.",
+    severity: "degraded",
+    docPath: "/strands/generative-ui/open-generative-ui",
+  },
+  {
+    id: "ogui-advanced-truncated",
+    title: "The advanced Open Generative UI page.tsx is truncated into sandbox-functions.ts",
+    detail:
+      "The published `open-gen-ui-advanced/page.tsx` block stops after `</CopilotKit>` with no closing `);` or `}`, and `sandbox-functions.ts` begins inside the same code fence. The missing two lines are appended outside the verbatim region here; `sandbox-functions.ts` itself is complete and reproduced byte-for-byte.",
+    severity: "note",
+    docPath: "/strands/generative-ui/open-generative-ui",
+  },
+  {
+    id: "mcp-apps-default-url-redirects",
+    title: "The MCP Apps runtime's fallback server URL cannot be used by the middleware",
+    detail:
+      "The runtime snippet uses `process.env.MCP_SERVER_URL || \"https://mcp.excalidraw.com\"`. That origin answers MCP requests with `308` → `/mcp`, and `@ag-ui/mcp-apps-middleware` 0.1.1 builds its transport with `redirect: \"error\"`. Tool discovery fails, is logged as `MCP tool discovery failed` and swallowed (default `discoveryFailureMode: \"continue\"`), and the agent runs with no MCP tools — so the page's default produces a plain-text reply. Setting `MCP_SERVER_URL=https://mcp.excalidraw.com/mcp` (as `.env.example` does) avoids it; the snippet is unchanged.",
+    severity: "blocking",
+    docPath: "/strands/generative-ui/mcp-apps",
+  },
+  {
+    id: "mcp-apps-no-agent",
+    title: "MCP Apps publishes no agent behind the `mcp-apps` id",
+    detail:
+      "The runtime snippet registers an undefined `agents` and the provider targets `agent=\"mcp-apps\"`; no agent, `HttpAgent` URL, imports or handler export are shown, and `Chat` is rendered but never defined. This repo serves the Quickstart agent at that id; the middleware adds the MCP server's UI tools to each run.",
+    severity: "degraded",
+    docPath: "/strands/generative-ui/mcp-apps",
+  },
+  {
+    id: "byoc-snippets-vs-demo",
+    title: "JSON Render and Hashbrown each publish two versions that disagree",
+    detail:
+      "Each page's prose code blocks and its embedded demo's code tabs describe different programs. Runtime URL (`/api/copilotkit-byoc-*` vs `/api/copilotkit-declarative-*`), agent id (Hashbrown: `byoc_hashbrown` vs `declarative-hashbrown-demo`), library API, catalog props (JSON Render prose: `{ title, value: number, delta }`; demo and its agent prompt: `{ label, value: string, trend }`) and output shape (Hashbrown prose: `{ type, … }`; demo agent: `{ ui: [{ tag: { props } }] }`) all differ. Only the demo version matches the page's own Strands agent. Both are reproduced verbatim, side by side, on the route's demo.",
+    severity: "degraded",
+    docPath: "/strands/generative-ui/json-render",
+  },
+  {
+    id: "json-render-renderer-api",
+    title: "The JSON Render prose renderer calls <Renderer> with an API @json-render/react 0.21 does not have",
+    detail:
+      "`<Renderer spec={spec} catalog={catalog} />`: there is no `catalog` prop (0.21 takes `registry`, built with `defineRegistry`), and nothing wraps it in `<JSONUIProvider>`. Kept as published under `@ts-expect-error`; the first spec that passes the prose catalog throws `Error: useVisibility must be used within a VisibilityProvider` (confirmed by server-rendering the same call). The page's own demo tab does it correctly.",
+    severity: "blocking",
+    docPath: "/strands/generative-ui/json-render",
+  },
+  {
+    id: "hashbrown-hook-api",
+    title: "The Hashbrown prose renderer calls all three hooks with an API @hashbrownai/react 0.6.1 does not have",
+    detail:
+      "`useJsonParser(content)` has no schema, `useUiKit({ catalog, value })` has no `components`, and the returned kit object is dropped into JSX instead of `kit.render(value)`. Kept as published under three `@ts-expect-error` lines; the first assistant message throws `TypeError: Cannot read properties of undefined (reading 'forEach')` from `createUiKit` (confirmed in the library source). The page's own demo tab (`exposeComponent`, `useUiKit({ components })`, `kit.render`) is correct.",
+    severity: "blocking",
+    docPath: "/strands/generative-ui/hashbrown",
+  },
+  {
+    id: "hashbrown-example-shape",
+    title: "The Hashbrown prose example output is not a shape Hashbrown renders",
+    detail:
+      "The prose shows `{ \"type\": \"MetricCard\", \"title\": … }` and a `Stack` tree; Hashbrown 0.6.1's UI kit schema is a `{ \"ui\": [{ \"<name>\": { \"props\": {…} } }] }` envelope, and `Stack` is in no catalog on the page. The page's own agent prompt (`byoc_hashbrown.py`) asks for the envelope, so it contradicts the prose above it.",
+    severity: "degraded",
+    docPath: "/strands/generative-ui/hashbrown",
+  },
+  {
+    id: "byoc-snippets-unpublished-code",
+    title: "The prose snippets reference code the page never shows",
+    detail:
+      "JSON Render: `stripCodeFencesAndPrelude`, `tolerantJsonParse`, `validateAgainstCatalog` and the `AssistantMessage` import. Hashbrown: the `AssistantMessage` import and a `./charts` module (the demo publishes only `charts/bar-chart` and `charts/pie-chart`). Both: the `/api/copilotkit-byoc-*` runtime route. Written in here and labelled repo-authored; the leaf components are re-exports of the demo's published ones.",
+    severity: "degraded",
+    docPath: "/strands/generative-ui/json-render",
+  },
+  {
+    id: "byoc-slot-type",
+    title: "The prose passes a plain component to messageView.assistantMessage",
+    detail:
+      "CopilotKit 1.75 types the slot as `typeof CopilotChatAssistantMessage`, including its static sub-components, so the prose `page.tsx` line fails `tsc` (TS2322) and would fail `next build`. Kept under `@ts-expect-error`; at runtime the slot still receives `{ message, … }`, so it does not throw. The demo tabs use the `as unknown as typeof CopilotChatAssistantMessage` cast.",
+    severity: "note",
+    docPath: "/strands/generative-ui/json-render",
+  },
+  {
+    id: "byoc-suggestions-outside-provider",
+    title: "The prose calls useConfigureSuggestions outside the <CopilotKit> it renders",
+    detail:
+      "The hook runs in the component that renders the page's own provider, so it registers on the provider above it (this app's root) and the page's chat shows no suggestion pills. Nothing errors. The demo tabs call it inside a child of `<CopilotKit>`.",
+    severity: "note",
+    docPath: "/strands/generative-ui/hashbrown",
+  },
+  {
+    id: "byoc-build-model-unpublished",
+    title: "The JSON Render and Hashbrown agents import a model factory no page publishes",
+    detail:
+      "`byoc_json_render.py` and `byoc_hashbrown.py` (embedded demo tabs, reproduced verbatim) build their model with `from agents.agent import _build_model`, which no published part of `agents/agent.py` defines. `backend/src/agents/agent.py` is a repo-authored one-function shim onto `get_model()`; the doc modules are unedited.",
+    severity: "note",
+    docPath: "/strands/generative-ui/json-render",
+  },
 ];
 
 export const DOC_GAPS: Record<string, DocGap> = Object.fromEntries(
@@ -268,12 +428,51 @@ export type GapId = string;
  * the same thing twice. Both remain on the /status ledger.
  */
 export const ROUTE_GAPS: Record<string, GapId[]> = {
+  "/human-in-the-loop/headless": [
+    "headless-demo-file-truncated",
+    "headless-undefined-hook",
+    "headless-build-model-unpublished",
+  ],
+
+  "/human-in-the-loop/governed-actions": [
+    "governed-interrupt-metadata-path",
+    "governed-no-backend",
+    "governed-execute-side-effect",
+  ],
+
   "/copilot-runtime": ["runtime-route-missing-verbs"],
 
   "/custom-look-and-feel/css": ["css-v1-import"],
 
   "/generative-ui/a2ui/dynamic-schema": [
     "renderers-missing-imports",
+  ],
+
+  "/generative-ui/open-generative-ui": [
+    "ogui-no-agent",
+    "ogui-undefined-symbols",
+    "ogui-advanced-truncated",
+  ],
+
+  "/generative-ui/mcp-apps": ["mcp-apps-default-url-redirects", "mcp-apps-no-agent"],
+
+  "/generative-ui/json-render": [
+    "json-render-renderer-api",
+    "byoc-snippets-vs-demo",
+    "byoc-snippets-unpublished-code",
+    "byoc-slot-type",
+    "byoc-suggestions-outside-provider",
+    "byoc-build-model-unpublished",
+  ],
+
+  "/generative-ui/hashbrown": [
+    "hashbrown-hook-api",
+    "hashbrown-example-shape",
+    "byoc-snippets-vs-demo",
+    "byoc-snippets-unpublished-code",
+    "byoc-slot-type",
+    "byoc-suggestions-outside-provider",
+    "byoc-build-model-unpublished",
   ],
 };
 

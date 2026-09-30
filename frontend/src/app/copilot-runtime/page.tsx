@@ -113,6 +113,10 @@ export default function Page() {
                   {" · "}
                   <code>/api/copilotkit-declarative-gen-ui</code> (A2UI
                   auto-inject)
+                  {" · "}
+                  <code>/api/copilotkit-ogui</code> (Open Generative UI)
+                  {" · "}
+                  <code>/api/copilotkit-mcp-apps</code> (MCP Apps)
                 </span>,
               ],
             ]}
@@ -159,6 +163,16 @@ export default function Page() {
             <dd className="mt-0.5 text-slate-600 dark:text-slate-400">
               Needs A2UI tool injection <em>on</em>, which the main runtime
               turns off. Separate endpoint, no <code>a2ui</code> block at all.
+            </dd>
+          </div>
+          <div>
+            <dt className="font-mono text-xs text-slate-900 dark:text-slate-100">
+              /api/copilotkit-ogui · /api/copilotkit-mcp-apps
+            </dt>
+            <dd className="mt-0.5 text-slate-600 dark:text-slate-400">
+              <code>openGenerativeUI</code> and <code>mcpApps</code> wrap agents
+              in middleware at run time. Each sits on its own endpoint with only
+              its own agents, so no other route can pick the middleware up.
             </dd>
           </div>
         </dl>

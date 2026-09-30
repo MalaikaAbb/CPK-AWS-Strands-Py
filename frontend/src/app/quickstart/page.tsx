@@ -1,6 +1,15 @@
 import { RouteHeader } from "@/components/route-header";
-import { SourceCode, SourceCodeGroup } from "@/components/source-code";
-import { Callout, Panel, TryIt } from "@/components/ui";
+import { SourceCodeGroup } from "@/components/source-code";
+import { Callout, CodeBlock, Panel, TryIt } from "@/components/ui";
+
+// The Python tab of the page's "Using Anthropic instead" callout, verbatim.
+const ANTHROPIC_MODEL = `from strands.models.anthropic import AnthropicModel
+
+model = AnthropicModel(
+    client_args={"api_key": os.getenv("ANTHROPIC_API_KEY", "")},
+    model_id="claude-sonnet-4-6",
+    max_tokens=8192,  # required
+)`;
 
 export default function Page() {
   return (
@@ -23,14 +32,69 @@ export default function Page() {
               "Can you tell me a joke?",
               "What do you think about React?",
             ]}
-            expect="Tokens stream in a word at a time and the reply renders as markdown."
-            fail="An error banner. Check that the Python server is up on :8000 and that OPENAI_API_KEY is set in its environment — and see the model-id gap above if the error mentions an unknown model."
+            expect="The sidebar opens from its launcher with no agentId on it; tokens stream in a word at a time and the reply renders as markdown. That the agent answers at all proves the provider's agent prop did the binding. Flip the OpenAI / Anthropic toggle at the top of the demo and ask again: the chat resets and the reply comes from the other model."
+            fail="An error banner. Check that the Python server is up on :8000 and that OPENAI_API_KEY is set in its environment — and see the model-id gap above if the error mentions an unknown model. On the Anthropic side, an authentication error means ANTHROPIC_API_KEY was not set when the server started."
           />
         </div>
       </Panel>
 
-      <Panel title="The demo">
-        <SourceCode file="frontend/src/app/quickstart/demo-chat/page.tsx" />
+      <Panel
+        title="The demo"
+        description="The page's three frontend files. providers.tsx and page.tsx are verbatim; layout.tsx is the doc's layout reduced to what a nested layout may render."
+      >
+        <SourceCodeGroup
+          files={[
+            { file: "frontend/src/app/quickstart/providers.tsx" },
+            { file: "frontend/src/app/quickstart/demo-chat/layout.tsx" },
+            { file: "frontend/src/app/quickstart/demo-chat/page.tsx" },
+          ]}
+        />
+        <div className="mt-4">
+          <Callout tone="info" title="The provider lives in its own file">
+            <p>
+              The page puts the provider in a <code>&quot;use client&quot;</code>{" "}
+              <code>app/providers.tsx</code> and has the layout — a server
+              component — render it, and <code>app/page.tsx</code> carries its
+              own <code>&quot;use client&quot;</code>.
+            </p>
+            <p className="mt-2">
+              This demo runs on that provider rather than the app-wide one, so
+              the sidebar has no <code>agentId</code>: it reaches{" "}
+              <code>strands_agent</code> only through the provider&apos;s{" "}
+              <code>agent</code> prop, which is what the page teaches. The
+              provider is nested inside the harness&apos;s root one, the same
+              arrangement the Voice route uses. The published page is unstyled,
+              and so is this one — a bare <code>&lt;h1&gt;</code> and the
+              sidebar.
+            </p>
+          </Callout>
+        </div>
+      </Panel>
+
+      <Panel
+        title="Using Anthropic instead"
+        description="The page's callout for swapping the model. The demo's toggle switches between this agent and the OpenAI one on the same route."
+      >
+        <div className="space-y-4">
+          <CodeBlock code={`uv add "strands-agents[anthropic]"`} language="bash" />
+          <CodeBlock code={ANTHROPIC_MODEL} language="python" filename="main.py (as published)" />
+          <p className="text-sm text-slate-600 dark:text-slate-400">
+            Used exactly as published, model id included, as its own agent{" "}
+            <code>strands_agent_anthropic</code>. It reads{" "}
+            <code>ANTHROPIC_API_KEY</code> from the agent server&apos;s env.
+            With the key unset the model still builds (the default is an empty
+            string), so the server starts and only Anthropic runs fail. The
+            frontend is the same <code>page.tsx</code>; only the provider&apos;s{" "}
+            <code>agent</code> prop changes.
+          </p>
+          <SourceCodeGroup
+            files={[
+              { file: "backend/src/agents/chat_agents.py", region: "quickstart_anthropic" },
+              { file: "frontend/src/app/quickstart/providers-anthropic.tsx" },
+              { file: "frontend/src/app/quickstart/provider-switch.tsx" },
+            ]}
+          />
+        </div>
       </Panel>
 
       <Callout tone="info" title="This page's runtime step was rewritten">
@@ -50,7 +114,7 @@ export default function Page() {
       </Callout>
 
       <Panel
-        title="The four files that make it work"
+        title="The files that make it work"
         description="Read from this repo, so they can be diffed against the doc's samples directly."
       >
         <SourceCodeGroup

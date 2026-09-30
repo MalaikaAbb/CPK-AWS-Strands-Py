@@ -15,16 +15,14 @@ has to be generated at runtime.
 How the schema is *delivered* to the runtime is the only thing that
 varies between integrations:
 
-- **Schema-loading** (langgraph-python, langgraph-typescript,
-  langgraph-fastapi, llamaindex, crewai-crews, pydantic-ai,
-  ms-agent-python, google-adk), the schema is saved as a `.json`
-  file next to the agent and loaded once at startup.
+- **Schema-loading** (including Strands TypeScript), the schema is saved
+  as a `.json` file next to the agent and loaded once at startup.
 - **Schema-inline** (spring-ai, ms-agent-dotnet), the schema is
   declared inline as a typed literal in source. The host language
   doesn't ship a `load_schema` JSON loader, so the structure is
   compiled in directly.
-- **LLM-driven** (mastra, strands), the agent runs a secondary LLM
-  call to produce the operations container per-request. The catalog
+- **LLM-driven** (Mastra and Strands Python), the agent runs a secondary
+  LLM call to produce the operations container per-request. The catalog
   is still fixed; the schema is generated on demand.
 
 Ask about a flight and the agent renders a fully structured card from a pre-defined schema:
@@ -35,10 +33,10 @@ Ask about a flight and the agent renders a fully structured card from a pre-defi
   components are this page's example, not part of the API.
 
   What transfers is the **shape**: a fixed catalog, a tool that returns data
-  against it, and `a2ui.render(...)` with `createSurface` + `updateComponents` +
-  `updateDataModel`. Keep your own application's domain and substitute your own
-  components and tool — a page teaching the pattern is not a brief to build a
-  flight booker.
+  against it, and an operations container with `createSurface` +
+  `updateComponents` + `updateDataModel`. Keep your own application's
+  domain and substitute your own components and tool — a page teaching
+  the pattern is not a brief to build a flight booker.
 </Callout>
 
 ## How it works
@@ -48,7 +46,7 @@ Ask about a flight and the agent renders a fully structured card from a pre-defi
    depending on the integration.
 2. The agent's `display_flight` tool receives data from the primary LLM
    (origin / destination / airline / price).
-3. The tool returns `a2ui.render(...)` with `createSurface` +
+3. The tool returns an operations container with `createSurface` +
    `updateComponents` + `updateDataModel` operations.
 4. The A2UI middleware intercepts the tool result and the frontend
    renders the surface using the matching 5-component client catalog
@@ -356,7 +354,7 @@ export const catalog = createCatalog(definitions, renderers, {
 <Step>
 ### Generate the schema dynamically
 
-Mastra and Strands take a different route: the agent tool runs a
+Mastra and Strands Python take a different route: the agent tool runs a
 *secondary* LLM call with a forced tool choice that produces the
 operations container per-request. The frontend catalog is still fixed
 (same `Title`/`Airport`/`Arrow`/`AirlineBadge`/`PriceTag` primitives),
@@ -470,7 +468,7 @@ def generate_a2ui(context: str) -> str:
     try:
         client = _openai_mod.OpenAI()
         response = client.chat.completions.create(
-            model="gpt-4.1",
+            model="gpt-5-mini",
             messages=[
                 {
                     "role": "system",

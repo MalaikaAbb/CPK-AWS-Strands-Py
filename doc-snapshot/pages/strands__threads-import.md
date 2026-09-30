@@ -1,23 +1,29 @@
-# Import & Synchronize Thread History
+# Add AG-UI Streams to Existing Threads
 
-> Import historical conversations into CopilotKit Intelligence, then keep future CopilotKit runs synchronized with Rich Threads.
+> Add Intelligence’s AG-UI streams to your existing agent conversations, with optional historical import for supported stores.
 
 
 
-## What is this?
+<span id="what-is-this" />
 
-Import and synchronization bring existing conversations into CopilotKit Intelligence as Rich Threads without replacing the native storage or analytics you already use. Import supported history once, then continue running those conversations through CopilotKit so users can resume them through the same thread UI as new conversations.
+## Add Intelligence to your existing app
 
-Built-in import currently supports Google ADK and LangGraph, with more sources coming soon. You can keep LangSmith, LangGraph, or ADK storage and analytics in place. For future CopilotKit-mediated runs, CopilotKit Intelligence persists the Rich Thread event history. When your agent remains connected to a durable LangGraph checkpointer or durable ADK session service with appropriate retention, those future runs continue through the native persistence path as well.
+Add reconnection, catch-up, and delivery across devices to the conversations your agent already manages. Follow the [Intelligence quickstart](/strands/intelligence/quickstart) to connect your existing CopilotKit app and Runtime, then verify that a new conversation is saved. That setup enables AG-UI streams for runs through CopilotKit; importing old conversations is not required.
 
-New to the feature? Read the [Rich Threads overview](/strands/threads) first to understand the shared thread store and choose between the prebuilt Drawer and a custom headless UI.
+Your framework continues managing agent context and execution state. Keep your durable LangGraph checkpointer or durable ADK session service configured and keep the mapping between CopilotKit `threadId` values and native framework conversation identifiers stable. See [AG-UI Streams & Framework Threads](/strands/intelligence/threads-explained#how-threads-work-with-framework-storage) for the responsibilities of each layer.
+
+## Include earlier conversations (optional)
+
+If you also want users to reopen history recorded before Intelligence was connected, copy supported history into Intelligence using the steps below. The importer currently supports Google ADK and LangGraph stores. It copies historical content; it does not enable live delivery, recover past execution, or establish ongoing database replication.
+
+Use Threads Drawer or `useThreads` to select a conversation, and pass its `threadId` to your chat. Imported and new conversations then use the same UI. Importing cannot recover content the source no longer exposes.
 
 ## Supported sources
 
 | Source | Import guide | Supported history |
 |---|---|---|
-| Google ADK | [Synchronize ADK threads](/google-adk/threads-import) | Persisted ADK sessions from a database session service or Vertex/Agent Engine session service. |
-| LangGraph | [Synchronize LangGraph threads](/langgraph-python/threads-import) | LangGraph Server, LangGraph Platform, or LangSmith Deployment threads exposed through the LangGraph SDK thread/run APIs. |
+| Google ADK | [Add AG-UI streams to ADK sessions](/google-adk/threads-import) | Persisted ADK sessions from a database session service or Vertex/Agent Engine session service. |
+| LangGraph | [Add AG-UI streams to LangGraph threads](/langgraph-python/threads-import) | LangGraph Server, LangGraph Platform, or LangSmith Deployment threads exposed through the LangGraph SDK thread/run APIs. |
 
 ## What gets imported?
 
@@ -103,8 +109,8 @@ It does not import agent state snapshots, framework transport noise, LangSmith t
 
     Run the source-specific import after the dry run looks right:
 
-    - [Synchronize ADK threads](/google-adk/threads-import)
-    - [Synchronize LangGraph threads](/langgraph-python/threads-import)
+    - [Add AG-UI streams to ADK sessions](/google-adk/threads-import)
+    - [Add AG-UI streams to LangGraph threads](/langgraph-python/threads-import)
 
     Re-running the same import is safe: already-imported conversations are skipped. Use `--replace` when you intentionally want to refresh previously imported threads.
   </Step>
@@ -116,16 +122,18 @@ It does not import agent state snapshots, framework transport noise, LangSmith t
   </Step>
 
   <Step>
-    ### Keep future conversations synced
+    ### Continue using your framework's persistence
 
-    Your CLI-created app sends future CopilotKit conversations to CopilotKit Intelligence. Reopen a conversation with the same CopilotKit `threadId` so its Rich Thread history stays continuous. If the agent remains wired to its durable native persistence mechanism, the future run continues there as well.
+    Your app sends future conversations that run through CopilotKit to CopilotKit Intelligence. Keep your durable LangGraph or ADK persistence configured so those runs continue using both persistence layers. Reopen a conversation with the same CopilotKit `threadId` and a stable mapping to its native thread or session so its history stays continuous.
+
+    Importing copies supported history; it does not establish ongoing database replication. Intelligence rename, archive, and delete operations affect only Intelligence records.
 
     - **Threads Drawer:** already included in CLI-created starters. Use the [Threads Drawer guide](/strands/prebuilt-components/copilot-threads-drawer) to customize its ready-made thread UI.
     - **Headless Threads:** use the [Headless Threads guide](/strands/headless-threads) only when you need a custom UI. Select a thread with `useThreads`, store its `thread.id`, and pass that value to your chat component as `threadId`.
 
     Create one new conversation through CopilotKit, then confirm that it appears in CopilotKit Intelligence and in the native persistence store that remains connected to your agent.
 
-    For the underlying persistence and replay model, see [Threads & Persistence Architecture](/strands/intelligence/threads-explained).
+    For the underlying persistence and replay model, see [AG-UI Streams & Framework Threads](/strands/intelligence/threads-explained).
   </Step>
 </Steps>
 
