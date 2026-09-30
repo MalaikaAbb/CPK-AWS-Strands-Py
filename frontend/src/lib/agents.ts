@@ -13,12 +13,15 @@
 
 export const AGENT_IDS = [
   "strands_agent",
+  // The Quickstart's "Using Anthropic instead" variant.
+  "strands_agent_anthropic",
   "agentic_chat",
   "prebuilt-sidebar",
   "prebuilt-popup",
   "chat-controls",
   "chat-customization-css",
   "chat-slots",
+  "chat-markdown",
   "headless-simple",
   "headless-complete",
   "multimodal",
@@ -29,8 +32,21 @@ export const AGENT_IDS = [
   "gen-ui-interactive",
   "a2ui-fixed-schema",
   "declarative-gen-ui",
+  // JSON Render / Hashbrown: the doc's own Strands agents, reached only
+  // through /api/copilotkit-byoc-* and /api/copilotkit-declarative-*.
+  "byoc-json-render",
+  "byoc-hashbrown",
+  // Open Generative UI / MCP Apps. Their middleware lives on their own
+  // runtimes (`/api/copilotkit-ogui`, `/api/copilotkit-mcp-apps`); listed here
+  // so the registry cross-check on /copilot-runtime stays in step.
+  "open-gen-ui",
+  "open-gen-ui-advanced",
+  "mcp-apps",
   "frontend_tools",
   "hitl-in-chat",
+  "interrupt-headless",
+  "governed-actions",
+  "governed-actions-interrupt",
   "programmatic-control",
   "shared-state-language",
   "shared-state-read-write",

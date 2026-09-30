@@ -73,7 +73,7 @@ export const NAV: NavGroup[] = [
           "The bring-your-own-agent path: a Strands Agent wrapped in StrandsAgent, served by create_strands_app, reached over HTTP by the Copilot Runtime.",
         status: "working",
         statusNote:
-          "The one page whose backend is published end to end. Its model id is not — see the doc gaps below.",
+          "The one page whose backend is published end to end. Its model id is not — see the doc gaps below. The demo mounts the page's providers.tsx verbatim, so the sidebar is bound by agent=\"strands_agent\" rather than agentId, with an OpenAI / Anthropic toggle for the page's \"Using Anthropic instead\" callout.",
       },
     ],
   },
@@ -150,6 +150,19 @@ export const NAV: NavGroup[] = [
         summary:
           "Overriding chat sub-components at all three levels: class strings, prop objects, and whole components.",
         status: "working",
+      },
+      {
+        path: "/custom-look-and-feel/markdown",
+        hasDemo: true,
+        agentId: "chat-markdown",
+        offNav: true,
+        title: "Markdown Rendering",
+        docPath: "/strands/custom-look-and-feel/markdown",
+        summary:
+          "The markdownRenderer slot on assistant messages in all three forms: a Streamdown components map, a class string, and a whole replacement component.",
+        status: "working",
+        statusNote:
+          "All three snippets run exactly as published. The page defines no CSS for its my-link and my-heading classes, so the first example is only visible in DevTools. No backend code is printed; the agent is repo-authored.",
       },
       {
         path: "/custom-look-and-feel/headless-ui",
@@ -319,6 +332,54 @@ export const NAV: NavGroup[] = [
         statusNote:
           "Catalog and runtime middleware are registered. The agent-side half — the tool that returns the operations container — is not published.",
       },
+      {
+        path: "/generative-ui/open-generative-ui",
+        hasDemo: true,
+        agentId: "open-gen-ui",
+        title: "Open Generative UI",
+        docPath: "/strands/generative-ui/open-generative-ui",
+        summary:
+          "The agent writes its own sandboxed HTML/CSS/JS through generateSandboxedUi; minimal and sandbox-function (advanced) modes on a dedicated runtime.",
+        status: "partial",
+        statusNote:
+          "Runtime and both providers wired as published; sandbox-functions.ts verbatim. Not yet observed in a browser. No agent is published, VISUALIZATION_DESIGN_SKILL / Chat / ./suggestions are undefined, and the advanced snippet is truncated.",
+      },
+      {
+        path: "/generative-ui/mcp-apps",
+        hasDemo: true,
+        agentId: "mcp-apps",
+        title: "MCP Apps",
+        docPath: "/strands/generative-ui/mcp-apps",
+        summary:
+          "A remote MCP server (Excalidraw) supplies both the tool and its UI; the runtime's mcpApps config does the rest, with a plain chat on the frontend.",
+        status: "partial",
+        statusNote:
+          "Runtime statement verbatim. Its fallback URL https://mcp.excalidraw.com 308-redirects to /mcp and the middleware refuses redirects, so it only discovers tools with MCP_SERVER_URL set to …/mcp (.env.example does). Not yet observed in a browser; no agent is published.",
+      },
+      {
+        path: "/generative-ui/json-render",
+        hasDemo: true,
+        agentId: "byoc-json-render",
+        title: "JSON Render",
+        docPath: "/strands/generative-ui/json-render",
+        summary:
+          "The agent replies with a { root, elements } spec that @json-render/react draws against a component catalog, plugged in through the assistant-message slot.",
+        status: "partial",
+        statusNote:
+          "Two published versions, both verbatim. The prose snippets are broken by design here: <Renderer catalog> is kept, so any spec that passes the prose Zod catalog throws \"useVisibility must be used within a VisibilityProvider\". The embedded demo source (defineRegistry + JSONUIProvider, its own route.ts and Strands agent) is predicted to work — confirmed only by server-rendering, not yet in a browser.",
+      },
+      {
+        path: "/generative-ui/hashbrown",
+        hasDemo: true,
+        agentId: "byoc-hashbrown",
+        title: "Hashbrown",
+        docPath: "/strands/generative-ui/hashbrown",
+        summary:
+          "The agent streams a UI envelope that @hashbrownai/react parses progressively and renders through a UI kit, plugged in through the assistant-message slot.",
+        status: "partial",
+        statusNote:
+          "Two published versions, both verbatim. The prose snippets are broken by design here: all three Hashbrown calls are kept, so the first assistant message throws \"Cannot read properties of undefined (reading 'forEach')\". The embedded demo source (exposeComponent kit, its own route.ts and Strands agent) is predicted to work — confirmed only by server-rendering, not yet in a browser.",
+      },
     ],
   },
   {
@@ -347,6 +408,31 @@ export const NAV: NavGroup[] = [
         status: "working",
         statusNote:
           "The tool-based pause works. The page's other half is `useInterrupt`, which is LangGraph-only and does not apply to Strands at all.",
+      },
+      // The doc sidebar nests these two under its Human-in-the-loop group.
+      {
+        path: "/human-in-the-loop/headless",
+        hasDemo: true,
+        agentId: "interrupt-headless",
+        title: "Headless Interrupts",
+        docPath: "/strands/human-in-the-loop/headless",
+        summary:
+          "A Strands tool pauses with a native interrupt, and useInterrupt({ renderInChat: false }) places the picker outside the chat.",
+        status: "partial",
+        statusNote:
+          "Backend published in full (one import swapped). The demo file is truncated: TimeSlotPopup, AppSurface and its _shared helper are reconstructed. HeadlessInterruptPanelRaw calls useHeadlessInterrupt, which exists nowhere, and throws. Not yet run live.",
+      },
+      {
+        path: "/human-in-the-loop/governed-actions",
+        hasDemo: true,
+        agentId: "governed-actions",
+        title: "Governed Action Approval UI",
+        docPath: "/strands/human-in-the-loop/governed-actions",
+        summary:
+          "An approval card in front of a side effect, raised as a frontend tool (useHumanInTheLoop) or as a backend interrupt (useInterrupt).",
+        status: "partial",
+        statusNote:
+          "No backend is published; both agents are this repo's. The useHumanInTheLoop half uses the same channel as /human-in-the-loop. The useInterrupt half never shows its card: it reads interrupt.metadata.action, but ag_ui_strands sends metadata.reason. Not yet run live.",
       },
       {
         path: "/programmatic-control",

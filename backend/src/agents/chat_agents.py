@@ -28,12 +28,15 @@ exactly what was taken and what is still missing.
 
 from __future__ import annotations
 
+import os
+
 from ag_ui_strands import (
     StrandsAgent,
     ToolBehavior,
     StrandsAgentConfig
 )
 from strands import Agent
+from strands.models.anthropic import AnthropicModel
 
 from agents.doc_tools import get_weather
 from agents.model import get_model
@@ -64,6 +67,28 @@ def quickstart_agent() -> StrandsAgent:
     return StrandsAgent(
         agent=agent,
         name="strands_agent",
+    )
+#endregion
+
+
+#region quickstart_anthropic
+#: The Quickstart agent on the model from the page's "Using Anthropic instead"
+#: callout. The `AnthropicModel(...)` call is that snippet verbatim, model id
+#: included; everything else is `quickstart_agent`. Mounted under its own id so
+#: the demo can toggle between the two providers.
+def quickstart_anthropic_agent() -> StrandsAgent:
+    model = AnthropicModel(
+        client_args={"api_key": os.getenv("ANTHROPIC_API_KEY", "")},
+        model_id="claude-sonnet-4-6",
+        max_tokens=8192,  # required
+    )
+    agent = Agent(
+        model=model,
+        system_prompt="You are a helpful AI assistant.",
+    )
+    return StrandsAgent(
+        agent=agent,
+        name="strands_agent_anthropic",
     )
 #endregion
 
@@ -127,6 +152,21 @@ def css_agent() -> StrandsAgent:
 
 def slots_agent() -> StrandsAgent:
     return build_chat_agent(name="chat_slots", system_prompt=_ASSISTANT)
+
+
+#region markdown-agent
+# Repo-authored: the Markdown Rendering page is frontend-only and prints no
+# agent. Quickstart shape; the prompt only nudges replies toward markdown so
+# the three renderer tabs have headings and links to draw.
+def markdown_agent() -> StrandsAgent:
+    return build_chat_agent(
+        name="chat_markdown",
+        system_prompt=(
+            f"{_ASSISTANT} Format answers as markdown (headings, links, lists) "
+            "unless the user asks for something else."
+        ),
+    )
+#endregion
 
 
 def headless_simple_agent() -> StrandsAgent:

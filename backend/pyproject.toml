@@ -8,9 +8,11 @@ requires-python = ">=3.12"
 # Exactly the four packages the Quickstart's `uv add` line installs:
 #   uv add ag-ui-strands "strands-agents[OpenAI]" fastapi uvicorn
 # https://docs.copilotkit.ai/strands/quickstart?agent=bring-your-own
+# plus the `anthropic` extra from the page's "Using Anthropic instead" callout:
+#   uv add "strands-agents[anthropic]"
 dependencies = [
     "ag-ui-strands>=0.2.4",
-    "strands-agents[openai]>=1.15.0",
+    "strands-agents[anthropic,openai]>=1.15.0",
     "fastapi>=0.115.12",
     "uvicorn>=0.34.0",
 ]

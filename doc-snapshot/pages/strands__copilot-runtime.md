@@ -1,6 +1,7 @@
 # Copilot Runtime
 
 > The Copilot Runtime is the backend that connects your frontend to your AI agents, providing authentication, middleware, routing, and more.
+
 The Copilot Runtime is the backend layer that connects your frontend application to your AI agents. It's set up during the [quickstart](/strands/quickstart) and is the recommended way to use CopilotKit.
 
 ## Setting Up the Runtime
@@ -37,6 +38,8 @@ const handler = createCopilotRuntimeHandler({
 
 export const GET = handler;
 export const POST = handler;
+export const PATCH = handler;
+export const DELETE = handler;
 ```
 
 With the route in place, `GET /api/copilotkit/info` returns a JSON description of the
@@ -72,6 +75,57 @@ Then point your frontend at the endpoint:
 
 
 For setup with other backend frameworks (Express, NestJS, Node.js HTTP), see the [quickstart](/strands/quickstart).
+
+## Which name identifies an agent
+
+The name you use to address an agent from the frontend must equal a **key of the
+runtime's `agents` map**. That key is the only name the frontend can ask for. An
+agent's own `name`, `id`, or class name is never used for routing, and the two are
+free to differ.
+
+```ts title="app/api/copilotkit/[[...slug]]/route.ts"
+const runtime = new CopilotRuntime({
+  agents: {
+    // `my_agent` is the key — the one string the frontend may ask for.
+    my_agent: new HttpAgent({ url: "http://localhost:8000/" }),
+  },
+});
+```
+
+
+```tsx title="app/providers.tsx"
+<CopilotKit runtimeUrl="/api/copilotkit" agent="my_agent" useSingleEndpoint={false}>
+  <YourApp />
+</CopilotKit>
+```
+
+
+
+
+Most integrations write that key literally in the runtime route, as above, so the
+binding is visible in one file. Some derive it instead, and that is where the rule
+stops being obvious:
+
+- **Mastra** — `MastraAgent.getRemoteAgents` and `getLocalAgents` both build the map
+  from `listAgents()`, which is keyed by the **record key** in
+  `new Mastra({ agents: { ... } })`, not by the agent's `id`. Given
+  `new Agent({ name: "My Agent" })` exported as `myAgent` and registered as
+  `agents: { myAgent }`, the runtime key is `myAgent`.
+- **LangGraph** — `graphId` is a *separate* binding, from the runtime to a key in your
+  deployment's `langgraph.json`. It does not have to equal the runtime's agents-map
+  key, and it is not the name the frontend asks for. The starter template happens to
+  use `sample_agent` for both.
+
+<Callout type="warn" title="An agent's declared name is not its routing key">
+  Asking for a name the runtime did not register resolves no agent, and the frontend
+  raises `CopilotKitAgentDiscoveryError` — see [Agent discovery
+  failed](/strands/troubleshooting/error-reference). The error message lists the keys the
+  runtime actually returned, which is the quickest way to see the real names.
+</Callout>
+
+To read the registered keys directly, hit `GET {runtimeUrl}/info`. It returns the
+agents the runtime advertises, under exactly the names the frontend must use.
+
 
 ## The Default Agent
 
