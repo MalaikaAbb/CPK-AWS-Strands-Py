@@ -376,6 +376,7 @@ from ag_ui.core.events import (
     ToolCallStartEvent,
 )
 from ag_ui.core.types import (
+    Context,
     AssistantMessage,
     FunctionCall,
     ToolCall,
@@ -396,6 +397,7 @@ from strands.hooks import (
     HookRegistry,
 )
 from strands.models.openai import OpenAIModel
+from strands.types.tools import ToolContext
 
 # Import shared tool implementations (symlinked at project root → ../../shared/python/tools)
 from tools import (
@@ -469,6 +471,8 @@ class _MessagesSnapshotWrapper:
 
     async def run(self, input_data: Any) -> AsyncIterator[Any]:
         """Wrap ``delegate.run()`` and inject ``MessagesSnapshotEvent``."""
+
+        input_data = with_state_context(input_data)
 
         # Seed the snapshot message list from the full conversation
         # history that CopilotKit sends with every request.  This way

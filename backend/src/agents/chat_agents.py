@@ -19,11 +19,14 @@ never printed, so the step that would connect a tool to an agent is missing
 from the docs. Rather than invent that step, agents here are tool-free and each
 affected route carries a Doc gap panel naming what is missing. See README §9.
 
-Two agents carry tools. `tool_rendering_agent` has the `get_weather` declared
-in `agents/doc_tools.py`, and `subagents_agent` has the three delegation tools
-from `agents/subagents.py` — both lifted from doc pages. The `tools=[…]` wiring
-that attaches them is undocumented either way; each module's docstring says
-exactly what was taken and what is still missing.
+Two agents here carry tools. `tool_rendering_agent` has the `get_weather`
+declared in `agents/doc_tools.py`, and `subagents_agent` has the three
+delegation tools from `agents/subagents.py` — both lifted from doc pages. The
+`tools=[…]` wiring that attaches them appears on exactly one page, inside the
+A2UI Fixed Schema demo's Code tab (`build_showcase_agent`, on an agent that
+cannot import); each module's docstring says what was taken and what is still
+missing. The A2UI fixed-schema agent is not in this file: it is
+`agents/a2ui_fixed.py`, copied from CopilotKit's GitHub showcase.
 """
 
 from __future__ import annotations
@@ -235,8 +238,6 @@ def interactive_agent() -> StrandsAgent:
     return build_chat_agent(name="gen_ui_interactive", system_prompt=_ASSISTANT)
 
 
-def a2ui_fixed_agent() -> StrandsAgent:
-    return build_chat_agent(name="a2ui_fixed_schema", system_prompt=_ASSISTANT)
 
 
 def declarative_gen_ui_agent() -> StrandsAgent:

@@ -10,7 +10,7 @@ A navigable, running harness for the CopilotKit ↔ AWS Strands (Python) integra
 | **AG-UI / Strands packages** | `ag-ui-strands` 0.4.1 · `strands-agents` 1.57.1 (`[openai,anthropic]`) · `@ag-ui/client` 0.0.59 (pinned exactly — see §10) |
 | **Frontend** | Next.js 16.3.0 (App Router, Turbopack) · React 19.2.8 · TypeScript 5 · Tailwind 4 |
 | **Routes** | 39 tracked doc pages · 35 registered agents |
-| **Status** | ✅ 24 working · ⚠️ 9 partial · ❌ 4 broken · 📘 2 reference |
+| **Status** | ✅ 25 working · ⚠️ 9 partial · ❌ 3 broken · 📘 2 reference |
 | **Build** | `tsc --noEmit` clean (2026-09-30); `npm run build` not re-run since the 2026-09-30 additions; no CI configured |
 
 ---
@@ -117,7 +117,7 @@ uv run python src/agent_server.py
 Successful startup looks like:
 
 ```
-INFO:agent_server:Mounted 25 agents on model gpt-4o: a2ui-fixed-schema, agent-config, agentic_chat, …
+INFO:agent_server:Mounted 35 agents on model gpt-4o: a2ui-fixed-schema, agent-config, agentic_chat, …
 INFO:     Started server process [12345]
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
@@ -285,7 +285,9 @@ The doc page's entire published source is four lines — see §9.7.
 ✅ *(what actually passes)* `createCatalog` builds, the nested provider mounts, the chat streams.
 ❌ A TypeScript error in `renderers.tsx` — which is the interesting failure, since the doc ships that file with no import line at all (§9.6).
 
-**`/generative-ui/a2ui/fixed-schema`** ❌ — the five-component catalog and `injectA2UITool: false` runtime are both live; the agent-side tool that would return an operations container is not published, and neither is the schema JSON.
+**`/generative-ui/a2ui/fixed-schema`** ✅ — `display_flight` over a pre-authored `flight_schema.json`: the tool supplies four strings and the 12-component tree reads them through `{ "path": … }` bindings. The page describes both files and publishes neither; they are byte-exact from CopilotKit's GitHub showcase (§9.29). The catalog, primitives and single-route runtime (`injectA2UITool: false` + `defaultCatalogId`) are the page's demo Code tab, byte-exact. **Try:** the `Find SFO → JFK` suggestion pill, or `What about London to Tokyo on ANA for 900 dollars?`.
+✅ One `display_flight` call with `{origin, destination, airline, price}`, then the same card every time — `Flight Details`, `SFO → JFK` in large monospace codes with an arrow, a United badge, `$289`, a `Book flight` button — and a one-sentence reply. The Inspector's tool result is `createSurface` + `updateComponents` (the 12 components, with `{ "path": "/origin" }` bindings) + `updateDataModel`. *Verified over raw AG-UI against the agent server, 2/2 runs; not yet watched in a browser.*
+❌ A card with blank codes or price means the `DynString` bindings did not resolve — `npm ls zod` must show a single 3.x copy. Raw JSON and no card means the provider is not on `/api/copilotkit-a2ui-fixed-schema`, so the A2UI middleware never sees the result. The Book button does nothing by design — the page documents action handlers as unsupported on Python.
 
 **`/generative-ui/open-generative-ui`** ⚠️ — the agent writes a sandboxed HTML/CSS/JS page through a `generateSandboxedUi` tool call and it streams into an iframe in the chat. Own runtime at `/api/copilotkit-ogui`; the demo has *minimal* and *advanced* (sandbox functions) toggles. **Try:** `build me a simple greeting card`; in *advanced*, `Build a calculator whose = button calls evaluateExpression`.
 ✅ An iframe preview fills in progressively (placeholder, styles, HTML, then scripts). In *advanced*, clicking the generated controls logs `[open-gen-ui/advanced] evaluateExpression …` / `notifyHost: …` in the browser console. *Not yet observed in a browser on this repo.*
@@ -400,7 +402,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/generative-ui/your-components/display-only` | `/generative-ui/your-components/display-only` | ✅ Working | Not in the doc sidebar. Needs no backend section — see §9.3. |
 | `/strands/generative-ui/your-components/interactive` | `/generative-ui/your-components/interactive` | ✅ Working | Not in the doc sidebar. Page is still four lines — §9.7. |
 | `/strands/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ❌ Broken | `renderers.tsx` has no imports — §9.6. A2UI tool unattached. |
-| `/strands/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ❌ Broken | No `display_flight`, no schema JSON. Action handlers documented as unsupported. |
+| `/strands/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ✅ Working | `display_flight` + `flight_schema.json` run as described, but come from the GitHub showcase, not the page (2026-10-19) — §9.29. Action handlers documented as unsupported. |
 | `/strands/generative-ui/open-generative-ui` | `/generative-ui/open-generative-ui` | ⚠️ Partial | Not yet checked in a browser. No agent published; `Chat` / `VISUALIZATION_DESIGN_SKILL` / `./suggestions` undefined; advanced snippet truncated — §9.23. |
 | `/strands/generative-ui/mcp-apps` | `/generative-ui/mcp-apps` | ⚠️ Partial | Not yet checked in a browser. Fallback URL `https://mcp.excalidraw.com` 308s and the middleware refuses redirects — works only with `MCP_SERVER_URL=…/mcp` — §9.24. No agent published. |
 | `/strands/generative-ui/json-render` | `/generative-ui/json-render` | ⚠️ Partial | Not yet checked in a browser. Two published versions, both verbatim. *doc snippets* ❌ by design: `<Renderer catalog>` throws `useVisibility must be used within a VisibilityProvider`. *doc demo source* predicted ✅ (server-rendered). §9.27. |
@@ -457,7 +459,9 @@ The mechanism is visible on the adapter: `ag_ui_strands.StrandsAgent` carries a 
 **What would fix the docs:** one sentence on each of those five pages saying the frontend registration is sufficient on Strands and no agent-side wiring is required.
 
 ### 9.4 The published backend file is a truncated prefix, and imports two modules that do not exist
-`src/agents/agent.py` appears across two pages at 322, 626 and 794 lines — all prefixes of one file, and even the longest stops mid-file. **The 2026-08-26 sync shrank it:** it used to be 332 / 585 / 947 across three pages, then `a2ui/fixed-schema` stopped printing it entirely and the docs pulled `_A2uiError` and the whole 145-line `generate_a2ui` tool out of the file. The longest published prefix went from 947 lines to 794. It imports `from tools import get_weather_impl, …` — a module a comment locates at `../../shared/python/tools`, outside anything the docs ship — and `from agents.gen_ui_agent import …`, likewise unpublished. Every published `@tool` body delegates to one of those `_impl` functions, so none can execute as printed. `build_showcase_agent(...)`, the function that would attach the `@tool`s to an agent and register their `ToolBehavior(state_from_result=…)` hooks, is referenced twice in comments and never printed.
+`src/agents/agent.py` appears across two pages at 322, 626 and 794 lines — all prefixes of one file, and even the longest stops mid-file. **The 2026-08-26 sync shrank it:** it used to be 332 / 585 / 947 across three pages, then `a2ui/fixed-schema` stopped printing it entirely and the docs pulled `_A2uiError` and the whole 145-line `generate_a2ui` tool out of the file. The longest published prefix went from 947 lines to 794. It imports `from tools import get_weather_impl, …` — a module a comment locates at `../../shared/python/tools`, outside anything the docs ship — and `from agents.gen_ui_agent import …`, likewise unpublished. Every published `@tool` body delegates to one of those `_impl` functions, so none can execute as printed. `build_showcase_agent(...)`, the function that would attach the `@tool`s to an agent and register their `ToolBehavior(state_from_result=…)` hooks, is referenced twice in comments and never printed *in the prose*.
+
+**Update 2026-10-19 — the whole file is in a Code tab.** The A2UI Fixed Schema page's interactive demo has a **Code** tab (not in the page's markdown, which holds only a demo marker) whose `src/agents/agent.py` is the complete 1463-line module, `build_showcase_agent` included: `Agent(model, system_prompt=SYSTEM_PROMPT, tools=[…15 tools…])`, a `StrandsAgentConfig` with six `ToolBehavior` entries, a `BeforeToolCallEvent` cap hook. It is a newer revision than the prose prefixes and it still does not import — `tools/generate_a2ui.py` is the only `tools` module the tab ships, so `get_weather_impl` and the other five `_impl`s, the package `__init__.py`, and `agents/gen_ui_agent.py` are all still missing. Byte-exact copy and diff notes: [`backend/docs_verbatim/README.md`](backend/docs_verbatim/README.md). The snapshot tracker did not see this because it diffs the `.md`; see §9.29 for what the same tab did for A2UI.
 
 **What this repo does about it, for one tool only.** [`backend/src/agents/doc_tools.py`](backend/src/agents/doc_tools.py) reproduces the `get_weather` declaration verbatim and supplies `get_weather_impl` from the **Google ADK** version of the same page, which prints the payload inline rather than behind an `_impl` indirection. Its five keys (`city`, `temperature`, `humidity`, `wind_speed`, `conditions`) are exactly the ones the Strands page's own frontend renderer reads, so the shape is confirmed by published Strands code even though the values are not. `chat_agents.tool_rendering_agent` then does `Agent(…, tools=[get_weather])` — plain Strands SDK, but a composition no Strands page shows. Nothing equivalent was done for the other thirteen `@tool`s. `ToolBehavior`, `HookProvider`, `HookRegistry` and `StateSnapshotEvent` are all imported and never used in the printed lines. `_seed_delegations_from_state` is fully defined and called by nothing. Full inventory: [`backend/docs_verbatim/README.md`](backend/docs_verbatim/README.md), with the excerpt kept byte-for-byte beside it.
 
@@ -488,7 +492,7 @@ The repo carries a doc-drift tracker (`doc-snapshot/`, surfaced at `/doc-sync`).
 | Render state in your app | Added `INITIAL_CANVAS_STATE`, `isReady`, seeding effect | Route ⚠️ → ✅; canvas now renders on first paint |
 | Tool Call Rendering | Now publishes `WeatherCard`, `FlightListCard`, `parseJsonResult` | Those stopped being repo-authored; `search_flights` renderer added |
 | Sub-Agents | `agent.py` excerpt reorganised and **shortened** | Excerpt refreshed 947 → 794 lines — §9.4 |
-| A2UI · Fixed Schema | Stopped printing `agent.py` at all | One fewer published prefix; A2UI backend still undocumented |
+| A2UI · Fixed Schema | Stopped printing `agent.py` in the markdown | It moved into the demo's Code tab, complete — found 2026-10-19, §9.29 |
 | Agent Config | `WhenFrameworkHas` gates deleted | The LangGraph sample is now presented unconditionally as *the* backend — §9.5 got worse |
 | Frontend Tools · Human-in-the-Loop · Agent Read-Only Context | Each gained a "See this in Inspector" callout | Added to all three routes |
 | Voice | The ADK-specific extra-hop paragraph was deleted | Route now notes the trailing slash is the only surviving clue |
@@ -630,6 +634,20 @@ Both Shared State pages say "follow the instructions in the Getting Started guid
 
 ---
 
+### 9.29 A2UI · Fixed Schema — the page describes `display_flight`, publishes `generate_a2ui`, and the real one is on GitHub
+
+The page's markdown prints the frontend catalog in full and, for Python, a `generate_a2ui` tool importing `build_a2ui_operations_from_tool_call` from a `tools` module it never shows. Its interactive demo's **Code** tab (eight files, not part of the `.md`) fills most of that gap: `tools/generate_a2ui.py` (the missing module), `src/agents/a2ui_generate.py` (the tool), the complete `src/agents/agent.py` (§9.4), a dedicated `api/copilotkit-a2ui-fixed-schema/route.ts` in single-route mode with a `defaultCatalogId`, the demo `page.tsx` / `chat.tsx` / `suggestions.ts`, and the four `_components/*.tsx` primitives the renderers import. The frontend half (catalog, primitives, runtime route, demo page, chat, suggestions) is in this repo byte-exact. The Python half is not used — see finding 1.
+
+Four findings:
+
+1. **The page does not publish the fixed schema it describes.** "How it works" describes a `display_flight` tool returning data against a pre-authored tree and names `flight_schema.json` / `booked_schema.json`; the tab's own `page.tsx` and `route.ts` comments still point at `src/agents/a2ui_fixed.py` and `display_flight`. None of that is on the page for Strands; the intro calls Strands Python the "LLM-driven" variant and what the tab ships is `generate_a2ui`, a secondary `gpt-5-mini` call (hardcoded model, own `OpenAI()` client, so the Python process needs `OPENAI_API_KEY`) that invents the tree per request. **The files do exist** — in CopilotKit's GitHub monorepo at `showcase/integrations/strands/src/agents/a2ui_fixed.py` and `a2ui_schemas/flight_schema.json`, which is where the Code tab's `agent.py` also lives. The schema's catalog id (`copilotkit://flight-fixed-catalog`) and component names match the page's catalog exactly. [`backend/src/agents/a2ui_fixed.py`](backend/src/agents/a2ui_fixed.py) and [`a2ui_schemas/flight_schema.json`](backend/src/agents/a2ui_schemas/flight_schema.json) are byte-exact copies, the route runs them, and the route says plainly that they came from a source tree, not a doc page. (`booked_schema.json` is not in the showcase for Strands either.) A reader who has only the page cannot get here — that is the gap.
+   The showcase's shared `tools/search_flights.py` (`search_flights_impl`) is *not* this page's tool, although the published `agent.py` carries a `search_flights` wrapper for it: it targets `copilotkit://app-dashboard-catalog` and a `FlightCard` component that this page's catalog does not define, so against this catalog it paints nothing. It is not wired here.
+2. **The `generate_a2ui` the page *does* publish paints an empty surface.** *(Tested 2026-10-19, then dropped from this route in favour of `display_flight`.)* `generate_a2ui` gives its inner model only the `context` string the outer model chose to pass (as the entire system prompt) and a `render_a2ui` schema whose `components` is a bare `array` of `object`. Nothing tells it the A2UI v0.9 shape, that one component must be `id: "root"`, or the catalog's names. In six raw AG-UI runs the outer model relayed a one-liner, the inner one emitted objects without `id`/`component`, and `build_a2ui_operations_from_tool_call` dropped all of them with `all components were dropped by sanitization`. The surface paints empty. A test hook that appended the four A2UI context entries the provider already sends (capabilities, component schema, generation and design guidelines — `ag_ui_strands` stores them on agent state as `agui_context`) to `context` made 3/3 runs produce the page's own Card › Column › Row composition, which confirms the cause.
+3. **`StrandsAgent(hooks=…)`, not `Agent(hooks=…)`.** Learned while testing finding 2: the adapter builds a fresh `Agent` per thread and does not copy the template's hook registry, so a hook passed to `Agent()` never fires. It has to go on the wrapper.
+4. **The `tools` package has no `__init__.py`.** The tab ships `tools/generate_a2ui.py`, a module inside the package, but not the package, so `from tools import build_a2ui_operations_from_tool_call` fails as published.
+
+Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
+
 ## 10. Troubleshooting
 
 The Strands tree has no Common Issues page; its troubleshooting content is the Quickstart's accordion plus three migration guides. Translated into this repo's symptoms:
@@ -699,10 +717,13 @@ aws-strands-py/
 │   │       ├── byoc_json_render.py # JSON Render's published agent, byte-exact
 │   │       ├── byoc_hashbrown.py   # Hashbrown's published agent, byte-exact
 │   │       ├── agent.py         # repo-authored shim: the `_build_model` both byoc agents import
+│   │       ├── a2ui_fixed.py    # display_flight — byte-exact from the GitHub showcase, NOT the doc page
+│   │       ├── a2ui_schemas/flight_schema.json # its 12-component tree, same source
 │   │       └── registry.py      # id → (factory, doc page, doc gaps)
 │   └── docs_verbatim/
-│       ├── agent_py_published_excerpt.py   # 947 lines, byte-exact, not imported
-│       └── README.md            # what it references and never defines
+│       ├── agent_py_published_excerpt.py   # 794 lines, the prose prefix, byte-exact, not imported
+│       ├── agent_py_fixed_schema_code_tab.py # 1463 lines, the Code tab's complete file, byte-exact, not imported
+│       └── README.md            # what each references and never defines
 │
 └── frontend/
     ├── src/lib/
@@ -721,6 +742,8 @@ aws-strands-py/
         ├── api/copilotkit/[[...slug]]/route.ts      # main runtime, 25 agents
         ├── api/copilotkit-voice/[[...slug]]/route.ts # v2 runtime + transcription
         ├── api/copilotkit-declarative-gen-ui/[[...slug]]/route.ts # A2UI auto-inject
+        ├── api/copilotkit-a2ui-fixed-schema/route.ts # A2UI Fixed Schema Code tab's runtime, byte-exact
+        ├── generative-ui/a2ui/fixed-schema/{a2ui,_components,demo-chat}/ # the Code tab's catalog, primitives, page/chat/suggestions
         ├── api/copilotkit-ogui/[[...slug]]/route.ts # Open Generative UI (openGenerativeUI flag)
         ├── api/copilotkit-mcp-apps/[[...slug]]/route.ts # MCP Apps (mcpApps.servers → Excalidraw)
         ├── api/copilotkit-byoc-{json-render,hashbrown}/[[...slug]]/route.ts # repo-authored runtimes the prose snippets point at

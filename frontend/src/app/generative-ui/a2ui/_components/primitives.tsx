@@ -3,14 +3,18 @@
 /**
  * ⚠ SELF-DEFINED — not from the CopilotKit docs.
  *
- * The two A2UI doc pages print their `renderers.tsx` in full, but those
- * renderers import `Card`, `Badge`, `Button`, `Separator` and a `CardShell`
- * from a sibling `_components/` directory that the pages never show. They are
- * ordinary shadcn-style primitives, so they are rebuilt here from their usage
- * — same names, same props, Tailwind only.
+ * The A2UI *dynamic-schema* page prints its `renderers.tsx` in full, but that
+ * file imports `Card`, `Badge`, `Button` and a `CardShell` from a sibling
+ * `_components/` directory the page never shows. They are ordinary
+ * shadcn-style primitives, so they are rebuilt here from their usage — same
+ * names, same props, Tailwind only. Only the dynamic-schema route uses them.
  *
- * Both A2UI routes list this file explicitly so nobody mistakes it for
- * documented API. Everything else in the A2UI catalogs is the docs'.
+ * The *fixed-schema* page used to be in the same position, but its demo Code
+ * tab now ships `_components/{badge,button,card,separator}.tsx`, so that route
+ * imports those byte-exact copies from `fixed-schema/_components/` instead.
+ *
+ * The dynamic-schema route lists this file explicitly so nobody mistakes it
+ * for documented API. Everything else in that catalog is the docs'.
  */
 
 import type { ReactNode } from "react";

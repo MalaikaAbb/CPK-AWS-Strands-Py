@@ -110,3 +110,62 @@ curl -s -X POST http://localhost:8000/strands_agent/ \
   -d '{"threadId":"t1","runId":"r1","messages":[{"id":"m1","role":"user","content":"hi"}],
        "state":{},"tools":[],"context":[],"forwardedProps":{}}'
 ```
+
+## `agent_py_fixed_schema_code_tab.py` — the same file, complete, in a place the `.md` never shows
+
+The A2UI Fixed Schema page carries an interactive demo whose **Code** tab has
+eight files, and one of them is `src/agents/agent.py` at **1463 lines**, ending
+at `return _MessagesSnapshotWrapper(agui_agent)`. It is not in the page's
+markdown (the `.md` holds only an `<!-- interactive demo: a2ui-fixed-schema -->`
+marker), which is why the 2026-08-26 analysis above — which read the markdown —
+concluded the file had stopped being printed. It had moved.
+
+Byte-exact copy here. It does not run, for the same reason as the excerpt.
+
+### What it finally shows
+
+- **`build_showcase_agent(...)`** — the function every earlier prefix only
+  mentioned. It builds a `StrandsAgentConfig` with `ToolBehavior(state_from_args=…)`
+  and `ToolBehavior(state_from_result=…)` entries for six tools, then
+  `Agent(model, system_prompt=SYSTEM_PROMPT, tools=[…15 tools…])` and
+  `StrandsAgent(agent, name="strands_agent", description, config)`. That is the
+  `tools=` wiring no page's prose shows, and the state hooks README §9.4 said were
+  only described in comments.
+- **`SYSTEM_PROMPT`** for the showcase agent, and **`_build_model()`** /
+  `model_id()` defaulting to `gpt-5-mini` with a `MODEL_ID` override.
+- **`with_state_context`** (a `state_context_builder` that copies UI state into
+  transient AG-UI context), a `_ToolCallCapHook` `HookProvider` and the
+  `_HookInjectingAgentDict` it is installed through — the first use of
+  `HookProvider` / `HookRegistry` / `BeforeToolCallEvent` the earlier prefixes
+  imported and never reached.
+
+### What it still needs and never gets
+
+Its import block is longer than the excerpt's, not shorter:
+
+```python
+from tools import (
+    get_weather_impl, query_data_impl, manage_sales_todos_impl,
+    roll_dice_impl, schedule_meeting_impl, search_flights_impl,
+)
+from agents.gen_ui_agent import GEN_UI_AGENT_PROMPT, set_steps, steps_state_from_args
+from agents.a2ui_generate import generate_a2ui
+```
+
+The last line would resolve: `src/agents/a2ui_generate.py` is another tab, and
+so is `tools/generate_a2ui.py`, the module that defines
+`build_a2ui_operations_from_tool_call`. This repo does not install either; the
+fixed-schema route runs `display_flight` from CopilotKit's GitHub showcase
+instead (README §9.29). The first two imports do not resolve at all. The `tools` package's `__init__.py` is
+not a tab, nor are the six `_impl` functions, nor `agents/gen_ui_agent.py`. So
+the showcase agent is one import away from building, and that import is the
+same one it was missing a year ago.
+
+### A newer revision than the prose prefixes
+
+Diffing the first 794 lines against the excerpt: this copy adds
+`Context` to the `ag_ui.core.types` import, `ToolContext` from
+`strands.types.tools`, calls `with_state_context(input_data)` at the top of
+`_MessagesSnapshotWrapper.run`, and turns `manage_sales_todos` into a
+`@tool(context=True)` that writes native agent state. The prose pages are
+printing an older file than the demo tab.

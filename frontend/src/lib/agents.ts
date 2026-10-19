@@ -72,7 +72,7 @@ export function agentUrl(id: string): string {
   return `${AGENT_URL}/${id}/`;
 }
 
-/** The one agent the A2UI fixed-schema route scopes its runtime middleware to. */
+/** The agent the A2UI fixed-schema page's own runtime route addresses. */
 export const A2UI_FIXED_AGENT_ID = "a2ui-fixed-schema";
 
 /**

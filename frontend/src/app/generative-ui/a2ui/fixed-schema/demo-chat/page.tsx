@@ -1,42 +1,46 @@
 "use client";
 
-import { CopilotChat, CopilotKit } from "@copilotkit/react-core/v2";
+import { CopilotKit } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
+import { A2UI_FIXED_AGENT_ID } from "@/lib/agents";
 import { nestedInspectorSetting } from "@/lib/inspector";
 
 import { catalog } from "../a2ui/catalog";
-
-const AGENT_ID = "a2ui-fixed-schema";
+import { Chat } from "./chat";
 
 /**
- * Its own provider, because A2UI is configured per-provider: `a2ui={{ catalog }}`
- * is what registers the component vocabulary the surface will be drawn with.
+ * The page's demo `page.tsx` (kept byte-exact beside this file as
+ * `published-page.tsx.txt`), inside the harness's chrome.
  *
- * The matching half is on the runtime, which sets `injectA2UITool: false` for
- * this agent — the agent owns its own `display_flight` tool and returns the
- * operations container itself, so it must not also be handed a `generate_a2ui`
- * tool. The middleware still detects the operations and renders the surface.
+ * From the page: the provider pointed at its own runtime
+ * (`/api/copilotkit-a2ui-fixed-schema`, the Code tab's route.ts), the agent
+ * id, `a2ui={{ catalog }}`, and `<Chat />` with its suggestion hook. The agent
+ * behind the id is `display_flight` over `flight_schema.json`, which the page
+ * describes but does not publish; it comes from CopilotKit's GitHub showcase.
+ *
+ * Not the page's: `DemoFrame` in place of the demo's full-screen flex wrapper,
+ * and `enableInspector` — this provider owns the inspector on this route; see
+ * `lib/inspector.ts`.
+ *
+ * No `useSingleEndpoint` here, on purpose. The published runtime is
+ * `mode: "single-route"` with a single `POST` export, so the provider's
+ * default single-endpoint mode is the one that matches it — unlike every
+ * other nested provider in this app, which sits on a `[[...slug]]` catch-all.
  */
 export default function Page() {
   return (
     <DemoFrame
       parentPath="/generative-ui/a2ui/fixed-schema"
-      subtitle={`agent: ${AGENT_ID}`}
+      subtitle={`agent: ${A2UI_FIXED_AGENT_ID}`}
     >
       <CopilotKit
-        runtimeUrl="/api/copilotkit"
-        agent={AGENT_ID}
-        // Matches the catch-all runtime this endpoint now uses.
-        useSingleEndpoint={false}
-        a2ui={{ catalog }}
-        // This provider owns the inspector on this route, because the chat
-        // below runs on *its* core — the app-wide one would show an empty
-        // event list. The root provider stands down here; the routing lives in
-        // `lib/inspector.ts`, which also guarantees only one ever mounts.
+        runtimeUrl="/api/copilotkit-a2ui-fixed-schema"
+        agent={A2UI_FIXED_AGENT_ID}
+        a2ui={{ catalog: catalog }}
         enableInspector={nestedInspectorSetting}
       >
-        <CopilotChat agentId={AGENT_ID} className="h-full" />
+        <Chat />
       </CopilotKit>
     </DemoFrame>
   );

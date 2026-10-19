@@ -316,9 +316,9 @@ export const NAV: NavGroup[] = [
         docPath: "/strands/generative-ui/a2ui/dynamic-schema",
         summary:
           "A bring-your-own-catalog surface where a secondary LLM designs the layout per request.",
-        status: "broken",
+        status: "partial",
         statusNote:
-          "The catalog, definitions and renderers are wired as printed. Nothing drives them: `generate_a2ui` is never attached to a Strands agent, and renderers.tsx ships with no import line.",
+          "The catalog, definitions and renderers are wired as printed. Nothing drives them on this route: renderers.tsx ships with no import line, and this page's prose never attaches `generate_a2ui` to an agent (the Fixed Schema page's demo Code tab does — see that route).",
       },
       {
         path: "/generative-ui/a2ui/fixed-schema",
@@ -327,10 +327,10 @@ export const NAV: NavGroup[] = [
         title: "A2UI · Fixed Schema",
         docPath: "/strands/generative-ui/a2ui/fixed-schema",
         summary:
-          "A flight card whose component tree is authored as JSON up front; the tool supplies only the data.",
-        status: "broken",
+          "A flight card whose component tree is authored as JSON up front; the display_flight tool supplies only the data.",
+        status: "working",
         statusNote:
-          "Catalog and runtime middleware are registered. The agent-side half — the tool that returns the operations container — is not published.",
+          "display_flight + flight_schema.json run as described — but the page publishes neither; both are byte-exact from CopilotKit's GitHub showcase. Catalog, primitives and runtime are the page's Code tab, byte-exact. The Book button is inert, as the page documents.",
       },
       {
         path: "/generative-ui/open-generative-ui",
