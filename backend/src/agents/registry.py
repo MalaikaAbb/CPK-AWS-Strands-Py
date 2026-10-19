@@ -23,6 +23,7 @@ from ag_ui_strands import StrandsAgent
 from agents import chat_agents
 from agents import hitl_agents, interrupt_agent
 from agents import gen_ui_agents
+from agents.a2ui_fixed import build_a2ui_fixed_schema_agent
 from agents.byoc_hashbrown import build_byoc_hashbrown_agent
 from agents.byoc_json_render import build_byoc_json_render_agent
 from agents.language_agent import shared_state_language_agent
@@ -31,11 +32,14 @@ from agents.language_agent import shared_state_language_agent
 #: this repo — if a doc page starts publishing the missing half, delete the
 #: entry here and the panel disappears from the route.
 NO_TOOL_WIRING = (
-    "No Strands page passes `tools=` to a Strands `Agent`. The published "
-    "`src/agents/agent.py` declares the `@tool` functions and then hands them "
-    "to `build_showcase_agent(...)`, which is never printed — so the step that "
-    "attaches a tool to an agent is missing. `tool_rendering_agent` spells it "
-    "out itself with plain Strands SDK; every other agent is tool-free."
+    "No Strands page's prose passes `tools=` to a Strands `Agent`. The "
+    "published `src/agents/agent.py` declares the `@tool` functions and hands "
+    "them to `build_showcase_agent(...)`. Only the A2UI Fixed Schema page's "
+    "demo Code tab prints that function — `tools=[…]` on a 15-tool showcase "
+    "agent whose imports do not resolve. `tool_rendering_agent` and "
+    "`subagents_agent` spell the wiring out with plain Strands SDK, and the "
+    "A2UI fixed-schema agent comes from CopilotKit's GitHub showcase; every "
+    "other agent is tool-free."
 )
 UNPUBLISHED_TOOLS_MODULE = (
     "Every published `@tool` body delegates to an `_impl` function imported "
@@ -59,10 +63,21 @@ NO_STATE_FROM_RESULT = (
     "a tool call into a `StateSnapshotEvent` is undocumented. The "
     "`*_state_from_args` hooks are published; the wiring is not."
 )
+A2UI_FIXED_FROM_SHOWCASE_REPO = (
+    "The doc page describes a `display_flight` tool over a pre-authored "
+    "`flight_schema.json` and publishes neither — not in its prose, not in its "
+    "demo Code tab. Both exist in CopilotKit's GitHub showcase "
+    "(`showcase/integrations/strands/src/agents/a2ui_fixed.py` + "
+    "`a2ui_schemas/flight_schema.json`) and are reproduced byte-exact here, "
+    "but that is a source-tree fetch, not a doc page. See README §9.29."
+)
 NO_A2UI_BACKEND = (
-    "`build_a2ui_operations_from_tool_call` is imported from an unpublished "
-    "`tools` module, and the `generate_a2ui` tool that calls it is never "
-    "attached to an agent."
+    "Both A2UI pages' prose prints `generate_a2ui` importing "
+    "`build_a2ui_operations_from_tool_call` from a `tools` module the prose "
+    "never ships. The Fixed Schema page's demo Code tab does ship it "
+    "(`tools/generate_a2ui.py`) and attaches the tool in `build_showcase_agent` "
+    "— but it ships no `tools/__init__.py`, so the import still fails. "
+    "Neither page attaches the tool to a runnable agent; see README §9.29."
 )
 NO_OGUI_AGENT = (
     "The Open Generative UI runtime snippet registers `agents` with the ids "
@@ -182,10 +197,12 @@ REGISTRY: dict[str, RegisteredAgent] = {
         chat_agents.interactive_agent,
         "/strands/generative-ui/your-components/interactive",
     ),
+    # The fixed-schema agent the page describes: `display_flight` over
+    # `a2ui_schemas/flight_schema.json`. From the GitHub showcase, not the page.
     "a2ui-fixed-schema": RegisteredAgent(
-        chat_agents.a2ui_fixed_agent,
+        build_a2ui_fixed_schema_agent,
         "/strands/generative-ui/a2ui/fixed-schema",
-        gaps=(NO_TOOL_WIRING, NO_A2UI_BACKEND),
+        gaps=(A2UI_FIXED_FROM_SHOWCASE_REPO,),
     ),
     "declarative-gen-ui": RegisteredAgent(
         chat_agents.declarative_gen_ui_agent,

@@ -8,6 +8,171 @@ Holds the 3 most recent dated entries. When a change lands on a fourth
 date, the oldest entry is dropped. Entries are counted, not aged, so a gap of
 weeks between changes does not expire anything.
 
+## 2026-10-19
+
+### 07:35 UTC — 15 pages, highest severity high
+
+**High — Tool Call Rendering**
+
+`/strands/generative-ui/tool-rendering` · route `/generative-ui/tool-rendering` · under “The backend tool definition” · in a `python` block
+
+4 code lines changed.
+
+````diff
++ Context,
++ from strands.types.tools import ToolContext
++ 
++ input_data = with_state_context(input_data)
+````
+
+**High — Sub-Agents**
+
+`/strands/multi-agent/subagents` · route `/multi-agent/subagents` · under “Setting up sub-agents” · in a `python` block
+
+86 code lines changed.
+
+````diff
++ Context,
++ from strands.types.tools import ToolContext
++ input_data = with_state_context(input_data)
++ 
+- @tool
+- def manage_sales_todos(todos: list[dict]):
++ # Native agent state key holding the sales pipeline. A configured Strands
++ # SessionManager persists ``agent.state`` with the session and restores it on
+````
+
+**High — Quickstart**
+
+`/strands/quickstart` · route `/quickstart` · under “Install CopilotKit packages” · in a `npm` block
+
+2 code lines changed.
+
+````diff
+- npm install @copilotkit/react-ui @copilotkit/react-core @copilotkit/runtime @ag-ui/client@0.0.59
++ npm install @copilotkit/react-ui @copilotkit/react-core @copilotkit/runtime @ag-ui/client@1.0.2
+````
+
+**High — Import & Synchronize History**
+
+`/strands/threads-import` · route `/threads-import` · under “Add Intelligence to your existing app”
+
+5 code lines, 31 prose lines changed. The number of fenced code blocks changed.
+
+````diff
++ For a concrete example without historical import, see [keep an existing LangGraph conversation](/strands/intelligence/bring-your-own-thread-system#example-keep-an-existing-langgraph-conversation).
++ 
+- If you also want users to reopen history recorded before Intelligence was connected, copy supported history into Intelligence using the steps below. The importer currently supports Google ADK and LangGraph stores. It copies historical content; it does not enable live delivery, recover past execution, or establish ongoing database replication.
++ If you also want users to reopen history recorded before Intelligence was connected, copy supported history into Intelligence using the steps below. This guide covers Google ADK, LangGraph, and Mastra stores. It copies historical content; it does not enable live delivery, recover past execution, or establish ongoing database replication.
++ | Mastra | [Add AG-UI streams to Mastra conversations](/mastra/threads-import) | Saved conversations from a local LibSQL database or a Mastra server. |
++ - saved agent state when supported by the source
+- It does not import agent state snapshots, framework transport noise, LangSmith traces, or unsupported source stores.
++ It does not import framework transport noise, LangSmith traces, or unsupported source stores. What is available depends on what your source saved; see your framework’s import guide for details.
+````
+
+**Medium — Copilot Runtime**
+
+`/strands/copilot-runtime` · route `/copilot-runtime` · under “Runtime languages”
+
+1 heading, 24 prose lines changed.
+
+````diff
++ ## Runtime languages
++ 
++ **TypeScript is the default and most fully featured runtime. It is the only runtime that can run without CopilotKit Intelligence.** Use it for an open-source setup, or connect it to Intelligence when you need its services.
++ 
++ Python, Go, Ruby, and C#/.NET runtimes require an Intelligence project and server-side API key. They work with both [cloud-hosted](/strands/intelligence/managed-intelligence-platform) and [self-hosted](/strands/intelligence/self-hosting) Intelligence; they do not provide an in-memory or SQLite runner.
++ 
++ | Language | Host | Without Intelligence |
++ | --- | --- | --- |
+````
+
+**Medium — Thread & History Lifecycle**
+
+`/strands/threads-lifecycle` · route `/threads-lifecycle` · under “Future runs can remain durable in both places”
+
+1 heading, 7 prose lines changed.
+
+````diff
+- After historical import, future conversations that run through CopilotKit are
+- written to CopilotKit Intelligence as threads. If your LangGraph agent
++ Once Intelligence is connected, conversations that run through that runtime are
++ recorded automatically in Intelligence. Historical import is optional. If your LangGraph agent
++ 
++ ## Example: keep an existing LangGraph conversation
++ 
++ Follow [Bring your own thread system](/strands/intelligence/bring-your-own-thread-system#example-keep-an-existing-langgraph-conversation) for an example that keeps native persistence and continues the same conversation.
+````
+
+**Low — AG-UI**
+
+`/strands/ag-ui` · route `/ag-ui` · under “How agents slot into the runtime”
+
+3 prose lines changed.
+
+````diff
++ To write the custom implementation yourself, and keep its own fields through
++ the clone in step 2, see [Write your own AG-UI agent](/strands/backend/custom-ag-ui-agent).
++ 
+````
+
+**Low — Programmatic Control**
+
+`/strands/programmatic-control` · route `/programmatic-control` · under “What is this?”
+
+4 prose lines changed.
+
+````diff
+- - `agent.subscribe(subscriber)` — low-level AG-UI event subscription (`onCustomEvent`, `onRunStartedEvent`, `onRunFinalized`, `onRunFailed`, …). Pairs with `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` to drive interrupt resolution from arbitrary UI.
++ - `agent.subscribe(subscriber)` — low-level AG-UI event subscription (`onCustomEvent`, `onRunStartedEvent`, `onRunFinalized`, `onRunFailed`, …). Pairs with `copilotkit.runAgent({ agent, resume })` for standard AG-UI interrupts, or `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` for legacy `on_interrupt` custom events, to drive interrupt resolution from arbitrary UI.
+- - **`agent.runAgent(options)`** — low-level method on the agent instance. Sends the request to the runtime but does **not** execute frontend tools or chain follow-ups. Reach for this only when you need direct control. (For the interrupt-resume case, use `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` — see the snippet below — so the subscriber lifecycle still wraps the resumed run.)
++ - **`agent.runAgent(options)`** — low-level method on the agent instance. Sends the request to the runtime but does **not** execute frontend tools or chain follow-ups. Reach for this only when you need direct control. (For the interrupt-resume case, use `copilotkit.runAgent({ agent, resume })` for standard AG-UI interrupts, or `copilotkit.runAgent({ agent, forwardedProps: { command: { resume, interruptEvent } } })` for legacy `on_interrupt` custom events — the snippet below shows the legacy form — so the subscriber lifecycle still wraps the resumed run.)
+````
+
+**Info — Markdown Rendering**
+
+`/strands/custom-look-and-feel/markdown` · route `/custom-look-and-feel/markdown`
+
+Now tracked for the first time.
+
+**Info — Hashbrown**
+
+`/strands/generative-ui/hashbrown` · route `/generative-ui/hashbrown`
+
+Now tracked for the first time.
+
+**Info — JSON Render**
+
+`/strands/generative-ui/json-render` · route `/generative-ui/json-render`
+
+Now tracked for the first time.
+
+**Info — MCP Apps**
+
+`/strands/generative-ui/mcp-apps` · route `/generative-ui/mcp-apps`
+
+Now tracked for the first time.
+
+**Info — Open Generative UI**
+
+`/strands/generative-ui/open-generative-ui` · route `/generative-ui/open-generative-ui`
+
+Now tracked for the first time.
+
+**Info — Governed Action Approval UI**
+
+`/strands/human-in-the-loop/governed-actions` · route `/human-in-the-loop/governed-actions`
+
+Now tracked for the first time.
+
+**Info — Headless Interrupts**
+
+`/strands/human-in-the-loop/headless` · route `/human-in-the-loop/headless`
+
+Now tracked for the first time.
+
+---
+
 ## 2026-09-30
 
 ### 11:21 UTC — 20 pages, highest severity high
@@ -344,6 +509,8 @@ weeks between changes does not expire anything.
 
 ---
 
+---
+
 ## 2026-09-11
 
 ### 08:00 UTC — 14 pages, highest severity high
@@ -535,220 +702,6 @@ Now tracked for the first time.
 `/strands/threads-lifecycle` · route `/threads-lifecycle`
 
 Now tracked for the first time.
-
----
-
----
-
-## 2026-08-26
-
-### 09:37 UTC — 14 pages, highest severity high
-
-**High — Agent Config**
-
-`/strands/agent-config` · route `/agent-config` · under “When to use this”
-
-16 code lines, 1 heading, 20 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- <WhenFrameworkHas flag="agent_config_pattern" equals="shared-state">
-+ 
-- </WhenFrameworkHas>
-- <WhenFrameworkHas flag="agent_config_pattern" equals="runtime-properties">
-- ## How it works
-- The runtime owns the agent in-process, so config travels through frontend
-- runtime properties rather than agent state. There's no separate backend service
-- to push state into: the typed object becomes the input to the agent factory
-````
-
-**High — Copilot Runtime**
-
-`/strands/copilot-runtime` · route `/copilot-runtime` · under “Setting Up the Runtime”
-
-41 code lines, 2 headings, 15 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- The runtime is a lightweight server endpoint that you add to your backend. Here's a minimal example using Next.js:
-+ The runtime is a lightweight server endpoint that you add to your backend:
-- ```ts title="app/api/copilotkit/route.ts"
-+ ```npm
-+ npm install @copilotkit/runtime
-+ ```
-+ 
-+ Here's a minimal example using Next.js. `createCopilotRuntimeHandler` returns a
-````
-
-**High — A2UI · Fixed Schema**
-
-`/strands/generative-ui/a2ui/fixed-schema` · route `/generative-ui/a2ui/fixed-schema`
-
-Rewritten past the diff cap.
-
-**High — Tool Call Rendering**
-
-`/strands/generative-ui/tool-rendering` · route `/generative-ui/tool-rendering` · under “What is this?”
-
-127 code lines, 16 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- **Free course:** See this pattern built end-to-end in [Build Interactive Agents with Generative UI](https://www.deeplearning.ai/short-courses/build-interactive-agents-with-generative-ui/) — a free DeepLearning.AI short course taught by CopilotKit's CEO covering the full Generative UI spectrum (Controlled, Declarative, and Open-Ended).
-+ **Free course:** See this pattern built end-to-end in [Build Interactive
-+ Agents with Generative
-+ UI](https://www.deeplearning.ai/short-courses/build-interactive-agents-with-generative-ui/)
-+ — a free DeepLearning.AI short course taught by CopilotKit's CEO covering the
-+ full Generative UI spectrum (Controlled, Declarative, and Open-Ended).
-- ```typescript
-- // src/app/demos/tool-rendering/page.tsx
-````
-
-**High — Sub-Agents**
-
-`/strands/multi-agent/subagents` · route `/multi-agent/subagents`
-
-Rewritten past the diff cap.
-
-**High — Programmatic Control**
-
-`/strands/programmatic-control` · route `/programmatic-control` · under “What is this?”
-
-87 code lines, 2 headings, 38 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- Every example on this page is pulled from two live cells:
-- `headless-complete` (full chat surface, shown here for the message-send
-- path) and `interrupt-headless` (button-driven interrupt resolver, shown
-- here for the subscribe + resume path).
-+ The send-and-stop example below is intentionally self-contained. The
-+ later subscription and interrupt examples are pulled from the live
-+ `interrupt-headless` cell.
-- The message-send path in `headless-complete` is the canonical pattern:
-````
-
-**High — Quickstart**
-
-`/strands/quickstart` · route `/quickstart` · under “Quickstart”
-
-54 code lines, 1 heading, 37 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-+ 
-- body="Add persistent threads and the inspector with the Enterprise Intelligence Platform."
-+ body="Add persistent threads and the inspector with CopilotKit Intelligence."
-- - Python 3.12+
-+ - Python 3.12+ (Python agents only)
-- <SignupLink surface="docs_aws_strands_quickstart_step1">Sign up for a free developer account</SignupLink> on our Enterprise Intelligence Platform to get a license key. You'll use it later to enable persistent threads and the inspector.
-+ <SignupLink surface="docs_aws_strands_quickstart_step1">Sign up for a free developer account</SignupLink> for CopilotKit Intelligence to get a license key. You'll use it later to enable persistent threads and the inspector.
-- ```bash
-````
-
-**High — Render state in your app**
-
-`/strands/shared-state/rendering-in-app` · route `/shared-state/rendering-in-app` · under “The pattern” · in a `tsx` block
-
-29 code lines, 6 prose lines changed.
-
-````diff
-+ import { useEffect } from "react";
-+ const INITIAL_CANVAS_STATE: CanvasState = {
-+ title: "Project launch",
-+ items: [
-+ { id: "research", label: "Research user needs", done: true },
-+ { id: "prototype", label: "Build a prototype", done: false },
-+ ],
-+ };
-````
-
-**Low — AG-UI**
-
-`/strands/ag-ui` · route `/ag-ui` · under “The proxy pattern”
-
-2 prose lines changed.
-
-````diff
-- routing, and CopilotKit Enterprise Intelligence without changing how the
-+ routing, and CopilotKit Intelligence without changing how the
-````
-
-**Low — Frontend Tools**
-
-`/strands/frontend-tools` · route `/frontend-tools` · under “Frontend Tools”
-
-21 prose lines changed.
-
-````diff
-+ 
-+ 
-+ 
-+ <Callout type="info" title="See this in Inspector">
-+ Open Inspector on localhost. Go to **Agents**, then **Frontend Tools**.
-+ Your tool and its schema are listed.
-+ 
-+ More detail: [Inspector](/strands/inspector).
-````
-
-**Low — Human in the Loop**
-
-`/strands/human-in-the-loop` · route `/human-in-the-loop` · under “HITL Overview”
-
-9 prose lines changed.
-
-````diff
-+ 
-+ 
-+ 
-+ <Callout type="info" title="See this in Inspector">
-+ Open Inspector on localhost. Go to **Agents**, then **Frontend Tools**.
-+ Your tool and its schema are listed.
-+ 
-+ More detail: [Inspector](/strands/inspector).
-````
-
-**Low — Open, close, and feedback**
-
-`/strands/prebuilt-components/chat-controls` · route `/prebuilt-components/chat-controls` · under “Capture message feedback (thumbs up / down)”
-
-11 prose lines changed.
-
-````diff
-- slot**. The buttons only render when a handler is provided:
-+ When the slot is rendered through `CopilotChatMessageView`, a live assistant
-+ message created by a direct AG-UI `TEXT_MESSAGE_START` can also include that
-+ event's opaque `rawEvent` value. The join happens when the thumbs callback runs;
-+ canonical messages and future run input stay unchanged. Chunk, snapshot,
-+ persisted, legacy, and direct `CopilotChatAssistantMessage` paths don't provide
-+ this callback metadata.
-+ 
-````
-
-**Low — Agent Read-Only Context**
-
-`/strands/shared-state/agent-readonly` · route `/shared-state/agent-readonly` · under “Agent Read-Only Context”
-
-9 prose lines changed.
-
-````diff
-+ 
-+ 
-+ 
-+ <Callout type="info" title="See this in Inspector">
-+ Open Inspector on localhost. Go to **Agents**, then **Context**.
-+ The values you publish with `useAgentContext` appear here.
-+ 
-+ More detail: [Inspector](/strands/inspector).
-````
-
-**Low — Voice**
-
-`/strands/voice` · route `/voice` · under “Next.js API route”
-
-4 prose lines changed.
-
-````diff
-- <WhenFrameworkHas flag="voice_backend_pattern" equals="adk-fastapi-agent-path">
-- For the Google ADK showcase, agent runs take one more hop: this Next.js route registers the `voice-demo` agent with an `HttpAgent` pointed at `${AGENT_URL}/voice`. The Python `agent_server.py` mounts registered ADK agents with `add_adk_fastapi_endpoint(app, ..., path=f"/{agent_name}")`, so the browser talks to `/api/copilotkit-voice` while the Next.js runtime forwards voice-demo agent runs to the backend `/voice` endpoint.
-- </WhenFrameworkHas>
-+ 
-````
 
 ---
 

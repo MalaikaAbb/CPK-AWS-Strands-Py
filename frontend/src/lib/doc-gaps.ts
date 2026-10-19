@@ -101,7 +101,7 @@ const GAP_LIST: DocGap[] = [
     id: "no-tool-wiring",
     title: "No page attaches a tool to a Strands agent",
     detail:
-      "The published `src/agents/agent.py` declares 14 `@tool` functions, then hands them to `build_showcase_agent(...)` — a function referenced twice in comments and never printed. No Strands page passes `tools=` to a Strands `Agent` anywhere, so the one agent here that does carry a tool (`tool_rendering_agent`) spells the wiring out itself with plain Strands SDK. Every other agent is tool-free; see `backend/src/agents/chat_agents.py`.",
+      "The published `src/agents/agent.py` declares 14 `@tool` functions, then hands them to `build_showcase_agent(...)`. No Strands page's *prose* passes `tools=` to a Strands `Agent`. The function is printed in exactly one place — the `src/agents/agent.py` tab of the A2UI Fixed Schema page's demo Code tab, where `build_showcase_agent` does `Agent(model, system_prompt, tools=[…15 tools…])` on a module whose imports do not resolve (six `tools._impl` functions and `agents.gen_ui_agent` are still unpublished). The agents here that carry a tool (`tool_rendering_agent`, `subagents_agent`) spell the wiring out with plain Strands SDK; see `backend/src/agents/chat_agents.py`. The A2UI fixed-schema agent comes from CopilotKit's GitHub showcase.",
     severity: "blocking",
     docPath: "/strands/generative-ui/tool-rendering",
   },
@@ -109,7 +109,7 @@ const GAP_LIST: DocGap[] = [
     id: "truncated-agent-py",
     title: "The published backend file is a truncated prefix",
     detail:
-      "`src/agents/agent.py` appears across two pages at 322, 626 and 794 lines — all prefixes of one file, and even the longest stops mid-file. The 2026-08-26 sync made this *worse*: it used to be 332 / 585 / 947 across three pages, and the docs then pulled `_A2uiError` and the entire 145-line `generate_a2ui` tool out of the file while `a2ui/fixed-schema` stopped printing it at all. The longest published prefix shrank from 947 lines to 794. `HookProvider`, `HookRegistry`, `StateSnapshotEvent` and a dozen other imports are still declared at the top and first used only past the cut. Full analysis in `backend/docs_verbatim/README.md`.",
+      "In the page *prose*, `src/agents/agent.py` appears at 322, 626 and 794 lines — all prefixes of one file, and even the longest stops mid-file. The 2026-08-26 sync shrank the longest prefix from 947 to 794 lines and moved `generate_a2ui` out. What the prose never shows, the A2UI Fixed Schema page's demo Code tab does: its `src/agents/agent.py` tab is the whole 1463-line module, through `build_showcase_agent`. It is a newer revision than the prose prefixes (`with_state_context`, `ToolContext`, a tool-call cap hook), and it still cannot import. Both copies are in `backend/docs_verbatim/`, with the analysis in its README.",
     severity: "blocking",
     docPath: "/strands/multi-agent/subagents",
   },
@@ -117,7 +117,7 @@ const GAP_LIST: DocGap[] = [
     id: "unpublished-tools-module",
     title: "The backend imports two modules that are never published",
     detail:
-      "`from tools import get_weather_impl, search_flights_impl, build_a2ui_operations_from_tool_call, …` and `from agents.gen_ui_agent import GEN_UI_AGENT_PROMPT, set_steps, steps_state_from_args`. A comment locates `tools` at `../../shared/python/tools`, outside anything the docs ship. Every `@tool` body delegates to one of those `_impl` functions, so no published tool can execute.",
+      "`from tools import get_weather_impl, search_flights_impl, …` and `from agents.gen_ui_agent import GEN_UI_AGENT_PROMPT, set_steps, steps_state_from_args`. A comment locates `tools` at `../../shared/python/tools`, outside anything the docs ship. One file of that package is now published — `tools/generate_a2ui.py`, in the A2UI Fixed Schema page's demo Code tab, which is where `build_a2ui_operations_from_tool_call` lives — but not the package's `__init__.py`, and none of the six `_impl` functions. Every other `@tool` body delegates to one of those, so none of them can execute.",
     severity: "blocking",
     docPath: "/strands/generative-ui/tool-rendering",
   },
@@ -393,6 +393,30 @@ const GAP_LIST: DocGap[] = [
     severity: "note",
     docPath: "/strands/generative-ui/json-render",
   },
+  {
+    id: "a2ui-fixed-schema-is-generated",
+    title: "The page describes display_flight and publishes generate_a2ui",
+    detail:
+      "The page's `How it works` describes a `display_flight` tool that returns data against a pre-authored tree, and its prose names `flight_schema.json` and `booked_schema.json`. None of the three is on the page for Strands: the intro says Strands Python is `LLM-driven`, and the Python step it prints is `generate_a2ui` — a secondary OpenAI call (`gpt-5-mini`, hardcoded) that invents the tree per request. The demo Code tab's `page.tsx` and `route.ts` comments still refer to `src/agents/a2ui_fixed.py` and `display_flight`, neither of which is in the tab. The two do exist — in CopilotKit's GitHub monorepo at `showcase/integrations/strands/src/agents/`, with a schema whose catalog id and component names match the page's catalog exactly. This route runs that copy; the doc gap is that a reader of the page cannot get there.",
+    severity: "degraded",
+    docPath: "/strands/generative-ui/a2ui/fixed-schema",
+  },
+  {
+    id: "a2ui-generate-no-renderable-components",
+    title: "As published, `generate_a2ui` returns a surface with no components",
+    detail:
+      "The secondary model gets two things: the `context` string the primary model chose to pass (as its whole system prompt) and a `render_a2ui` schema whose `components` is a bare `array` of `object`. Nothing tells it the A2UI v0.9 shape, that one component must be `id: \"root\"`, or which names the catalog can draw. In six live runs the primary model relayed a one-line summary, the secondary emitted objects without `id`/`component`, and `build_a2ui_operations_from_tool_call` dropped every one (`all components were dropped by sanitization`), so the middleware painted an empty surface. The A2UI context the provider already sends is on the agent's state as `agui_context`; a test hook that appended it to `context` made 3/3 runs render, which confirms the cause. The route no longer runs `generate_a2ui` (it uses `display_flight`), so the hook was removed with it.",
+    severity: "blocking",
+    docPath: "/strands/generative-ui/a2ui/fixed-schema",
+  },
+  {
+    id: "a2ui-tools-init-unpublished",
+    title: "The `tools` package has a published module but no `__init__.py`",
+    detail:
+      "`agents/a2ui_generate.py` does `from tools import build_a2ui_operations_from_tool_call`, and the Code tab ships `tools/generate_a2ui.py` — a module *inside* the package, not the package. Without an `__init__.py` that re-exports the name, the published import fails. This repo does not install the tool, so nothing here supplies it.",
+    severity: "degraded",
+    docPath: "/strands/generative-ui/a2ui/fixed-schema",
+  },
 ];
 
 export const DOC_GAPS: Record<string, DocGap> = Object.fromEntries(
@@ -447,6 +471,8 @@ export const ROUTE_GAPS: Record<string, GapId[]> = {
   "/generative-ui/a2ui/dynamic-schema": [
     "renderers-missing-imports",
   ],
+
+  "/generative-ui/a2ui/fixed-schema": ["a2ui-fixed-schema-is-generated"],
 
   "/generative-ui/open-generative-ui": [
     "ogui-no-agent",

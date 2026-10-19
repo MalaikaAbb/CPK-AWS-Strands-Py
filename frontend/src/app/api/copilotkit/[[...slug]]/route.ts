@@ -24,11 +24,15 @@ import { AGENT_IDS, A2UI_FIXED_AGENT_ID, agentUrl } from "@/lib/agents";
  *     This harness has one agent per doc route, so the Python server mounts
  *     each at `/{agent_id}/` — hence the trailing slash `agentUrl()` adds.
  *  2. **`a2ui`.** Scoped to the fixed-schema agent with tool injection off,
- *     exactly as the Copilot Runtime page describes the option. Note what it
- *     cannot do: the middleware forwards an operations container out of a tool
- *     result, and no Strands agent here returns one, because the tool that
- *     would is never attached to an agent on any doc page. The runtime side is
- *     wired so it is inspectable; the agent side is a doc gap.
+ *     exactly as the A2UI Fixed Schema page's "Registering the runtime" prose
+ *     snippet and the Copilot Runtime page describe the option. It is kept
+ *     because the page prints it, but the fixed-schema demo no longer runs
+ *     through it: the page's demo Code tab ships its own
+ *     `api/copilotkit-a2ui-fixed-schema/route.ts` (single-route mode, plus a
+ *     `defaultCatalogId`), and the demo provider points there. The agent
+ *     behind both is the same `a2ui-fixed-schema` (`display_flight`, from
+ *     CopilotKit's GitHub showcase), so this block is inspectable from
+ *     `/copilot-runtime` but no demo chat runs through it.
  *
  * The dynamic-schema route deliberately does not go through this runtime — it
  * has its own endpoint, where the catalog on the provider is what turns A2UI on.
