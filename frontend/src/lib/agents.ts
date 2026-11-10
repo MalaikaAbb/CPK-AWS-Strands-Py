@@ -26,6 +26,8 @@ export const AGENT_IDS = [
   "headless-complete",
   "multimodal",
   "voice",
+  "reasoning-default",
+  "reasoning-custom",
   "gen-ui-tool-based",
   "tool-rendering",
   "gen-ui-display-only",

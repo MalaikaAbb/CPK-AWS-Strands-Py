@@ -124,6 +124,18 @@ export const NAV: NavGroup[] = [
           "Driving modal state from your own UI with useCopilotChatConfiguration, and capturing thumbs up/down.",
         status: "working",
       },
+      {
+        path: "/generative-ui/reasoning",
+        hasDemo: true,
+        agentId: "reasoning-default",
+        title: "Reasoning",
+        docPath: "/strands/generative-ui/reasoning",
+        summary:
+          "Reasoning tokens drawn inline, in the default Thinking… card or a custom reasoningMessage slot.",
+        status: "partial",
+        statusNote:
+          "Both Code-tab demos and the showcase's Responses-API reasoning agent, verbatim. Typecheck and registry import only — not run against the model or in a browser.",
+      },
     ],
   },
   {

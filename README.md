@@ -204,6 +204,11 @@ Drives modal state from your own button via `useCopilotChatConfiguration`, and s
 ✅ Your button opens and closes the chat, and the thumbs buttons appear on assistant messages only (they render only when a handler is supplied).
 ❌ Your button is inert — `setModalOpen` is undefined because no provider in the tree owns modal state.
 
+**`/generative-ui/reasoning` — Reasoning** ⚠️ (new 2026-11-10, not yet run)
+Reasoning tokens as a message type, with the page's two demos as tabs: the default `CopilotChatReasoningMessage` card, and a custom `ReasoningBlock` in `messageView.reasoningMessage`. Everything is published code, verbatim, on the showcase's `reasoning_agent.py` (`OpenAIResponsesModel`, `gpt-6-luna`, `summary: "detailed"`). Try `Explain step by step why the sky appears blue during the day but red at sunset.`
+✅ A Thinking… card (or the amber banner) fills with the reasoning summary, then the answer follows.
+❌ No reasoning block: the model emitted no summary. Or the server didn't start because `build_reasoning_model` raises without `OPENAI_API_KEY`.
+
 ### Custom Look and Feel
 
 **`/custom-look-and-feel/css` — CSS customization**
@@ -387,6 +392,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/prebuilt-components/sidebar` | `/prebuilt-components/sidebar` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/popup` | `/prebuilt-components/popup` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | Not in the doc sidebar. |
+| `/strands/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | New 2026-11-10. Code-tab demos + showcase reasoning agent verbatim. Typecheck only. |
 | `/strands/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | Not in the doc sidebar. v1/v2 token split — §9.10. |
 | `/strands/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | Not in the doc sidebar. |
 | `/strands/custom-look-and-feel/markdown` | `/custom-look-and-feel/markdown` | ✅ Working | All three snippets verbatim, and they type-check. `my-link` / `my-heading` have no CSS on the page, so example 1 is verifiable only in DevTools. Frontend-only page; `chat-markdown` agent is repo-authored — see §9.22. |
@@ -769,6 +775,8 @@ Grouped as the Strands doc sidebar groups them, with the pages this repo tracks 
 **Get Started** — ▸ [Introduction](https://docs.copilotkit.ai/strands) · ▸ [Quickstart](https://docs.copilotkit.ai/strands/quickstart?agent=bring-your-own) · [CopilotKit CLI](https://docs.copilotkit.ai/strands/cli) · [Build with agents](https://docs.copilotkit.ai/strands/build-with-agents)
 
 **Concepts** — [Architecture](https://docs.copilotkit.ai/strands/concepts/architecture) · [Generative UI](https://docs.copilotkit.ai/strands/concepts/generative-ui-overview) · [Which Hook for Which Job](https://docs.copilotkit.ai/strands/concepts/which-hook) · [OSS vs Enterprise](https://docs.copilotkit.ai/strands/concepts/oss-vs-enterprise) · [Agentic Protocols](https://docs.copilotkit.ai/strands/agentic-protocols)
+
+**Basics — Chat** — [Reasoning](https://docs.copilotkit.ai/strands/generative-ui/reasoning)
 
 **Build Chat UIs — Rich Threads** — [Overview](https://docs.copilotkit.ai/strands/threads) · ▸ [Threads Drawer](https://docs.copilotkit.ai/strands/prebuilt-components/copilot-threads-drawer) · ▸ [Headless Threads](https://docs.copilotkit.ai/strands/headless-threads) · ▸ [Thread & History Lifecycle](https://docs.copilotkit.ai/strands/threads-lifecycle) · ▸ [Synchronize Thread History](https://docs.copilotkit.ai/strands/threads-import) · [Threads & Persistence Architecture](https://docs.copilotkit.ai/strands/premium/threads-explained)
 
