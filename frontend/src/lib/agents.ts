@@ -26,6 +26,9 @@ export const AGENT_IDS = [
   "headless-complete",
   "multimodal",
   "voice",
+  // Components and surfaces: reached only through /api/copilotkit-genui*.
+  "genui",
+  "genui-shop",
   "gen-ui-tool-based",
   "tool-rendering",
   "gen-ui-display-only",
