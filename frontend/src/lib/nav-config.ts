@@ -221,10 +221,10 @@ export const NAV: NavGroup[] = [
         title: "Import & Synchronize History",
         docPath: "/strands/threads-import",
         summary:
-          "Moving existing framework conversations into Intelligence as Rich Threads — a CLI migration with no React surface.",
+          "Copying saved Strands conversations (session files, S3, AgentCore Memory) into Intelligence as Rich Threads — a CLI import with no React surface.",
         status: "reference",
         statusNote:
-          "Nothing to run: the page's own supported-sources table is Google ADK and LangGraph only. There is no Strands importer.",
+          "Since 2026-11-10 the page documents a Strands importer (--source strands-python / strands-typescript; the CLI lists both). Still nothing to run here: this repo keeps conversations in memory, which can't be imported, and a real import needs an Intelligence key.",
       },
     ],
   },

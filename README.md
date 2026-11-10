@@ -254,7 +254,7 @@ All four need CopilotKit Intelligence. Without it they compile and render, and t
 ✅ "New chat" clears to a welcome screen; reopening the id replays that conversation.
 ❌ Open conversation clears instead of replaying — with no store to replay from, which the page states plainly, that is expected.
 
-**`/threads-import`** 📘 — reference only, and not because of this repo: the page's own supported-sources table is Google ADK and LangGraph. There is no Strands importer, so there is nothing to run. See §9.20.
+**`/threads-import`** 📘 — reference only. Since 2026-11-10 the page documents a Strands importer (`npx copilotkit@latest import --source strands-python`, reading session files, S3 or AgentCore Memory). This repo keeps conversations in memory, and the page says those can't be imported, so there is nothing to run. See §9.20.
 
 ### Generative UI
 
@@ -394,7 +394,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/prebuilt-components/copilot-threads-drawer` | `/prebuilt-components/copilot-threads-drawer` | ⚠️ Partial | Integration reproduced in full; locked without an Intelligence key. |
 | `/strands/headless-threads` | `/headless-threads` | ⚠️ Partial | All three snippets run; the page's own step-2/step-3 prop mismatch reconciled — §9.21. |
 | `/strands/threads-lifecycle` | `/threads-lifecycle` | ⚠️ Partial | One runnable component; three snippets call undefined symbols — §9.21. |
-| `/strands/threads-import` | `/threads-import` | 📘 Reference | No Strands importer exists — §9.20. |
+| `/strands/threads-import` | `/threads-import` | 📘 Reference | Strands importer documented 2026-11-10 (CLI lists it); nothing to import here: in-memory sessions — §9.20. |
 | `/strands/multimodal-attachments` | `/multimodal-attachments` | ✅ Working | Images fine on gpt-4o; audio parts are refused by the model. |
 | `/strands/voice` | `/voice` | ✅ Working | Mic needs `OPENAI_API_KEY` in the Next process too. |
 | `/strands/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | Works with no documented backend wiring — see §9.3. |
@@ -500,11 +500,11 @@ The repo carries a doc-drift tracker (`doc-snapshot/`, surfaced at `/doc-sync`).
 | AG-UI | "Enterprise Intelligence Platform" → "CopilotKit Intelligence" | Rebrand only |
 | CopilotPopup | Flagged as a **local snapshot edit, not an upstream change** | No action; snapshot re-verified against live |
 
-### 9.20 There is no Strands thread importer
+### 9.20 Thread import — a Strands importer now exists (resolved 2026-11-10)
 
-[`threads-import`](https://docs.copilotkit.ai/strands/threads-import) sits under `/strands/`, and its own "Supported sources" table lists exactly two: **Google ADK** and **LangGraph**. The prose says "Built-in import currently supports Google ADK and LangGraph, with more sources coming soon," and every link out of the import flow points at `/google-adk/threads-import` or `/langgraph-python/threads-import`. `--source strands` is not an option the CLI offers.
+Until the 2026-11-10 sync, [`threads-import`](https://docs.copilotkit.ai/strands/threads-import) listed only Google ADK, LangGraph and Mastra as import sources. It now documents a Strands importer: Python (`--source strands-python`, reading session files, S3, or AgentCore Memory sessions saved by `AgentCoreMemorySessionManager`) and TypeScript (`--source strands-typescript`, local files or S3 snapshots only). `npx copilotkit@latest import --help` lists both sources, and the old "no Strands importer" gap was removed.
 
-The page is otherwise complete and correct — it is just describing a feature this integration cannot use. `/threads-import` records the commands and says so rather than pretending there is something to run.
+`/threads-import` stays reference-only for this repo's own reason: its agents keep conversations in memory (no Strands `SessionManager`), and the page says in-memory conversations can't be imported. A real import also needs a CopilotKit Intelligence project key. The route records the Python flow as published.
 
 ### 9.21 Three smaller findings across the thread pages
 

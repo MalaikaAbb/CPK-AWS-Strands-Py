@@ -242,14 +242,6 @@ const GAP_LIST: DocGap[] = [
     docPath: "/strands/copilot-runtime",
   },
   {
-    id: "threads-import-no-strands",
-    title: "The thread-import page has no Strands importer",
-    detail:
-      'The page sits under `/strands/` and its own "Supported sources" table lists exactly two: Google ADK and LangGraph. The prose says "Built-in import currently supports Google ADK and LangGraph, with more sources coming soon," and every link out of the flow points at `/google-adk/threads-import` or `/langgraph-python/threads-import`. `--source strands` is not an option the CLI offers, so the whole page is unreachable from this integration.',
-    severity: "blocking",
-    docPath: "/strands/threads-import",
-  },
-  {
     id: "threads-new-thread-shadowed",
     title: "Following both thread pages literally gives you a New-conversation button that silently does nothing",
     detail:
