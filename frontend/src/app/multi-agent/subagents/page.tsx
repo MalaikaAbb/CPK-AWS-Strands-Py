@@ -51,7 +51,7 @@ export default function Page() {
             { file: "backend/src/agents/subagents.py", region: "state-hook" },
             { file: "backend/src/agents/chat_agents.py", region: "subagents-agent" },
           ]}
-          note="First: the doc excerpt, byte-for-byte — re-checked against the live page on 2026-11-10; the only change inside this region is the sub-agent call's model (reasoning_effort="none", gpt-6-luna). Second: _make_subagent_state_from_result, the hook the page names three times and never prints, written here and deliberately kept outside the verbatim region. Third: the wiring no Strands page shows — tools=[…] and ToolBehavior(state_from_result=…) on a Strands Agent, plus a supervisor system prompt without which the model answers directly instead of delegating."
+          note="First: the doc excerpt, byte-for-byte — re-checked against the live page on 2026-11-10; the only change inside this region is the sub-agent call's model (reasoning_effort='none', gpt-6-luna). Second: _make_subagent_state_from_result, the hook the page names three times and never prints, written here and deliberately kept outside the verbatim region. Third: the wiring no Strands page shows — tools=[…] and ToolBehavior(state_from_result=…) on a Strands Agent, plus a supervisor system prompt without which the model answers directly instead of delegating."
         />
       </Panel>
 
