@@ -1,6 +1,6 @@
 import { RouteHeader } from "@/components/route-header";
 import { SourceCode, SourceCodeGroup } from "@/components/source-code";
-import { Panel, TryIt } from "@/components/ui";
+import { Callout, Panel, TryIt } from "@/components/ui";
 
 export default function Page() {
   return (
@@ -26,6 +26,32 @@ export default function Page() {
             expect="A sky-blue card appears with the city name and 'Calling weather API…', then fills in with 68°, Sunny, humidity and wind. The reply does not restate the numbers. Ask about flights instead and you get prose — search_flights has a renderer but no backend tool."
             fail="Raw JSON or the generic catch-all card in place of the WeatherCard — the renderer's name does not match the tool's name."
           />
+        </div>
+      </Panel>
+
+      <Panel title="Grouping tool calls (added 2026-11-10, not runnable on 1.79.1)">
+        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+          The page now says consecutive calls drawn by the default card are
+          folded into one &ldquo;Used 3 tools&rdquo; card. Your own renderers
+          split the group unless they pass <code>group: true</code>.{" "}
+          <code>messageView.toolCallDisplay</code> picks{" "}
+          <code>grouped</code> / <code>line</code> / <code>stacked</code> /{" "}
+          <code>turn</code> / <code>separate</code>, and a <code>group</code>{" "}
+          slot on <code>toolCallsView</code> replaces the group component.
+        </p>
+        <Callout tone="warn" title="None of it exists in the installed CopilotKit">
+          The three snippets are kept byte-for-byte and type-checked, never
+          rendered. In <code>@copilotkit/react-core</code> 1.79.1,{" "}
+          <code>useDefaultRenderTool</code> has no <code>group</code> option,{" "}
+          <code>messageView</code> has no <code>toolCallDisplay</code>, and{" "}
+          <code>toolCallsView</code> has no <code>group</code> slot (all
+          TS2353). <code>MyToolRow</code> and <code>ToolTimeline</code> are
+          never defined. All are under <code>@ts-expect-error</code>. The
+          route&apos;s demo is unchanged; trying the feature needs a newer
+          CopilotKit (1.85.0 is latest, not checked here).
+        </Callout>
+        <div className="mt-3">
+          <SourceCode file="frontend/src/app/generative-ui/tool-rendering/_doc/grouping.tsx" />
         </div>
       </Panel>
 

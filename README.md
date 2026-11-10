@@ -394,7 +394,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/multimodal-attachments` | `/multimodal-attachments` | ✅ Working | Images fine on gpt-4o; audio parts are refused by the model. |
 | `/strands/voice` | `/voice` | ✅ Working | Mic needs `OPENAI_API_KEY` in the Next process too. |
 | `/strands/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | Works with no documented backend wiring — see §9.3. |
-| `/strands/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ✅ Working | Doc now publishes WeatherCard, FlightListCard and parseJsonResult; search_flights renderer added. |
+| `/strands/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ✅ Working | Doc now publishes WeatherCard, FlightListCard and parseJsonResult; search_flights renderer added. 2026-11-10: "Grouping tool calls" (`group: true`, `toolCallDisplay`, `group` slot) is type-checked only; none of it exists in 1.79.1. |
 | `/strands/generative-ui/your-components/display-only` | `/generative-ui/your-components/display-only` | ✅ Working | Not in the doc sidebar. Needs no backend section — see §9.3. |
 | `/strands/generative-ui/your-components/interactive` | `/generative-ui/your-components/interactive` | ✅ Working | Not in the doc sidebar. Page is still four lines — §9.7. |
 | `/strands/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ❌ Broken | `renderers.tsx` has no imports — §9.6. A2UI tool unattached. |
@@ -631,6 +631,9 @@ Four findings:
 Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
 
 **Update 2026-11-10 — the published `generate_a2ui` was rewritten (route unchanged).** It is now `@tool(context=True)` and reads the host catalog from `tool_context.agent.state["agui_context"]` through a new `tools.a2ui_catalog` module (`read_client_catalog`, `validate_client_surface`), which is also unpublished. It feeds the inner model the catalog JSON plus the user's request and the run's own `query_data` results (no longer just the outer model's `context`), pins `catalogId` to the catalog's id with an `enum`, mints `surfaceId` itself, validates the surface before returning, and moved to `reasoning_effort="none", model="gpt-6-luna"`. This addresses finding 2's empty-surface cause on paper. As decided earlier, this route keeps `display_flight` and does not re-add the `generate_a2ui` variant, so the rewrite is untested here, and the `tools` package (finding 4) is still not published.
+
+### 9.30 Tool Call Rendering — "Grouping tool calls" is ahead of the installed CopilotKit
+[tool-rendering](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering), re-fetched 2026-11-10. A new section covers default-card grouping ("Used 3 tools"), `useDefaultRenderTool({ render, group: true })`, `messageView.toolCallDisplay` (`grouped` · `line` · `stacked` · `turn` · `separate`) and a `group` slot on `toolCallsView`. All three snippets are in `generative-ui/tool-rendering/_doc/grouping.tsx`, verbatim inside wrapper components, and type-checked only. In `@copilotkit/react-core` 1.79.1, `group`, `toolCallDisplay` and the `group` slot don't exist (TS2353), and `MyToolRow` / `ToolTimeline` are undefined (TS2304). All are under `@ts-expect-error`. The page's `agent.py` excerpt also shrank to a 90-line prefix (it was 322) of the same revision the Sub-Agents page now prints. That line-count update is left to the Sub-Agents sync PR, which owns `docs_verbatim/`.
 
 ## 10. Troubleshooting
 
