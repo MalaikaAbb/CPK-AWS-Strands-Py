@@ -1,0 +1,15 @@
+/* The page's CSS hides the Drawer's own new-conversation controls:
+
+     copilotkit-threads-drawer::part(new-thread-button),
+     copilotkit-threads-drawer::part(launcher-new-thread) {
+       display: none;
+     }
+
+   Harness change: each selector is prefixed with `.hide-drawer-new-thread`, so
+   the rule applies only on the demo's "Your button only" variant instead of on
+   every drawer in the app once this stylesheet loads. The parts and the
+   declaration are the page's. */
+.hide-drawer-new-thread copilotkit-threads-drawer::part(new-thread-button),
+.hide-drawer-new-thread copilotkit-threads-drawer::part(launcher-new-thread) {
+  display: none;
+}
