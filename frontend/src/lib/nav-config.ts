@@ -259,6 +259,18 @@ export const NAV: NavGroup[] = [
     title: "Generative UI",
     routes: [
       {
+        path: "/generative-ui/state-rendering",
+        hasDemo: true,
+        agentId: "shared-state-streaming",
+        title: "State Rendering",
+        docPath: "/strands/generative-ui/state-rendering",
+        summary:
+          "A document panel rendered from agent.state.document via useAgent, filled by the agent's write_document tool.",
+        status: "partial",
+        statusNote:
+          "Frontend is the Code tab's, verbatim. The page publishes no Strands backend; write_document and its state_from_args hook are borrowed from the GitHub showcase. Strands emits state from complete tool args, so the document arrives whole, not per token. Typecheck only.",
+      },
+      {
         path: "/generative-ui/tool-based",
         hasDemo: true,
         agentId: "gen-ui-tool-based",
