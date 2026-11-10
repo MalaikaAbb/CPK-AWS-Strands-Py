@@ -338,6 +338,10 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 
 ### Shared State
 
+**`/shared-state`** ⚠️ (new 2026-11-10, not yet run) — two-way state: `useAgent` (`OnStateChanged`) reads `notes`, and `agent.setState({ preferences, notes })` writes back. The page has no demo and no Strands backend, so its snippets' source demo (`shared-state-read-write`) is copied verbatim, and so is the showcase agent (`set_notes` + `state_from_args`, plus `with_state_context` for preferences) in `backend/src/agents/shared_state_rw_agent.py`. The `shared-state-read-write` id is shared with `/shared-state/rendering-in-app`, which now runs on this agent too. Try `Remember that I prefer short answers and I'm learning Spanish.`, then edit the tone. ✅ Notes appear in the Agent Scratch pad, and the next answer follows the preferences. ❌ An empty notes card, or preferences ignored.
+
+**`/shared-state/streaming`** ⚠️ (new 2026-11-10, not yet run) — State Streaming: the same `shared-state-streaming` demo and borrowed `write_document` agent as Generative UI › State Rendering. Try `Write a short poem about autumn leaves.` ✅ The poem lands in the panel (whole, since Strands emits state from complete tool args). ❌ The poem appears in the chat instead.
+
 **`/shared-state/rendering-in-app`** ⚠️ — Google ADK's implementation, carried over verbatim on request. The doc's `<Canvas>` reading `agent.state` outside the chat.
 ✅ Whatever the UI writes with `setState` shows in the canvas immediately and survives a chat turn.
 ❌ `setState` writes vanish on the next agent turn.
@@ -412,6 +416,8 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/human-in-the-loop/headless` | `/human-in-the-loop/headless` | ⚠️ Partial | Not yet checked in a browser. The backend is published in full, with one import swapped. The demo file is truncated (`TimeSlotPopup`, `AppSurface` and the `_shared` helper are rebuilt), and `useHeadlessInterrupt` exists nowhere, so the Raw snippet throws. See §9.25. |
 | `/strands/human-in-the-loop/governed-actions` | `/human-in-the-loop/governed-actions` | ⚠️ Partial | Not yet checked in a browser. No backend is published. The `useHumanInTheLoop` half uses the same channel as `/human-in-the-loop`. The `useInterrupt` half never shows its card because it reads `metadata.action` and the bridge sends `metadata.reason`. See §9.26. |
 | `/strands/programmatic-control` | `/programmatic-control` | ✅ Working | Doc replaced the unrunnable snippet with a self-contained AgentTrigger — §9.9. |
+| `/strands/shared-state` | `/shared-state` | ⚠️ Partial | New 2026-11-10. Demo + showcase agent borrowed (page has neither); `shared-state-read-write` id now builds it (also used by rendering-in-app). Typecheck only. |
+| `/strands/shared-state/streaming` | `/shared-state/streaming` | ⚠️ Partial | New 2026-11-10. Same demo/agent as State Rendering; not per token on Strands. Typecheck only. |
 | `/strands/shared-state/rendering-in-app` | `/shared-state/rendering-in-app` | ✅ Working | Doc added a seeded initial state, so the canvas renders on first paint. |
 | `/strands/shared-state/agent-readonly` | `/shared-state/agent-readonly` | ❌ Broken | `setup skipped`; `CopilotKitMiddleware` named but never shown. |
 | `/strands/shared-state/in-app-agent-read` | `/shared-state/in-app-agent-read` | ✅ Working | Page's own `agentId` contradicts its own backend — §9.11. |
@@ -782,7 +788,7 @@ Grouped as the Strands doc sidebar groups them, with the pages this repo tracks 
 
 **Add Agent Powers** — ▸ [Frontend Tools](https://docs.copilotkit.ai/strands/frontend-tools) · ▸ [Human-in-the-Loop](https://docs.copilotkit.ai/strands/human-in-the-loop) (▸ [Headless Interrupts](https://docs.copilotkit.ai/strands/human-in-the-loop/headless) · ▸ [Governed Action Approval UI](https://docs.copilotkit.ai/strands/human-in-the-loop/governed-actions)) · ▸ [Sub-Agents](https://docs.copilotkit.ai/strands/multi-agent/subagents) · ▸ [Agent Config](https://docs.copilotkit.ai/strands/agent-config) · ▸ [Programmatic Control](https://docs.copilotkit.ai/strands/programmatic-control)
 
-**Shared State** — ▸ [Render state in your app](https://docs.copilotkit.ai/strands/shared-state/rendering-in-app) · ▸ [Agent Read-Only Context](https://docs.copilotkit.ai/strands/shared-state/agent-readonly) · ▸ [Reading agent state](https://docs.copilotkit.ai/strands/shared-state/in-app-agent-read) · ▸ [Writing agent state](https://docs.copilotkit.ai/strands/shared-state/in-app-agent-write)
+**Shared State** — [Shared State](https://docs.copilotkit.ai/strands/shared-state) · [State Streaming](https://docs.copilotkit.ai/strands/shared-state/streaming) · ▸ [Render state in your app](https://docs.copilotkit.ai/strands/shared-state/rendering-in-app) · ▸ [Agent Read-Only Context](https://docs.copilotkit.ai/strands/shared-state/agent-readonly) · ▸ [Reading agent state](https://docs.copilotkit.ai/strands/shared-state/in-app-agent-read) · ▸ [Writing agent state](https://docs.copilotkit.ai/strands/shared-state/in-app-agent-write)
 
 **AWS Strands (Python)** — ▸ [Copilot Runtime](https://docs.copilotkit.ai/strands/copilot-runtime) · ▸ [AG-UI](https://docs.copilotkit.ai/strands/ag-ui) · [AWS AgentCore](https://docs.copilotkit.ai/strands/deploy-agentcore) · [Migrate to V2](https://docs.copilotkit.ai/strands/troubleshooting/migrate-to-v2) · [Migrate to 1.10.X](https://docs.copilotkit.ai/strands/troubleshooting/migrate-to-1.10.X) · [Migrate to 1.8.2](https://docs.copilotkit.ai/strands/troubleshooting/migrate-to-1.8.2)
 

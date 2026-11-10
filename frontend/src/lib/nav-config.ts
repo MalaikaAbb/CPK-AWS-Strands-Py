@@ -452,6 +452,30 @@ export const NAV: NavGroup[] = [
     title: "Shared State",
     routes: [
       {
+        path: "/shared-state",
+        hasDemo: true,
+        agentId: "shared-state-read-write",
+        title: "Shared State",
+        docPath: "/strands/shared-state",
+        summary:
+          "Two-way agent state: useAgent reads the agent's notes, agent.setState writes the user's preferences back for the next turn.",
+        status: "partial",
+        statusNote:
+          "No demo on the page and no Strands backend; the snippets' source demo and the showcase agent (set_notes + preferences context) are copied verbatim from GitHub. The shared-state-read-write id now builds that agent for this route and rendering-in-app. Typecheck only.",
+      },
+      {
+        path: "/shared-state/streaming",
+        hasDemo: true,
+        agentId: "shared-state-streaming",
+        title: "State Streaming",
+        docPath: "/strands/shared-state/streaming",
+        summary:
+          "A tool argument mapped into a state key so a document panel can follow the agent's writing through useAgent.",
+        status: "partial",
+        statusNote:
+          "Same demo and borrowed agent as Generative UI › State Rendering. Strands emits state from complete tool args, so the document arrives whole, not per token. Typecheck only.",
+      },
+      {
         path: "/shared-state/rendering-in-app",
         hasDemo: true,
         agentId: "shared-state-read-write",
