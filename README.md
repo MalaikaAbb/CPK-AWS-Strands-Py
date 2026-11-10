@@ -90,7 +90,7 @@ Then open both copies and set the one required value:
 | --- | --- | --- |
 | `OPENAI_API_KEY` | **both** | The model provider key. The Python server passes it to `OpenAIModel(client_args={"api_key": …})`; the Next process needs it only for `/voice`, where transcription goes through OpenAI Whisper. One key, both jobs. |
 | `ANTHROPIC_API_KEY` | backend | Optional. Used only by `strands_agent_anthropic`, the Quickstart's "Using Anthropic instead" agent (the Anthropic side of the toggle on `/quickstart/demo-chat`). Unset, the server still starts and only that agent's runs fail. |
-| `MODEL_ID` | backend | Which OpenAI model every agent runs on. Defaults to `gpt-4o`. Set it to `gpt-5.4` to reproduce the Quickstart's literal value — see §9.1. |
+| `MODEL_ID` | backend | Which OpenAI model every agent runs on. Defaults to `gpt-4o`. Set it to `gpt-6-luna` to run the Quickstart's literal value (unverified) — see §9.1. |
 | `AGENT_HOST` / `AGENT_PORT` | backend | Where uvicorn binds. Defaults to `0.0.0.0:8000`. |
 | `LOG_LEVEL` | backend | Python logging level. Defaults to `INFO`. |
 | `AGENT_URL` | frontend | Where the Next runtime looks for the agent server. Defaults to `http://localhost:8000`. |
@@ -180,7 +180,7 @@ Orientation: the status split, the agent count, how a message travels, and the s
 **`/quickstart` — the bring-your-own path**
 The only page whose backend is published end to end. The demo runs on the page's own `app/providers.tsx` (rendered by a server `layout.tsx`), so the sidebar reaches the agent through the provider's `agent` prop alone. An OpenAI / Anthropic toggle at the top switches between `strands_agent` and `strands_agent_anthropic` (the page's "Using Anthropic instead" model, `claude-sonnet-4-6`) on the same route. Try `Can you tell me a joke?` on each side.
 ✅ Tokens stream a word at a time and render as markdown; flipping the toggle resets the chat and the next reply comes from the other model.
-❌ An error banner — check the Python server is up on `:8000` and `OPENAI_API_KEY` is set. If the error names an unknown model, you have `MODEL_ID=gpt-5.4` set; see §9.1. An authentication error on the Anthropic side means `ANTHROPIC_API_KEY` was not set when the server started. "Agent not found" means the provider's `agent` binding did not reach the sidebar.
+❌ An error banner — check the Python server is up on `:8000` and `OPENAI_API_KEY` is set. If the error names an unknown model, check `MODEL_ID` (the Quickstart's `gpt-6-luna` is unverified, and the old `gpt-5.4` doesn't resolve); see §9.1. An authentication error on the Anthropic side means `ANTHROPIC_API_KEY` was not set when the server started. "Agent not found" means the provider's `agent` binding did not reach the sidebar.
 
 ### Prebuilt Components
 
@@ -429,8 +429,8 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 
 All verified against the live docs on **2026-08-07**, and rendered in-app at `/status` and on each affected route.
 
-### 9.1 The Quickstart names a model that does not exist
-[quickstart](https://docs.copilotkit.ai/strands/quickstart?agent=bring-your-own) sets `model_id="gpt-5.4"`. The callout directly beneath it says the example "uses OpenAI's GPT-4o", and both Shared State pages build the same model with `model_id="gpt-4o"`. **Resolution:** `MODEL_ID` env var, defaulting to `gpt-4o`; the literal value is preserved as `DOC_QUICKSTART_MODEL_ID` in `backend/src/agents/model.py` and shown on the Quickstart route.
+### 9.1 The Quickstart's model id (changed 2026-11-10, unverified)
+[quickstart](https://docs.copilotkit.ai/strands/quickstart?agent=bring-your-own) used to set `model_id="gpt-5.4"`, which did not resolve, under a callout saying "GPT-4o". Since 2026-11-10 it sets `model_id="gpt-6-luna"` (TypeScript: `modelId: "gpt-6-luna"`) and the callout is gone. The new id hasn't been checked against the API. Both Shared State pages still build the model with `model_id="gpt-4o"`. **Resolution:** `MODEL_ID` env var, defaulting to `gpt-4o`; the literal value is preserved as `DOC_QUICKSTART_MODEL_ID` in `backend/src/agents/model.py` and shown on the Quickstart route.
 
 ### 9.2 Seven pages emit a placeholder where the backend snippet belongs
 The published markdown contains, verbatim:
@@ -657,7 +657,7 @@ The Strands tree has no Common Issues page; its troubleshooting content is the Q
 | Chat shows an error banner immediately | Agent server not running, or unreachable | `curl http://localhost:8000/health`. Start it with `uv run python src/agent_server.py` from `backend/`. |
 | `404` from the agent server | Missing trailing slash | Each agent is a mounted sub-app, so its AG-UI root is `/<agent-id>/`. `lib/agents.ts` adds the slash; hand-written curl often does not. |
 | Connection refused on `localhost` but not `127.0.0.1` | IPv6/IPv4 resolution | The Quickstart's own accordion says to try `0.0.0.0` or `127.0.0.1` instead of `localhost`. Set `AGENT_URL=http://127.0.0.1:8000`. |
-| Every agent fails with an unknown-model error | `MODEL_ID=gpt-5.4` | That is the Quickstart's literal value and it does not resolve. Unset it or use `gpt-4o` — §9.1. |
+| Every agent fails with an unknown-model error | `MODEL_ID` set to an id the key can't use | `gpt-5.4` (the Quickstart's old value) doesn't resolve, and `gpt-6-luna` (its current one) is unverified. Unset it or use `gpt-4o` — §9.1. |
 | Mic button missing on `/voice` | Runtime advertises no transcription | `transcriptionService` exists only on the **v2** runtime; the v1 wrapper drops it silently. Also check `basePath` matches the route directory exactly. |
 | Mic button present, transcription 4xx | `OPENAI_API_KEY` not visible to Next | It must be in `frontend/.env.local`, not only `backend/.env`. The sample-audio button works without it. |
 | Two inspectors on one page / a hung dev server | Two `CopilotKitProvider`s each mounting an inspector | Fatal — two lit custom elements spin into an assert loop. Any route with a nested provider must be listed in `frontend/src/lib/inspector.ts`. |
