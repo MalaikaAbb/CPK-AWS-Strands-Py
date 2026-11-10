@@ -366,7 +366,7 @@ export const NAV: NavGroup[] = [
           "The agent replies with a { root, elements } spec that @json-render/react draws against a component catalog, plugged in through the assistant-message slot.",
         status: "partial",
         statusNote:
-          "Two published versions, both verbatim. The prose snippets are broken by design here: <Renderer catalog> is kept, so any spec that passes the prose Zod catalog throws \"useVisibility must be used within a VisibilityProvider\". The embedded demo source (defineRegistry + JSONUIProvider, its own route.ts and Strands agent) is predicted to work — confirmed only by server-rendering, not yet in a browser.",
+          "The page now prints only its demo source (defineRegistry + JSONUIProvider, its own route.ts and Strands agent), all verbatim here; catalog.ts imports zod4 (alias installed), so it type-checks with no suppression. The old prose snippets were removed (2026-11-10). Predicted to work — confirmed only by server-rendering, not yet in a browser.",
       },
       {
         path: "/generative-ui/hashbrown",
