@@ -43,6 +43,7 @@ export const AGENT_IDS = [
   "open-gen-ui-advanced",
   "mcp-apps",
   "frontend_tools",
+  "gen-ui-interrupt",
   "hitl-in-chat",
   "interrupt-headless",
   "governed-actions",

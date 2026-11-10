@@ -262,6 +262,17 @@ REGISTRY: dict[str, RegisteredAgent] = {
             "and no published part of that file defines it.",
         ),
     ),
+    # Pausing the Agent for Input (useInterrupt) and the HITL overview embed
+    # the `gen-ui-interrupt` demo on the same agent; the showcase mounts both
+    # interrupt ids on one `/interrupt/` agent. Same gap as above.
+    "gen-ui-interrupt": RegisteredAgent(
+        interrupt_agent.build_interrupt_agent,
+        "/strands/human-in-the-loop/useInterrupt",
+        gaps=(
+            "`interrupt_agent.py` imports `_build_model` from `agents.agent`, "
+            "and no published part of that file defines it.",
+        ),
+    ),
     # Governed Action Approval UI publishes no backend. Both agents are this
     # repo's; see `agents/hitl_agents.py`.
     "governed-actions": RegisteredAgent(
