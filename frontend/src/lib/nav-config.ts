@@ -165,6 +165,18 @@ export const NAV: NavGroup[] = [
           "All three snippets run exactly as published. The page defines no CSS for its my-link and my-heading classes, so the first example is only visible in DevTools. No backend code is printed; the agent is repo-authored.",
       },
       {
+        path: "/custom-look-and-feel/reasoning-messages",
+        hasDemo: true,
+        agentId: "reasoning-default",
+        title: "Reasoning Messages",
+        docPath: "/strands/custom-look-and-feel/reasoning-messages",
+        summary:
+          "The reasoning card part by part: custom header and content sub-slots, and a render-prop layout over the built-in pieces.",
+        status: "partial",
+        statusNote:
+          "All four snippets verbatim; the render-prop slot assignment fails TS2322 (kept under @ts-expect-error, cast in the demo). Runs on the showcase reasoning agent. Typecheck only — not run against the model or in a browser.",
+      },
+      {
         path: "/custom-look-and-feel/headless-ui",
         hasDemo: true,
         agentId: "headless-simple",
