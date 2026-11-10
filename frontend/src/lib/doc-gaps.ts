@@ -346,22 +346,6 @@ const GAP_LIST: DocGap[] = [
     docPath: "/strands/generative-ui/json-render",
   },
   {
-    id: "hashbrown-hook-api",
-    title: "The Hashbrown prose renderer calls all three hooks with an API @hashbrownai/react 0.6.1 does not have",
-    detail:
-      "`useJsonParser(content)` has no schema, `useUiKit({ catalog, value })` has no `components`, and the returned kit object is dropped into JSX instead of `kit.render(value)`. Kept as published under three `@ts-expect-error` lines; the first assistant message throws `TypeError: Cannot read properties of undefined (reading 'forEach')` from `createUiKit` (confirmed in the library source). The page's own demo tab (`exposeComponent`, `useUiKit({ components })`, `kit.render`) is correct.",
-    severity: "blocking",
-    docPath: "/strands/generative-ui/hashbrown",
-  },
-  {
-    id: "hashbrown-example-shape",
-    title: "The Hashbrown prose example output is not a shape Hashbrown renders",
-    detail:
-      "The prose shows `{ \"type\": \"MetricCard\", \"title\": … }` and a `Stack` tree; Hashbrown 0.6.1's UI kit schema is a `{ \"ui\": [{ \"<name>\": { \"props\": {…} } }] }` envelope, and `Stack` is in no catalog on the page. The page's own agent prompt (`byoc_hashbrown.py`) asks for the envelope, so it contradicts the prose above it.",
-    severity: "degraded",
-    docPath: "/strands/generative-ui/hashbrown",
-  },
-  {
     id: "byoc-snippets-unpublished-code",
     title: "The prose snippets reference code the page never shows",
     detail:
@@ -492,12 +476,6 @@ export const ROUTE_GAPS: Record<string, GapId[]> = {
   ],
 
   "/generative-ui/hashbrown": [
-    "hashbrown-hook-api",
-    "hashbrown-example-shape",
-    "byoc-snippets-vs-demo",
-    "byoc-snippets-unpublished-code",
-    "byoc-slot-type",
-    "byoc-suggestions-outside-provider",
     "byoc-build-model-unpublished",
   ],
 };

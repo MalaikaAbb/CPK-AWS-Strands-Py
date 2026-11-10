@@ -301,9 +301,7 @@ The doc page's entire published source is four lines — see §9.7.
 - *doc snippets* — **Try:** `Break down revenue by category as a pie chart`. ✅ (expected, by design) a red box: `Error: useVisibility must be used within a VisibilityProvider`. For `Show me a sales dashboard.` expect an empty assistant bubble and no error: the agent's `MetricCard` root (`label`/string `value`) fails the prose Zod schema (`title`/number `value`), so nothing reaches `<Renderer>`. No suggestion pills. ❌ A chart renders with no error; the installed library then accepts the prose call, and the route needs revisiting.
 - *doc demo source* — **Try:** the `Sales dashboard` pill. ✅ Three pills. Raw JSON streams in a normal bubble, then turns into a metric card with charts once the object closes. *Not yet observed in a browser; server-rendered only.* ❌ The JSON stays raw because the reply used a type outside MetricCard/BarChart/PieChart or wasn't one balanced object. Check the Inspector.
 
-**`/generative-ui/hashbrown`** ⚠️ — the agent streams a `{ "ui": [...] }` envelope that `@hashbrownai/react` parses progressively and renders through a UI kit. Same two-version toggle: *doc snippets* (`/api/copilotkit-byoc-hashbrown`, agent `byoc_hashbrown`) and *doc demo source* (`/api/copilotkit-declarative-hashbrown`, agent `declarative-hashbrown-demo`). Both reach the page's own agent at `/byoc-hashbrown/`.
-- *doc snippets* — **Try:** `Show me a sales dashboard.` ✅ (expected, by design) a red box as soon as the first assistant message mounts: `TypeError: Cannot read properties of undefined (reading 'forEach')`, from `useUiKit({ catalog, value })`. No suggestion pills. ❌ A reply renders with no error.
-- *doc demo source* — **Try:** the `Sales dashboard` pill. ✅ Three pills. The metric card appears first, then the charts fill in while the reply is still streaming. *Not yet observed in a browser; parser and kit server-rendered only.* ❌ An empty bubble means the reply began with prose or a code fence, which the parser rejects. A plain-prose reply gives the same empty bubble, because this renderer has no fallback.
+**`/generative-ui/hashbrown`** ⚠️ — the agent streams a `{ "ui": [...] }` envelope that `@hashbrownai/react` parses progressively and renders through a UI kit. Since 2026-11-10 the page prints only its demo source (`/api/copilotkit-declarative-hashbrown`, agent `declarative-hashbrown-demo` → the page's agent at `/byoc-hashbrown/`). The old prose-snippet mode and its repo-authored `/api/copilotkit-byoc-hashbrown` route were removed. **Try:** the `Sales dashboard` pill. ✅ Three pills; the metric card appears first, then the charts fill in while the reply is still streaming. *Not yet observed in a browser; parser and kit server-rendered only.* ❌ An empty bubble means the reply began with prose or a code fence, which the parser rejects. A plain-prose reply gives the same empty bubble, because this renderer has no fallback.
 
 ### App Control
 
@@ -406,7 +404,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/generative-ui/open-generative-ui` | `/generative-ui/open-generative-ui` | ⚠️ Partial | Not yet checked in a browser. No agent published; `Chat` / `VISUALIZATION_DESIGN_SKILL` / `./suggestions` undefined; advanced snippet truncated — §9.23. |
 | `/strands/generative-ui/mcp-apps` | `/generative-ui/mcp-apps` | ⚠️ Partial | Not yet checked in a browser. Fallback URL `https://mcp.excalidraw.com` 308s and the middleware refuses redirects — works only with `MCP_SERVER_URL=…/mcp` — §9.24. No agent published. |
 | `/strands/generative-ui/json-render` | `/generative-ui/json-render` | ⚠️ Partial | Not yet checked in a browser. Two published versions, both verbatim. *doc snippets* ❌ by design: `<Renderer catalog>` throws `useVisibility must be used within a VisibilityProvider`. *doc demo source* predicted ✅ (server-rendered). §9.27. |
-| `/strands/generative-ui/hashbrown` | `/generative-ui/hashbrown` | ⚠️ Partial | Not yet checked in a browser. Two published versions, both verbatim. *doc snippets* ❌ by design: `useUiKit({ catalog, value })` throws `Cannot read properties of undefined (reading 'forEach')`. *doc demo source* predicted ✅ (server-rendered). §9.28. |
+| `/strands/generative-ui/hashbrown` | `/generative-ui/hashbrown` | ⚠️ Partial | Not yet checked in a browser. The page now prints only its demo source (verbatim here); the old prose-snippet mode was removed 2026-11-10 — §9.28. |
 | `/strands/frontend-tools` | `/frontend-tools` | ✅ Working | Works despite `setup skipped` — §9.3. |
 | `/strands/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | Works despite `setup skipped`; the page's other pattern is LangGraph-only. |
 | `/strands/human-in-the-loop/headless` | `/human-in-the-loop/headless` | ⚠️ Partial | Not yet checked in a browser. The backend is published in full, with one import swapped. The demo file is truncated (`TimeSlotPopup`, `AppSurface` and the `_shared` helper are rebuilt), and `useHeadlessInterrupt` exists nowhere, so the Raw snippet throws. See §9.25. |
@@ -618,21 +616,10 @@ Both Shared State pages say "follow the instructions in the Getting Started guid
 - **Demo tabs vs installed versions.** The demo pins `@json-render/*` 0.18. Under 0.21, `catalog.ts`'s three `props: z.object(…)` fail typecheck, because 0.21 expects Zod 4 and the repo's `zod` is 3.25. `registry.tsx`'s `defineRegistry` also fails, because 0.21 requires an `actions` key. Each is kept under `// @ts-expect-error`. Both are type-only: server-rendering shows the catalog builds and the registry renders.
 - **`from agents.agent import _build_model`** in the agent tab. No page defines it. `backend/src/agents/agent.py` is a repo-authored shim onto `get_model()`, and the agent module itself is unedited.
 
-### 9.28 Hashbrown — the prose snippets target an API Hashbrown 0.6.1 does not have
-[hashbrown](https://docs.copilotkit.ai/strands/generative-ui/hashbrown), fetched 2026-09-30. It has the same two-version structure as §9.27. The prose uses `/api/copilotkit-byoc-hashbrown` with agent `byoc_hashbrown`. The demo tabs use `/api/copilotkit-declarative-hashbrown` with agent `declarative-hashbrown-demo`. Both proxy to the page's `byoc_hashbrown.py` (byte-exact).
-- **All three prose Hashbrown calls are wrong for 0.6.1**, and each is kept under `// @ts-expect-error`:
-  - `useJsonParser(content)` passes no schema.
-  - `useUiKit({ catalog, value })` should be `{ components }` built with `exposeComponent`.
-  - `{ui}` in JSX should be `ui.render(value)`.
-
-  The first assistant message throws `TypeError: Cannot read properties of undefined (reading 'forEach')` from `createUiKit`, confirmed in the library source.
-- **The prose example output is not Hashbrown's shape.** It shows `{ "type": "MetricCard", … }` and a `Stack` tree. The kit parses a `{ "ui": [{ "<name>": { "props": {…} } }] }` envelope, which is what the page's own agent prompt asks for.
-- **Slot type and suggestions.** These are the same two prose issues as §9.27, handled the same way.
-- **Unpublished in the prose:** the `AssistantMessage` import, a `./charts` module (the demo has only `charts/bar-chart` and `charts/pie-chart`), and the runtime route. These are repo-authored.
-- **The demo tabs type-check against 0.6.1 with no suppression.** Server-rendering the kit on a partial stream renders progressively. A reply that starts with prose or a code fence yields `value: undefined`, so the renderer returns `null`, and there is no fallback bubble.
-- **`_build_model`**: the same shim as §9.27.
-
----
+### 9.28 Hashbrown — resolved 2026-11-10: the page now prints its demo source
+[hashbrown](https://docs.copilotkit.ai/strands/generative-ui/hashbrown), re-fetched 2026-11-10. The page used to publish prose snippets with three Hashbrown calls that 0.6.1 doesn't support (`useJsonParser(content)` with no schema, `useUiKit({ catalog, value })`, `{ui}` in JSX), a `{ "type": "MetricCard" }` example output, and a separate `/api/copilotkit-byoc-hashbrown` route. Its prose now **is** the demo's `page.tsx`, `chat.tsx` and `hashbrown-renderer.tsx`, and its example output is the `{ "ui": [...] }` envelope the agent prompt asks for. The old snippets, their written-in helpers and the repo-authored runtime route were removed, and so were their doc-gap entries.
+- **Version:** the page says the bundled demos pin `@hashbrownai/*` to `0.5.0-beta.4`, and to use your integration's own versions. This repo stays on `0.6.1`, where the published files type-check with no suppression.
+- **Still open:** `byoc_hashbrown.py` imports `_build_model` from `agents.agent`, which no page defines (shim in `backend/src/agents/agent.py`).
 
 ### 9.29 A2UI · Fixed Schema — the page describes `display_flight`, publishes `generate_a2ui`, and the real one is on GitHub
 
@@ -750,7 +737,7 @@ aws-strands-py/
         ├── api/copilotkit-mcp-apps/[[...slug]]/route.ts # MCP Apps (mcpApps.servers → Excalidraw)
         ├── api/copilotkit-byoc-{json-render,hashbrown}/[[...slug]]/route.ts # repo-authored runtimes the prose snippets point at
         ├── api/copilotkit-declarative-{json-render,hashbrown}/route.ts # the doc demos' own route.ts, byte-exact
-        ├── generative-ui/{json-render,hashbrown}/_snippets/    # the page's prose blocks + repo-authored helpers/re-exports
+        ├── generative-ui/json-render/_snippets/    # the page's prose blocks + repo-authored helpers/re-exports
         ├── generative-ui/{json-render,hashbrown}/_demo-source/ # the page's embedded-demo code tabs, verbatim
         ├── <doc-route>/page.tsx                     # notes + real source
         ├── <doc-route>/demo-chat/page.tsx           # the live, chrome-free surface

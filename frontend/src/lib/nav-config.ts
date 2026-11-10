@@ -378,7 +378,7 @@ export const NAV: NavGroup[] = [
           "The agent streams a UI envelope that @hashbrownai/react parses progressively and renders through a UI kit, plugged in through the assistant-message slot.",
         status: "partial",
         statusNote:
-          "Two published versions, both verbatim. The prose snippets are broken by design here: all three Hashbrown calls are kept, so the first assistant message throws \"Cannot read properties of undefined (reading 'forEach')\". The embedded demo source (exposeComponent kit, its own route.ts and Strands agent) is predicted to work — confirmed only by server-rendering, not yet in a browser.",
+          "The page now prints only its demo source (exposeComponent kit, its own route.ts and Strands agent), all verbatim here; the old prose snippets were removed with it (2026-11-10). Predicted to work — confirmed only by server-rendering, not yet in a browser. Repo stays on @hashbrownai 0.6.1; the page names 0.5.0-beta.4.",
       },
     ],
   },
