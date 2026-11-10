@@ -169,3 +169,7 @@ Diffing the first 794 lines against the excerpt: this copy adds
 `_MessagesSnapshotWrapper.run`, and turns `manage_sales_todos` into a
 `@tool(context=True)` that writes native agent state. The prose pages are
 printing an older file than the demo tab.
+
+## `a2ui_helpers.py`
+
+The Python helper snippet from [`generative-ui/a2ui`](https://docs.copilotkit.ai/strands/generative-ui/a2ui) (added 2026-11-10), byte-exact. It uses `from copilotkit import a2ui`, a package this Strands backend doesn't install, and its arguments (`surface_id`, `components`, `data`, `catalog_id=...`) are placeholders. Not imported. The Fixed Schema route builds the same `a2ui_operations` envelope by hand in `display_flight`.
