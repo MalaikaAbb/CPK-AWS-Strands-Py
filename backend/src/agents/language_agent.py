@@ -10,8 +10,9 @@ Reproduced as printed, with two deviations, both forced:
 
   * the snippet calls `os.getenv` without importing `os`, so the import is
     added here — otherwise the module does not load;
-  * `model_id="gpt-4o"` becomes `get_model()`, which is the same call with the
-    id read from `MODEL_ID`. See `agents/model.py` for why.
+  * `model_id="gpt-6-luna"` (it was `"gpt-4o"` until the 2026-11-10 sync)
+    becomes `get_model()`, which is the same call with the id read from
+    `MODEL_ID`. See `agents/model.py` for why.
 
 Nothing else here is this repo's. In particular there is no tool that writes
 `language` back, because the docs never show one — shared state on this page is
