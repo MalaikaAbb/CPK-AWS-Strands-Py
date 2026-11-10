@@ -375,6 +375,12 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 ✅ Left: the lifecycle above plus `onMessagesSnapshotEvent` and `onStateSnapshotEvent`, with the counter settling well short of 18 — the absences are the finding, see §9.8 for the one that resolves in your favour. Right: the reply assembled twice from the same callbacks — `textMessageBuffer` streaming character by character, and `agent.messages` via `onMessagesChanged` staying empty until the deltas are folded in, then landing whole.
 ❌ Nothing at all, or `onRunErrorEvent`. Both reply boxes empty while the delta counter climbs means the buffer is not being read.
 
+**`/deploy-agentcore`** 📘 — reference. Deploying a Strands agent to AWS Bedrock AgentCore with a server-side Copilot Runtime (it has to be server-side, because AgentCore calls are SigV4/OAuth2-signed). Needs AWS credentials, so it's summarized rather than run.
+
+**`/troubleshooting/migrate-to-v2`** 📘 — reference, checked against this repo. There are no v1 imports. But `frontend/package.json` pins `@ag-ui/client` 1.0.3 while `@copilotkit/runtime` depends on 1.0.2, so `npm ci` leaves duplicate copies. That is the page's own warning, and the likely cause of the `TS2769` `AgentsConfig` errors on the runtime routes.
+
+**`/troubleshooting/migrate-to-1.10.X`** · **`/troubleshooting/migrate-to-1.8.2`** 📘 — reference. These are v1-era guides (plain-object messages and `useCopilotChatHeadless_c`; thumbs handlers and dark mode). The thumbs handlers run on `/prebuilt-components/chat-controls`.
+
 ---
 
 ## 8. Testing checklist / current status
@@ -420,6 +426,10 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/agent-config` | `/agent-config` | ❌ Broken | Backend sample is LangGraph — §9.5. |
 | `/strands/copilot-runtime` | `/copilot-runtime` | ✅ Working | Page never mentions Strands — §9.13. |
 | `/strands/ag-ui` | `/ag-ui` | ✅ Working | Also the probe for which AG-UI events the adapter emits. |
+| `/strands/deploy-agentcore` | `/deploy-agentcore` | 📘 Reference | New 2026-11-10. Needs AWS + AgentCore; summarized. |
+| `/strands/troubleshooting/migrate-to-v2` | `/troubleshooting/migrate-to-v2` | 📘 Reference | New 2026-11-10. Repo pins `@ag-ui/client` 1.0.3 vs the runtime's 1.0.2 → duplicate copies (the page's warning). |
+| `/strands/troubleshooting/migrate-to-1.10.X` | `/troubleshooting/migrate-to-1.10.X` | 📘 Reference | New 2026-11-10. v1 APIs. |
+| `/strands/troubleshooting/migrate-to-1.8.2` | `/troubleshooting/migrate-to-1.8.2` | 📘 Reference | New 2026-11-10. Thumbs handlers exercised on chat-controls. |
 
 **Not tracked by this repo** (present in the Strands sidebar, outside the requested page list): CLI, Build with agents, all five Concepts pages, the six Rich Threads pages, Reasoning, the eight `/backend/*` Runtime pages, Inspector, VS Code Extension, all four Intelligence Platform pages, AWS AgentCore, and the three migration guides.
 

@@ -556,6 +556,44 @@ export const NAV: NavGroup[] = [
           "useAgent as the AbstractAgent handle, and agent.subscribe walking the full event stream live.",
         status: "working",
       },
+      {
+        path: "/deploy-agentcore",
+        title: "AWS AgentCore",
+        docPath: "/strands/deploy-agentcore",
+        summary:
+          "Deploying the Strands agent to AWS Bedrock AgentCore behind a server-side Copilot Runtime, which signs the AgentCore calls.",
+        status: "reference",
+        statusNote:
+          "Deployment guide that needs AWS credentials and an AgentCore runtime; summarized, not run.",
+      },
+      {
+        path: "/troubleshooting/migrate-to-v2",
+        title: "Migrate to V2",
+        docPath: "/strands/troubleshooting/migrate-to-v2",
+        summary:
+          "Moving hooks, UI components and styles to @copilotkit/react-core/v2, with the v1→v2 hook map and the single-@ag-ui/client rule.",
+        status: "reference",
+        statusNote:
+          "Checked against this repo: no v1 imports, but package.json pins @ag-ui/client 1.0.3 while the runtime depends on 1.0.2, leaving duplicate copies (the page's own warning).",
+      },
+      {
+        path: "/troubleshooting/migrate-to-1.10.X",
+        title: "Migrate to 1.10.X",
+        docPath: "/strands/troubleshooting/migrate-to-1.10.X",
+        summary:
+          "The v1-era move to plain-object messages, message.generativeUI and the useCopilotChatHeadless_c hook.",
+        status: "reference",
+        statusNote: "v1 APIs this repo doesn't use; kept as reference.",
+      },
+      {
+        path: "/troubleshooting/migrate-to-1.8.2",
+        title: "Migrate to 1.8.2",
+        docPath: "/strands/troubleshooting/migrate-to-1.8.2",
+        summary:
+          "The 1.8.2 look-and-feel refresh: thumbs feedback handlers, per-message action buttons and built-in dark mode.",
+        status: "reference",
+        statusNote: "Thumbs handlers are exercised on /prebuilt-components/chat-controls.",
+      },
     ],
   },
   {
