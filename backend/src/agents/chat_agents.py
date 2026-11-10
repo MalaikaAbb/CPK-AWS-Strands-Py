@@ -248,6 +248,12 @@ def frontend_tools_agent() -> StrandsAgent:
     return build_chat_agent(name="frontend_tools", system_prompt=_ASSISTANT)
 
 
+def webmcp_agent() -> StrandsAgent:
+    """/webmcp: the page publishes no agent. The Quickstart agent with the
+    generic prompt; `searchOrders` reaches it as a frontend tool."""
+    return build_chat_agent(name="webmcp", system_prompt=_ASSISTANT)
+
+
 def hitl_agent() -> StrandsAgent:
     return build_chat_agent(name="hitl_in_chat", system_prompt=_ASSISTANT)
 
