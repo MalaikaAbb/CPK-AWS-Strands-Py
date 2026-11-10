@@ -648,6 +648,8 @@ Four findings:
 
 Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
 
+**Update 2026-11-10 — the published `generate_a2ui` was rewritten (route unchanged).** It is now `@tool(context=True)` and reads the host catalog from `tool_context.agent.state["agui_context"]` through a new `tools.a2ui_catalog` module (`read_client_catalog`, `validate_client_surface`), which is also unpublished. It feeds the inner model the catalog JSON plus the user's request and the run's own `query_data` results (no longer just the outer model's `context`), pins `catalogId` to the catalog's id with an `enum`, mints `surfaceId` itself, validates the surface before returning, and moved to `reasoning_effort="none", model="gpt-6-luna"`. This addresses finding 2's empty-surface cause on paper. As decided earlier, this route keeps `display_flight` and does not re-add the `generate_a2ui` variant, so the rewrite is untested here, and the `tools` package (finding 4) is still not published.
+
 ## 10. Troubleshooting
 
 The Strands tree has no Common Issues page; its troubleshooting content is the Quickstart's accordion plus three migration guides. Translated into this repo's symptoms:
