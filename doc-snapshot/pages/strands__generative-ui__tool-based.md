@@ -50,7 +50,7 @@ around a real backend tool, see [Tool rendering](/strands/generative-ui/tool-ren
     from ag_ui_strands import StrandsAgent
 
     strands_agent = Agent(
-        model=OpenAIModel(model_id="gpt-4o"),
+        model=OpenAIModel(model_id="gpt-6-luna"),
         system_prompt=SYSTEM_PROMPT,
         tools=[],
     )
