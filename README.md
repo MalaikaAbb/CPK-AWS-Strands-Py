@@ -204,6 +204,11 @@ Drives modal state from your own button via `useCopilotChatConfiguration`, and s
 ✅ Your button opens and closes the chat, and the thumbs buttons appear on assistant messages only (they render only when a handler is supplied).
 ❌ Your button is inert — `setModalOpen` is undefined because no provider in the tree owns modal state.
 
+**`/generative-ui/reasoning` — Reasoning** ⚠️ (new 2026-11-10, not yet run)
+Reasoning tokens as a message type, with the page's two demos as tabs: the default `CopilotChatReasoningMessage` card, and a custom `ReasoningBlock` in `messageView.reasoningMessage`. Everything is the page's Code-tab code, verbatim, on its `reasoning_agent.py` (`OpenAIResponsesModel`, `gpt-6-luna`, `summary: "detailed"`). The printed pages' `./suggestions` import is not printed on the page, so it is a `// doc:` comment and there are no chips. Try `Explain step by step why the sky appears blue during the day but red at sunset.`
+✅ A Thinking… card (or the amber banner) fills with the reasoning summary, then the answer follows.
+❌ No reasoning block: the model emitted no summary. Or the server didn't start because `build_reasoning_model` raises without `OPENAI_API_KEY`.
+
 ### Custom Look and Feel
 
 **`/custom-look-and-feel/css` — CSS customization**
@@ -396,6 +401,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/prebuilt-components/sidebar` | `/prebuilt-components/sidebar` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/popup` | `/prebuilt-components/popup` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | Not in the doc sidebar. |
+| `/strands/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | New 2026-11-10. Code-tab demos + reasoning agent verbatim. Doc gap: `suggestions.ts` is imported but not printed (kept as `// doc:` comments). Typecheck only. |
 | `/strands/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | Not in the doc sidebar. v1/v2 token split — §9.10. |
 | `/strands/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | Not in the doc sidebar. New `toolCallsView` tab (2026-11-10) typechecks but hasn't been run. |
 | `/strands/custom-look-and-feel/markdown` | `/custom-look-and-feel/markdown` | ✅ Working | All three snippets verbatim, and they type-check. `my-link` / `my-heading` have no CSS on the page, so example 1 is verifiable only in DevTools. Frontend-only page; `chat-markdown` agent is repo-authored — see §9.22. |
@@ -646,6 +652,12 @@ Four findings:
 
 Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
 
+### 9.31 Reasoning — the printed demos import an unprinted `suggestions.ts`
+[Reasoning](https://docs.copilotkit.ai/strands/generative-ui/reasoning): the Code tab prints both demo `page.tsx` files, `reasoning-block.tsx`, `reasoning_agent.py` and the runtime route. Both `page.tsx` files import and call `./suggestions` (`useReasoningDefaultSuggestions` / `useReasoningCustomSuggestions`), but `suggestions.ts` is not printed. The import and call are kept as `// doc:` comments, so the demos run without suggestion chips.
+**Update 2026-11-10 — the published `generate_a2ui` was rewritten (route unchanged).** It is now `@tool(context=True)` and reads the host catalog from `tool_context.agent.state["agui_context"]` through a new `tools.a2ui_catalog` module (`read_client_catalog`, `validate_client_surface`), which is also unpublished. It feeds the inner model the catalog JSON plus the user's request and the run's own `query_data` results (no longer just the outer model's `context`), pins `catalogId` to the catalog's id with an `enum`, mints `surfaceId` itself, validates the surface before returning, and moved to `reasoning_effort="none", model="gpt-6-luna"`. This addresses finding 2's empty-surface cause on paper. As decided earlier, this route keeps `display_flight` and does not re-add the `generate_a2ui` variant, so the rewrite is untested here, and the `tools` package (finding 4) is still not published.
+
+### 9.30 Tool Call Rendering — "Grouping tool calls" is ahead of the installed CopilotKit
+[tool-rendering](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering), re-fetched 2026-11-10. A new section covers default-card grouping ("Used 3 tools"), `useDefaultRenderTool({ render, group: true })`, `messageView.toolCallDisplay` (`grouped` · `line` · `stacked` · `turn` · `separate`) and a `group` slot on `toolCallsView`. All three snippets are in `generative-ui/tool-rendering/_doc/grouping.tsx`, verbatim inside wrapper components, and type-checked only. In `@copilotkit/react-core` 1.79.1, `group`, `toolCallDisplay` and the `group` slot don't exist (TS2353), and `MyToolRow` / `ToolTimeline` are undefined (TS2304). All are under `@ts-expect-error`. The page's `agent.py` excerpt also shrank to a 90-line prefix (it was 322) of the same revision the Sub-Agents page now prints. That line-count update is left to the Sub-Agents sync PR, which owns `docs_verbatim/`.
 ### 9.33 State Rendering — not supported on Strands Python, nothing printed
 [State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering) (re-checked 2026-11-11): the rendered page replaces each code block with "Not supported on AWS Strands (Python)" and has no Code tab. The Markdown export skips the Strands backend setup and the `state-streaming-middleware` snippet, and prints only a `useAgent` fragment of the showcase's `page.tsx`. Not printed: the demo's `page.tsx`, `demo-layout.tsx`, `document-view.tsx`, `suggestions.ts`, and any `shared-state-streaming` agent (`write_document` + `ToolBehavior(state_from_args=…)`). The route is reference-only and broken.
 
@@ -768,6 +780,8 @@ Grouped as the Strands doc sidebar groups them, with the pages this repo tracks 
 **Get Started** — ▸ [Introduction](https://docs.copilotkit.ai/strands) · ▸ [Quickstart](https://docs.copilotkit.ai/strands/quickstart?agent=bring-your-own) · [CopilotKit CLI](https://docs.copilotkit.ai/strands/cli) · [Build with agents](https://docs.copilotkit.ai/strands/build-with-agents)
 
 **Concepts** — [Architecture](https://docs.copilotkit.ai/strands/concepts/architecture) · [Generative UI](https://docs.copilotkit.ai/strands/concepts/generative-ui-overview) · [Which Hook for Which Job](https://docs.copilotkit.ai/strands/concepts/which-hook) · [OSS vs Enterprise](https://docs.copilotkit.ai/strands/concepts/oss-vs-enterprise) · [Agentic Protocols](https://docs.copilotkit.ai/strands/agentic-protocols)
+
+**Basics — Chat** — [Reasoning](https://docs.copilotkit.ai/strands/generative-ui/reasoning)
 
 **Build Chat UIs — Rich Threads** — [Overview](https://docs.copilotkit.ai/strands/threads) · ▸ [Threads Drawer](https://docs.copilotkit.ai/strands/prebuilt-components/copilot-threads-drawer) · ▸ [Headless Threads](https://docs.copilotkit.ai/strands/headless-threads) · ▸ [Thread & History Lifecycle](https://docs.copilotkit.ai/strands/threads-lifecycle) · ▸ [Synchronize Thread History](https://docs.copilotkit.ai/strands/threads-import) · [Threads & Persistence Architecture](https://docs.copilotkit.ai/strands/premium/threads-explained)
 
