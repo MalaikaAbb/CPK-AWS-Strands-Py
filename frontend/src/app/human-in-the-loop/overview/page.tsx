@@ -42,9 +42,20 @@ export default function Page() {
             useInterrupt page.
           </li>
           <li>
-            <code>_shared/interrupt-fallback-slots.ts</code>, imported by{" "}
-            <code>gen-ui-interrupt</code>, is not in the doc bundle.{" "}
-            <strong>Borrowed from CopilotKit&apos;s GitHub showcase</strong>.
+            Doc gap: <code>gen-ui-interrupt/page.tsx</code> imports{" "}
+            <code>_shared/interrupt-fallback-slots.ts</code> and{" "}
+            <code>./suggestions</code>, which the page never prints. Both
+            imports (and the suggestions call) are kept as{" "}
+            <code>// doc:</code> comments; the{" "}
+            <code>generateFallbackSlots()</code> call stays verbatim under{" "}
+            <code>@ts-expect-error</code>, so it throws only if an interrupt
+            payload arrives without slots.
+          </li>
+          <li>
+            <code>card.tsx</code>, <code>button.tsx</code> and{" "}
+            <code>badge.tsx</code> are minimal stand-ins, not from the page: the
+            printed <code>time-picker-card.tsx</code> imports them but the page
+            never prints them.
           </li>
         </ul>
       </Callout>

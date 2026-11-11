@@ -9,8 +9,8 @@ import {
 } from "@copilotkit/react-core/v2";
 import type { TimeSlot } from "./_components/time-picker-card";
 import { TimePickerCard } from "./_components/time-picker-card";
-import { generateFallbackSlots } from "../_shared/interrupt-fallback-slots";
-import { useGenUiInterruptSuggestions } from "./suggestions";
+// doc: import { generateFallbackSlots } from "../_shared/interrupt-fallback-slots"; (that module is not printed on the page)
+// doc: import { useGenUiInterruptSuggestions } from "./suggestions"; (suggestions.ts is not printed on the page)
 
 // Shape the backend `schedule_meeting` tool pauses with: its `interrupt()`
 // `reason` payload. `slots` is absent on the Strands path (the tool passes only
@@ -118,7 +118,7 @@ function InterruptChat({
 }: {
   setResumeFailed: (failed: boolean) => void;
 }) {
-  useGenUiInterruptSuggestions();
+  // doc: useGenUiInterruptSuggestions();
 
   // Native interrupt path. The backend `schedule_meeting` tool calls Strands'
   // `tool_context.interrupt(...)`; the @ag-ui/aws-strands bridge finishes the
@@ -133,7 +133,8 @@ function InterruptChat({
       const slots =
         payload.slots && payload.slots.length > 0
           ? payload.slots
-          : generateFallbackSlots();
+          : // @ts-expect-error verbatim doc code: `generateFallbackSlots` comes from an unprinted module (TS2304); throws if the payload has no slots
+            generateFallbackSlots();
       return (
         <TimePickerCard
           topic={payload.topic ?? "a call"}
