@@ -134,7 +134,7 @@ export const NAV: NavGroup[] = [
           "Reasoning tokens drawn inline, in the default Thinking… card or a custom reasoningMessage slot.",
         status: "partial",
         statusNote:
-          "Both Code-tab demos and the showcase's Responses-API reasoning agent, verbatim. Typecheck and registry import only — not run against the model or in a browser.",
+          "Both Code-tab demos and the Code tab's Responses-API reasoning agent, verbatim. Doc gap: the printed pages import ./suggestions, which is not printed — kept as // doc: comments, no chips. Typecheck and registry import only — not run against the model or in a browser.",
       },
     ],
   },

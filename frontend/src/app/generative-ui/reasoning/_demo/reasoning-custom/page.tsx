@@ -19,7 +19,7 @@
 import type { CopilotChatReasoningMessage } from "@copilotkit/react-core/v2";
 import { CopilotKit, CopilotChat } from "@copilotkit/react-core/v2";
 import { ReasoningBlock } from "./reasoning-block";
-import { useReasoningCustomSuggestions } from "./suggestions";
+// doc: import { useReasoningCustomSuggestions } from "./suggestions"; (suggestions.ts is not printed on the page)
 
 // @region[reasoning-block-render]
 const AGENT_ID = "reasoning-custom";
@@ -37,7 +37,7 @@ export default function ReasoningCustomDemo() {
 }
 
 function Chat() {
-  useReasoningCustomSuggestions();
+  // doc: useReasoningCustomSuggestions();
   return (
     <CopilotChat
       agentId={AGENT_ID}

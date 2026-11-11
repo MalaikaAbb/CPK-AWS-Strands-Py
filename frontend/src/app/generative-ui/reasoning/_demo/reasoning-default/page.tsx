@@ -13,7 +13,7 @@
 // `messageView.reasoningMessage` slot is overridden.
 
 import { CopilotKit, CopilotChat } from "@copilotkit/react-core/v2";
-import { useReasoningDefaultSuggestions } from "./suggestions";
+// doc: import { useReasoningDefaultSuggestions } from "./suggestions"; (suggestions.ts is not printed on the page)
 
 // @region[default-reasoning-zero-config]
 const AGENT_ID = "reasoning-default";
@@ -31,7 +31,7 @@ export default function ReasoningDefaultDemo() {
 }
 
 function Chat() {
-  useReasoningDefaultSuggestions();
+  // doc: useReasoningDefaultSuggestions();
   return <CopilotChat agentId={AGENT_ID} className="h-full rounded-2xl" />;
 }
 // @endregion[default-reasoning-zero-config]

@@ -44,6 +44,12 @@ export default function Page() {
           The showcase mounts one agent at <code>/reasoning/</code> for both
           ids; this repo&apos;s registry mounts the same factory under each id.
         </p>
+        <p className="mt-2">
+          Doc gap: both printed <code>page.tsx</code> files import and call a{" "}
+          <code>./suggestions</code> hook, but the page never prints{" "}
+          <code>suggestions.ts</code>. Those two lines are kept as{" "}
+          <code>// doc:</code> comments, so the demos show no suggestion chips.
+        </p>
       </Callout>
 
       <Callout tone="warn" title="Not run in this change">

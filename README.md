@@ -205,7 +205,7 @@ Drives modal state from your own button via `useCopilotChatConfiguration`, and s
 ❌ Your button is inert — `setModalOpen` is undefined because no provider in the tree owns modal state.
 
 **`/generative-ui/reasoning` — Reasoning** ⚠️ (new 2026-11-10, not yet run)
-Reasoning tokens as a message type, with the page's two demos as tabs: the default `CopilotChatReasoningMessage` card, and a custom `ReasoningBlock` in `messageView.reasoningMessage`. Everything is published code, verbatim, on the showcase's `reasoning_agent.py` (`OpenAIResponsesModel`, `gpt-6-luna`, `summary: "detailed"`). Try `Explain step by step why the sky appears blue during the day but red at sunset.`
+Reasoning tokens as a message type, with the page's two demos as tabs: the default `CopilotChatReasoningMessage` card, and a custom `ReasoningBlock` in `messageView.reasoningMessage`. Everything is the page's Code-tab code, verbatim, on its `reasoning_agent.py` (`OpenAIResponsesModel`, `gpt-6-luna`, `summary: "detailed"`). The printed pages' `./suggestions` import is not printed on the page, so it is a `// doc:` comment and there are no chips. Try `Explain step by step why the sky appears blue during the day but red at sunset.`
 ✅ A Thinking… card (or the amber banner) fills with the reasoning summary, then the answer follows.
 ❌ No reasoning block: the model emitted no summary. Or the server didn't start because `build_reasoning_model` raises without `OPENAI_API_KEY`.
 
@@ -392,7 +392,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/prebuilt-components/sidebar` | `/prebuilt-components/sidebar` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/popup` | `/prebuilt-components/popup` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | Not in the doc sidebar. |
-| `/strands/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | New 2026-11-10. Code-tab demos + showcase reasoning agent verbatim. Typecheck only. |
+| `/strands/generative-ui/reasoning` | `/generative-ui/reasoning` | ⚠️ Partial | New 2026-11-10. Code-tab demos + reasoning agent verbatim. Doc gap: `suggestions.ts` is imported but not printed (kept as `// doc:` comments). Typecheck only. |
 | `/strands/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | Not in the doc sidebar. v1/v2 token split — §9.10. |
 | `/strands/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | Not in the doc sidebar. |
 | `/strands/custom-look-and-feel/markdown` | `/custom-look-and-feel/markdown` | ✅ Working | All three snippets verbatim, and they type-check. `my-link` / `my-heading` have no CSS on the page, so example 1 is verifiable only in DevTools. Frontend-only page; `chat-markdown` agent is repo-authored — see §9.22. |
@@ -653,6 +653,9 @@ Four findings:
 4. **The `tools` package has no `__init__.py`.** The tab ships `tools/generate_a2ui.py`, a module inside the package, but not the package, so `from tools import build_a2ui_operations_from_tool_call` fails as published.
 
 Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
+
+### 9.31 Reasoning — the printed demos import an unprinted `suggestions.ts`
+[Reasoning](https://docs.copilotkit.ai/strands/generative-ui/reasoning): the Code tab prints both demo `page.tsx` files, `reasoning-block.tsx`, `reasoning_agent.py` and the runtime route. Both `page.tsx` files import and call `./suggestions` (`useReasoningDefaultSuggestions` / `useReasoningCustomSuggestions`), but `suggestions.ts` is not printed. The import and call are kept as `// doc:` comments, so the demos run without suggestion chips.
 
 ## 10. Troubleshooting
 
