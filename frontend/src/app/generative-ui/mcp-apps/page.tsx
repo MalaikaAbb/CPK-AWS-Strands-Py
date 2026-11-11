@@ -105,12 +105,23 @@ export default function Page() {
           <code>&lt;CopilotKit&gt;</code> gives them your page&apos;s origin, for
           trusted widgets only.
         </p>
-        <Callout tone="warn" title="Kept byte-for-byte, type-checked, not run">
+        <Callout tone="warn" title="Kept verbatim except the agent, type-checked, not run">
           <ul className="list-disc space-y-1 pl-5">
             <li>
-              The Intelligence route type-checks as published, but needs a{" "}
-              <code>CPK_INTELLIGENCE_API_KEY</code>, and its agent is a{" "}
-              <code>BuiltInAgent</code>, not Strands. It isn&apos;t mounted.
+              <strong>Agent: Strands, not the doc&apos;s BuiltInAgent.</strong>{" "}
+              The page&apos;s Intelligence route builds a framework-generic{" "}
+              <code>BuiltInAgent</code>. The file here keeps every CopilotKit
+              part verbatim (<code>intelligence</code>,{" "}
+              <code>identifyUser</code>, <code>mcpApps</code>, handler) but
+              points <code>agents.default</code> at this route&apos;s Strands{" "}
+              <code>mcp-apps</code> agent via <code>HttpAgent</code>, as the
+              page&apos;s Code-tab <code>route.ts</code> does. Doc gap, README
+              §9.24.
+            </li>
+            <li>
+              Requires premium — not testable locally. It needs a{" "}
+              <code>CPK_INTELLIGENCE_API_KEY</code>, so it type-checks but
+              isn&apos;t mounted.
             </li>
             <li>
               <code>mcpApps</code> is not a prop of <code>&lt;CopilotKit&gt;</code>{" "}

@@ -354,7 +354,7 @@ export const NAV: NavGroup[] = [
           "A remote MCP server (Excalidraw) supplies both the tool and its UI; the runtime's mcpApps config does the rest, with a plain chat on the frontend.",
         status: "partial",
         statusNote:
-          "Runtime statement verbatim. Its fallback URL https://mcp.excalidraw.com 308-redirects to /mcp and the middleware refuses redirects, so it only discovers tools with MCP_SERVER_URL set to …/mcp (.env.example does). Not yet observed in a browser; no agent is published.",
+          "Runtime statement verbatim. Its fallback URL https://mcp.excalidraw.com 308-redirects to /mcp and the middleware refuses redirects, so it only discovers tools with MCP_SERVER_URL set to …/mcp (.env.example does). Not yet observed in a browser; no agent is published. The Intelligence snippet's BuiltInAgent is swapped for the Strands mcp-apps agent (agent: Strands, not the doc's BuiltInAgent); that route needs a premium Intelligence key and is not mounted.",
       },
       {
         path: "/generative-ui/json-render",
