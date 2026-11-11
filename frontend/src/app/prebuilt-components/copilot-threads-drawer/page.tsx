@@ -67,10 +67,39 @@ export default function Page() {
         <SourceCode file="frontend/src/app/prebuilt-components/copilot-threads-drawer/demo-chat/page.tsx" />
       </Panel>
 
+      <Panel title="Your own New conversation button (added 2026-11-10)">
+        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+          The page now shows two ways to start a conversation from your own
+          button. The uncontrolled one calls <code>startNewThread()</code>{" "}
+          from <code>useCopilotChatConfiguration()</code> inside the same
+          configuration provider as the drawer. The controlled one keeps{" "}
+          <code>threadId</code> in React state and hands the drawer{" "}
+          <code>onThreadSelect</code> / <code>onNewThread</code>. CSS parts{" "}
+          <code>new-thread-button</code> and <code>launcher-new-thread</code>{" "}
+          hide the drawer&apos;s own controls. All three are demo variants.
+        </p>
+        <div className="mt-4">
+          <TryIt
+            prompts={["Hello", "Tell me a fact about owls"]}
+            expect="Your button: after a message, the header button clears the chat to the welcome screen and no drawer row stays selected; the new thread gets a row after its first run. Your button only: the drawer's own New Conversation row and (+) launcher are gone. Controlled: both the drawer row and the inline button start a new thread."
+            fail="The header button does nothing (it isn't inside the configuration provider), or the controlled variant logs a warning when clicking drawer rows (threadId set without the callbacks). The controlled variant is printed with no agentId, so if it resolves to 'default' (which this runtime lacks) it shows no threads."
+          />
+        </div>
+        <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+          Harness changes: the snippets run inside this route&apos;s existing{" "}
+          <code>&lt;CopilotKit agent=&quot;agentic_chat&quot;&gt;</code> rather than
+          the page&apos;s <code>&lt;CopilotKitProvider&gt;</code>, the uncontrolled
+          variant passes <code>agentId</code> as the main demo does, the
+          controlled snippet gets the <code>useState</code> import it omits, and
+          the CSS is scoped to its variant. Without an Intelligence key every
+          variant shows the drawer&apos;s locked view.
+        </p>
+      </Panel>
+
       <Panel title="The props it takes, all optional">
         <dl className="space-y-2 text-sm">
           {[
-            ["agentId", "Whose threads to list. Defaults to the chat configuration's agent — passed here because this runtime has no `default`."],
+            ["agentId", "Whose threads to list. Defaults to the nearest chat configuration's agent, then `agentId` on <CopilotKitProvider>, then \"default\". Passed here because this runtime has no `default`."],
             ["label", "Accessible name for the drawer region and listbox. Defaults to \"Threads\"; the redesigned header has no visible title."],
             ["recentLabel", "Heading above the list. Defaults to \"Recent Conversations\"."],
             ["onThreadSelect", "Escape hatch to take over selection yourself."],

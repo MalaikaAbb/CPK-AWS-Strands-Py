@@ -215,6 +215,7 @@ The doc's HALCYON theme, scoped to a wrapper class. Send a message that produces
 Three overrides at three depths: `welcomeScreen`, `messageView.assistantMessage`, `input.disclaimer`.
 ✅ Before the first message: the custom gradient welcome card. After: every assistant reply is wrapped in a tinted card with a "slot" badge, and the disclaimer under the composer is visibly tagged.
 ❌ Any of the three renders as the default component.
+Second tab (added 2026-11-10, not yet run): the page's `toolCallsView` snippet, verbatim, on the `tool-rendering` agent. Try `What's the weather in Tokyo?` ✅ the `get_weather` call sits in a dashed rounded border. ❌ no border, so the sub-slot was ignored.
 
 **`/custom-look-and-feel/markdown` — markdown rendering** (agent `chat-markdown`)
 The `messageView.assistantMessage.markdownRenderer` slot in its three forms, one tab each on the demo: Streamdown `components` map, class string, replacement component. Send `Reply with a level-2 markdown heading, then a paragraph containing a markdown link to https://copilotkit.ai`, then switch tabs — the conversation carries over, so the same reply is redrawn by each renderer.
@@ -242,7 +243,7 @@ Needs `OPENAI_API_KEY` in `frontend/.env.local`.
 
 All four need CopilotKit Intelligence. Without it they compile and render, and the feature is locked — which is itself the thing these routes document.
 
-**`/prebuilt-components/copilot-threads-drawer`** ⚠️ — the drop-in conversation sidebar, with the page's integration reproduced in full. Send a message, press "New Conversation", send another, then click back to the first row.
+**`/prebuilt-components/copilot-threads-drawer`** ⚠️ — the drop-in conversation sidebar, with the page's integration reproduced in full. Send a message, press "New Conversation", send another, then click back to the first row. Since 2026-11-10 the demo also has the page's own-button variants (uncontrolled `startNewThread()`, CSS parts hidden, controlled `threadId`). They typecheck but haven't been run, and need an Intelligence key like the rest of the route.
 ✅ Two auto-named rows; clicking one replays its history into the chat. Nothing in the demo tracks an active `threadId` — that is the page's actual claim.
 ❌ A locked panel where the list should be: that is the no-license state the page documents, not a bug. An empty list *with* a key means the runtime is in SSE mode — check `/copilot-runtime`.
 
@@ -388,10 +389,10 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/prebuilt-components/popup` | `/prebuilt-components/popup` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/chat-controls` | `/prebuilt-components/chat-controls` | ✅ Working | Not in the doc sidebar. |
 | `/strands/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | Not in the doc sidebar. v1/v2 token split — §9.10. |
-| `/strands/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | Not in the doc sidebar. |
+| `/strands/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | Not in the doc sidebar. New `toolCallsView` tab (2026-11-10) typechecks but hasn't been run. |
 | `/strands/custom-look-and-feel/markdown` | `/custom-look-and-feel/markdown` | ✅ Working | All three snippets verbatim, and they type-check. `my-link` / `my-heading` have no CSS on the page, so example 1 is verifiable only in DevTools. Frontend-only page; `chat-markdown` agent is repo-authored — see §9.22. |
 | `/strands/custom-look-and-feel/headless-ui` | `/custom-look-and-feel/headless-ui` | ✅ Working | Not in the doc sidebar. |
-| `/strands/prebuilt-components/copilot-threads-drawer` | `/prebuilt-components/copilot-threads-drawer` | ⚠️ Partial | Integration reproduced in full; locked without an Intelligence key. |
+| `/strands/prebuilt-components/copilot-threads-drawer` | `/prebuilt-components/copilot-threads-drawer` | ⚠️ Partial | Integration reproduced in full; locked without an Intelligence key. Own-button / controlled / CSS-parts variants added 2026-11-10, not yet run. |
 | `/strands/headless-threads` | `/headless-threads` | ⚠️ Partial | All three snippets run; the page's own step-2/step-3 prop mismatch reconciled — §9.21. |
 | `/strands/threads-lifecycle` | `/threads-lifecycle` | ⚠️ Partial | One runnable component; three snippets call undefined symbols — §9.21. |
 | `/strands/threads-import` | `/threads-import` | 📘 Reference | No Strands importer exists — §9.20. |
