@@ -14,119 +14,30 @@ export default function Page() {
           The chat&apos;s assistant-message slot is swapped for a renderer that
           feeds the streaming reply to Hashbrown&apos;s partial-JSON parser and
           draws each finished node through a UI kit, so a dashboard fills in
-          while the agent is still typing. The Strands page publishes this
-          example <strong>twice</strong> — prose code blocks, and the code tabs
-          of its embedded demo — and they target different Hashbrown APIs. The
-          demo has a toggle and mounts each one unedited.
+          while the agent is still typing.
         </p>
       </Panel>
 
-      <Panel title="Mode 1 — doc snippets (broken by design)">
-        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          The prose <code>page.tsx</code> and <code>hashbrown-renderer.tsx</code>,
-          verbatim. The imports they leave out were written in (see below); the
-          three Hashbrown calls were left exactly as printed.
+      <Callout tone="info" title="The page now publishes one version (2026-11-10)">
+        <p>
+          The page used to print prose snippets with a different Hashbrown API
+          (<code>useUiKit(&#123; catalog, value &#125;)</code>, broken by design
+          here) next to its embedded demo. Its prose is now the demo&apos;s own{" "}
+          <code>page.tsx</code>, <code>chat.tsx</code> and{" "}
+          <code>hashbrown-renderer.tsx</code>, which match the copies below
+          (only a header comment differs). So the old snippets, their written-in
+          helpers and the repo-authored <code>/api/copilotkit-byoc-hashbrown</code>{" "}
+          route were removed.
         </p>
-        <div className="mt-4">
-          <TryIt
-            prompts={["Show me a sales dashboard.", "Break down sales by region."]}
-            expect={
-              <>
-                <strong>An error is expected</strong> as soon as the first
-                assistant message mounts, before any JSON matters. The demo is
-                replaced by a red box reading{" "}
-                <code>
-                  TypeError: Cannot read properties of undefined (reading
-                  &apos;forEach&apos;)
-                </code>{" "}
-                — <code>useUiKit</code> was given <code>{"{ catalog, value }"}</code>,
-                so <code>createUiKit</code> iterates an undefined{" "}
-                <code>components</code>. No suggestion pills appear.
-              </>
-            }
-            fail={
-              <>
-                A reply renders with no error — the installed Hashbrown would
-                then accept the prose calls and this route needs revisiting. Or
-                a network error: check the backend has{" "}
-                <code>byoc-hashbrown</code> in <code>/health</code>.
-              </>
-            }
-          />
-        </div>
-        <div className="mt-4">
-          <Callout tone="warn" title="Kept as published, with @ts-expect-error">
-            <ul className="list-disc space-y-1 pl-5">
-              <li>
-                <code>useJsonParser(message.content ?? &quot;&quot;)</code> —
-                0.6.1 takes <code>(json, schema)</code>. On its own this does
-                not throw.
-              </li>
-              <li>
-                <code>useUiKit(&#123; catalog, value: parsed &#125;)</code> —
-                0.6.1 takes <code>&#123; components &#125;</code> built with{" "}
-                <code>exposeComponent</code>. <strong>This is the line that
-                throws.</strong>
-              </li>
-              <li>
-                <code>&#123;ui&#125;</code> in JSX — the kit is an object,
-                drawn with <code>ui.render(value)</code>.
-              </li>
-              <li>
-                <code>page.tsx</code>&apos;s{" "}
-                <code>messageView=&#123;&#123; assistantMessage: HashBrownAssistantMessage &#125;&#125;</code>{" "}
-                — slot typed as <code>typeof CopilotChatAssistantMessage</code>{" "}
-                in CopilotKit 1.75. Type-only.
-              </li>
-            </ul>
-            <p className="mt-2">
-              Also as published: <code>useConfigureSuggestions</code> runs
-              outside the page&apos;s own <code>&lt;CopilotKit&gt;</code>, and
-              the prose example output (<code>{"{ \"type\": \"MetricCard\", … }"}</code>,
-              a <code>Stack</code> tree) is not the{" "}
-              <code>{"{ \"ui\": [...] }"}</code> envelope Hashbrown parses —
-              the page&apos;s own agent prompt asks for the envelope.
-            </p>
-          </Callout>
-        </div>
-        <div className="mt-4">
-          <SourceCodeGroup
-            files={[
-              { file: `${DIR}/_snippets/page.tsx` },
-              { file: `${DIR}/_snippets/hashbrown-renderer.tsx` },
-            ]}
-          />
-        </div>
-      </Panel>
+        <p className="mt-2">
+          The page says the bundled demos pin <code>@hashbrownai/*</code> to{" "}
+          <code>0.5.0-beta.4</code>. This repo stays on <code>0.6.1</code>,
+          where the published files type-check with no suppression. The page
+          also says to use the versions in your own <code>package.json</code>.
+        </p>
+      </Callout>
 
-      <Panel title="Mode 1 — written in (repo-authored, not from the docs)">
-        <ul className="mb-4 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
-          <li>
-            The <code>AssistantMessage</code> type import.
-          </li>
-          <li>
-            <code>metric-card.tsx</code> and <code>charts.ts</code> —
-            re-exports of the components the page publishes in its demo tabs.
-            The prose imports <code>./charts</code>, but the demo only has{" "}
-            <code>charts/bar-chart</code> and <code>charts/pie-chart</code>.
-          </li>
-          <li>
-            <code>/api/copilotkit-byoc-hashbrown</code> — the runtime route the
-            prose points at, serving agent id <code>byoc_hashbrown</code>.
-          </li>
-        </ul>
-        <SourceCodeGroup
-          files={[
-            { file: `${DIR}/_snippets/charts.ts` },
-            { file: `${DIR}/_snippets/metric-card.tsx` },
-            {
-              file: "frontend/src/app/api/copilotkit-byoc-hashbrown/[[...slug]]/route.ts",
-            },
-          ]}
-        />
-      </Panel>
-
-      <Panel title="Mode 2 — doc demo source (verbatim)">
+      <Panel title="The demo source (verbatim)">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
           Every code tab of the page&apos;s embedded demo, unedited: a UI kit of{" "}
           <code>metric</code>, <code>pieChart</code>, <code>barChart</code>,{" "}

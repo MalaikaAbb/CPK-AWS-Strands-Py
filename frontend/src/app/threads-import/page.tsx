@@ -1,156 +1,125 @@
 import { RouteHeader } from "@/components/route-header";
 import { Callout, CodeBlock, Panel } from "@/components/ui";
 
-const DRY_RUN = `# The two sources the importer supports. Neither is Strands.
-npx copilotkit@latest import --source adk --dry-run
-npx copilotkit@latest import --source langgraph --dry-run`;
+// The page's Python commands, as published (re-fetched 2026-11-10). The
+// TypeScript tab uses the same flow with STRANDS_TS_IMPORT_* variables and
+// `--source strands-typescript`.
+const SOURCE = `export STRANDS_PY_IMPORT_SOURCE_ID="my-strands-app"
+export STRANDS_PY_IMPORT_AGENT_IDS="support"
+export STRANDS_PY_IMPORT_END_USER_ID="user-123"`;
 
-const DESTINATION = `# The importer reads the process environment — it does not load .env
-# or .copilotkit/project.json automatically.
-export INTELLIGENCE_API_URL="https://..."
-export INTELLIGENCE_API_KEY="cpk_..."`;
+const LOCAL_FILES = `export STRANDS_PY_IMPORT_STORAGE="filesystem"
+export STRANDS_PY_IMPORT_ROOT="/absolute/path/to/sessions"
+export STRANDS_PY_IMPORT_FORMAT="records"`;
+
+const S3 = `export STRANDS_PY_IMPORT_STORAGE="s3"
+export STRANDS_PY_IMPORT_AWS_REGION="us-east-1"
+export STRANDS_PY_IMPORT_S3_BUCKET="my-strands-bucket"
+export STRANDS_PY_IMPORT_S3_PREFIX="sessions/"
+export STRANDS_PY_IMPORT_FORMAT="records"`;
+
+const AGENTCORE = `export STRANDS_PY_IMPORT_STORAGE="agentcore"
+export STRANDS_PY_IMPORT_AWS_REGION="us-east-1"
+export STRANDS_PY_IMPORT_FORMAT="records"
+export STRANDS_PY_IMPORT_AGENTCORE_MEMORY_ID="my-memory-id"
+export STRANDS_PY_IMPORT_AGENTCORE_ACTOR_IDS="actor-123"`;
+
+const DRY_RUN = `npx copilotkit@latest import --source strands-python --dry-run`;
 
 const AGENT_MAP = `{
-  "support-agent": "support-agent",
-  "sales-agent": "sales-agent"
+  "support": "support-agent"
 }`;
+
+const DESTINATION = `export INTELLIGENCE_API_URL="https://..."
+export CPK_INTELLIGENCE_API_KEY="cpk-..."`;
+
+const IMPORT = `npx copilotkit@latest import --source strands-python --agent-map ./agent-map.json`;
+
+const REPLACE = `npx copilotkit@latest import \\
+  --source strands-python \\
+  --agent-map ./agent-map.json \\
+  --replace`;
 
 export default function Page() {
   return (
     <>
       <RouteHeader path="/threads-import" />
 
-      <Callout tone="warn" title="Strands is not a supported import source">
+      <Callout tone="info" title="Strands is now a supported import source (2026-11-10)">
         <p>
-          This page sits in the Strands doc tree and its own &quot;Supported
-          sources&quot; table lists exactly two: <strong>Google ADK</strong> and{" "}
-          <strong>LangGraph</strong>. The prose says &quot;Built-in import
-          currently supports Google ADK and LangGraph, with more sources coming
-          soon.&quot; Every link out of the flow goes to{" "}
-          <code>/google-adk/threads-import</code> or{" "}
-          <code>/langgraph-python/threads-import</code>; there is no Strands
-          equivalent to link to.
+          Until this sync the page listed only Google ADK, LangGraph and
+          Mastra. It now documents a Strands importer for Python and
+          TypeScript, and the published CLI agrees:{" "}
+          <code>npx copilotkit@latest import --help</code> lists{" "}
+          <code>strands-python</code> and <code>strands-typescript</code>.
         </p>
         <p className="mt-2">
-          So there is nothing to run here. <code>--source strands</code> is not
-          an option the CLI offers, and this repo does not invent one. The route
-          exists to record the commands the page publishes and the fact that
-          they do not apply to this integration.
+          The route stays reference-only, and for this repo&apos;s own reason
+          now: the agents here keep conversations in memory (no Strands{" "}
+          <code>SessionManager</code>), and the page is clear that in-memory
+          conversations can&apos;t be imported. A real import also needs a
+          CopilotKit Intelligence project key.
         </p>
       </Callout>
 
       <Panel title="What it demonstrates">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          Bringing conversations that already exist in a framework&apos;s own
-          store into CopilotKit Intelligence as Rich Threads, so they show up in
-          the same thread UI as new ones — without replacing the native storage
-          or analytics you already have. It is a one-off CLI migration followed
-          by ordinary CopilotKit runs.
+          Copying Strands conversations recorded before Intelligence was
+          connected into Intelligence, so they open in the same Threads Drawer
+          or <code>useThreads</code> UI as new ones. It&apos;s a one-off CLI
+          import: no live delivery, and no ongoing replication. The Python
+          importer reads session files, S3, or AgentCore Memory sessions saved
+          by <code>AgentCoreMemorySessionManager</code>. The TypeScript one
+          reads local files or S3 snapshots only, since its AgentCore Memory
+          histories are text-only.
         </p>
-        <p className="mt-3 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          It is the only one of the four thread pages with no React surface at
-          all. There is no hook, no component and no runtime option — the whole
-          feature is <code>npx copilotkit@latest import</code>, which is why
-          this route is reference rather than a demo.
-        </p>
-      </Panel>
-
-      <Panel title="What the importer moves, and what it does not">
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-400">
-              Imported
-            </p>
-            <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
-              <li>user, assistant, tool, system and developer messages</li>
-              <li>tool calls and tool results</li>
-              <li>reasoning traces, where the source exposes them</li>
-              <li>media that can be resolved during extraction</li>
-              <li>original timestamps</li>
-              <li>import provenance and per-conversation outcomes</li>
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-rose-700 dark:text-rose-400">
-              Not imported
-            </p>
-            <ul className="mt-1 list-disc space-y-1 pl-5 text-sm text-slate-700 dark:text-slate-300">
-              <li>agent state snapshots</li>
-              <li>framework transport noise</li>
-              <li>LangSmith traces</li>
-              <li>unsupported source stores</li>
-            </ul>
-          </div>
-        </div>
       </Panel>
 
       <Panel
-        title="The commands, as published"
-        description="Recorded for completeness. Neither source applies to a Strands backend."
+        title="The Python flow, as published"
+        description="Recorded for completeness. Nothing here is run, because this repo saves no sessions."
       >
         <div className="space-y-4">
-          <CodeBlock code={DRY_RUN} filename="Dry run" language="bash" />
+          <CodeBlock code={SOURCE} filename="Source (all storages)" language="bash" />
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            A dry run reads the source, discovers agent keys, counts
-            conversations, reports skips and estimates upload size{" "}
-            <em>without</em> opening an import batch — and needs no Intelligence
-            URL or key at all.
+            <code>STRANDS_PY_IMPORT_END_USER_ID</code> must be the user id your
+            runtime&apos;s <code>identifyUser</code> returns. Every selected
+            conversation is assigned to that one user.
           </p>
-          <CodeBlock
-            code={AGENT_MAP}
-            filename="agent-map.json"
-            language="json"
-          />
+          <CodeBlock code={LOCAL_FILES} filename="Local files" language="bash" />
+          <CodeBlock code={S3} filename="S3" language="bash" />
+          <CodeBlock code={AGENTCORE} filename="AgentCore Memory" language="bash" />
           <p className="text-sm text-slate-600 dark:text-slate-400">
-            Each source agent key maps to the <code>agentId</code> your live
-            runtime uses. Keeping the labels aligned is what stops imported
-            history and future traffic splitting across two ids.
+            Format is <code>records</code> for <code>S3SessionManager</code> or{" "}
+            <code>session_&lt;id&gt;/session.json</code> stores, and{" "}
+            <code>snapshots</code> for{" "}
+            <code>…/snapshots/snapshot_latest.json</code> layouts.
           </p>
-          <CodeBlock
-            code={DESTINATION}
-            filename="Destination, before a real import"
-            language="bash"
-          />
-          <p className="text-sm text-slate-600 dark:text-slate-400">
-            Note the trap the page flags: a CLI-created starter writes these to{" "}
-            <code>.env</code>, but{" "}
-            <strong>the importer does not read <code>.env</code></strong> — only
-            flags or the current process environment. <code>COPILOTKIT_API_KEY</code>{" "}
-            is accepted for the key, and <code>--api-url</code> /{" "}
-            <code>--api-key</code> work instead of exporting.
-          </p>
+          <CodeBlock code={DRY_RUN} filename="Dry run (no Intelligence key needed)" language="bash" />
+          <CodeBlock code={AGENT_MAP} filename="agent-map.json" language="json" />
+          <CodeBlock code={DESTINATION} filename="Destination: the importer does not read .env" language="bash" />
+          <CodeBlock code={IMPORT} filename="Import" language="bash" />
+          <CodeBlock code={REPLACE} filename="Re-run, refreshing already-imported conversations" language="bash" />
         </div>
       </Panel>
 
-      <Callout tone="info" title="Re-running is safe">
+      <Callout tone="info" title="After the import">
         <p>
-          Already-imported conversations are skipped, so a repeated import is a
-          no-op rather than a duplicate. <code>--replace</code> is the opt-in for
-          intentionally refreshing threads that were imported before.
-        </p>
-      </Callout>
-
-      <Callout tone="info" title="Where this route would lead, if it applied">
-        <p>
-          The page&apos;s last step is verification through the thread UI: open
-          the{" "}
+          Keep the app on the same native session store and agent, so imported
+          conversations can be continued. Intelligence rename, archive and
+          delete only touch Intelligence&apos;s records. Verify by opening an
+          imported conversation in the{" "}
           <a
             href="/prebuilt-components/copilot-threads-drawer"
             className="text-[var(--accent)] underline underline-offset-4"
           >
             Threads Drawer
-          </a>
-          , select an imported conversation and confirm its history appears —
-          or, for a custom UI, select with{" "}
-          <a
-            href="/headless-threads"
-            className="text-[var(--accent)] underline underline-offset-4"
-          >
-            useThreads
           </a>{" "}
-          and pass <code>thread.id</code> to your chat as{" "}
-          <code>threadId</code>. Both of those routes exist here; only the
-          import that would populate them does not.
+          or via{" "}
+          <a href="/headless-threads" className="text-[var(--accent)] underline underline-offset-4">
+            useThreads
+          </a>
+          .
         </p>
       </Callout>
     </>
