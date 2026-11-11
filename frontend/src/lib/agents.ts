@@ -35,7 +35,7 @@ export const AGENT_IDS = [
   "a2ui-fixed-schema",
   "declarative-gen-ui",
   // JSON Render / Hashbrown: the doc's own Strands agents, reached only
-  // through /api/copilotkit-byoc-* and /api/copilotkit-declarative-*.
+  // through /api/copilotkit-declarative-*.
   "byoc-json-render",
   "byoc-hashbrown",
   // Open Generative UI / MCP Apps. Their middleware lives on their own
