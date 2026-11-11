@@ -8,6 +8,290 @@ Holds the 3 most recent dated entries. When a change lands on a fourth
 date, the oldest entry is dropped. Entries are counted, not aged, so a gap of
 weeks between changes does not expire anything.
 
+## 2026-11-10
+
+### 10:00 UTC — 19 pages, highest severity high
+
+**High — Slots**
+
+`/strands/custom-look-and-feel/slots` · route `/custom-look-and-feel/slots` · under “Tool calls”
+
+23 code lines, 1 heading, 15 prose lines changed. The number of fenced code blocks changed.
+
+````diff
++ ### Tool calls
++ 
++ The `assistantMessage` slot holds `toolCallsView`, which renders the tool calls
++ of one assistant message. Wrap the default `CopilotChatToolCallsView` to change
++ the container while keeping your registered tool renderers:
++ 
++ ```tsx title="page.tsx"
++ import {
+````
+
+**High — Frontend Tools**
+
+`/strands/frontend-tools` · route `/frontend-tools` · under “Nothing to wire on the agent” · in a `python` block
+
+2 code lines changed.
+
+````diff
+- model=OpenAIModel(model_id="gpt-4o"),
++ model=OpenAIModel(model_id="gpt-6-luna"),
+````
+
+**High — A2UI · Dynamic Schema**
+
+`/strands/generative-ui/a2ui/dynamic-schema` · route `/generative-ui/a2ui/dynamic-schema` · under “The A2UI agent tool” · in a `python` block
+
+2 code lines changed.
+
+````diff
+- "model": ChatOpenAI(model="gpt-4o"),
++ "model": ChatOpenAI(model="gpt-6-luna", reasoning_effort="none"),
+````
+
+**High — A2UI · Fixed Schema**
+
+`/strands/generative-ui/a2ui/fixed-schema` · route `/generative-ui/a2ui/fixed-schema` · under “Generate the schema dynamically” · in a `python` block
+
+105 code lines changed.
+
+````diff
++ import uuid
++ from strands.types.tools import ToolContext
++ from tools.a2ui_catalog import read_client_catalog, validate_client_surface
+- # Shared tool implementations, symlinked at the project root
+- # (→ ../../shared/python/tools). ``build_a2ui_operations_from_tool_call`` wraps
+- # the inner model's ``render_a2ui`` arguments in the nested A2UI v0.9
+- # ``a2ui_operations`` envelope the middleware detects in a tool result.
+- """Shape of the structured error dict returned by generate_a2ui branches.
+````
+
+**High — Hashbrown**
+
+`/strands/generative-ui/hashbrown` · route `/generative-ui/hashbrown` · under “Hashbrown”
+
+36 code lines, 2 headings, 11 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- > Bring your own component library. Have the agent stream structured output and let Hashbrown's progressive JSON parser render it as React components in real time.
++ > Stream a structured sales dashboard through Hashbrown's UI kit and progressive JSON parser.
+- 
+- You have a chat surface and you want the agent to draw a dashboard, not just describe one in prose. By the end of this guide, the agent will stream a structured output object, [`@hashbrownai/react`](https://www.npmjs.com/package/@hashbrownai/react)'s progressive JSON parser will hand each finished slice to your renderer as it arrives, and the user sees the dashboard fill in live.
+- 
+- ## When to use this
+- 
+- - **Streaming dashboards** where partial state should render before the full payload arrives.
+````
+
+**High — JSON Render**
+
+`/strands/generative-ui/json-render` · route `/generative-ui/json-render` · under “JSON Render”
+
+53 code lines, 2 headings, 11 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- > Bring your own component library. Have the agent emit a JSON spec and let json-render render it against a Zod-validated catalog of React components.
++ > Bring your own component library. Have the agent emit a JSON spec and render allowed component types through a typed React registry.
+- 
+- You have a chat surface and you want the agent to draw a dashboard from a typed JSON spec. By the end of this guide, the agent will emit a `{ root, elements }` object, [`@json-render/react`](https://www.npmjs.com/package/@json-render/react) will validate it against a Zod-described catalog, and the user sees the dashboard render as a single React tree.
++ ```typescript
++ // src/app/demos/declarative-json-render/chat.tsx
++ "use client";
+- ## When to use this
+````
+
+**High — MCP Apps**
+
+`/strands/generative-ui/mcp-apps` · route `/generative-ui/mcp-apps` · under “MCP Apps with Intelligence”
+
+48 code lines, 2 headings, 45 prose lines changed. The number of fenced code blocks changed.
+
+````diff
++ ## MCP Apps with Intelligence
++ 
++ The `mcpApps` option works the same way on a runtime connected to
++ [Intelligence](/strands/intelligence/quickstart). The two options do different jobs:
++ 
++ - `mcpApps` configures the agent side. On every run, the runtime attaches the
++ MCP Apps middleware to the agent.
++ - `intelligence` replaces the runner. Intelligence stores the threads and runs,
+````
+
+**High — Components as Tools**
+
+`/strands/generative-ui/tool-based` · route `/generative-ui/tool-based` · under “Nothing to wire on the agent” · in a `python` block
+
+2 code lines changed.
+
+````diff
+- model=OpenAIModel(model_id="gpt-4o"),
++ model=OpenAIModel(model_id="gpt-6-luna"),
+````
+
+**High — Tool Call Rendering**
+
+`/strands/generative-ui/tool-rendering` · route `/generative-ui/tool-rendering` · under “Default tool rendering (zero-config)”
+
+86 code lines, 1 heading, 35 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- any UI.
++ any UI. Calls the agent makes in a row are grouped into one card; see
++ [Grouping tool calls](#grouping-tool-calls).
++ ## Grouping tool calls
++ 
++ Agents often call several tools in a row. By default, CopilotKit collapses
++ each run of calls drawn by the built-in card from `useDefaultRenderTool()` into
++ one card that reads "Used 3 tools". While a call runs, the card names it
+````
+
+**High — Sub-Agents**
+
+`/strands/multi-agent/subagents` · route `/multi-agent/subagents`
+
+Rewritten past the diff cap.
+
+**High — Threads Drawer**
+
+`/strands/prebuilt-components/copilot-threads-drawer` · route `/prebuilt-components/copilot-threads-drawer` · under “Add your own "New conversation" button”
+
+41 code lines, 1 heading, 19 prose lines changed. The number of fenced code blocks changed.
+
+````diff
++ ## Add your own "New conversation" button
++ 
++ The Drawer has its own "New Conversation" row. Your app can also keep its own
++ button, for example in a toolbar or a page header. To start a new conversation
++ from that button, call `startNewThread()` from
++ [`useCopilotChatConfiguration`](/reference/hooks/useCopilotChatConfiguration).
++ This is the same function the Drawer calls for its own row.
++ 
+````
+
+**High — Quickstart**
+
+`/strands/quickstart` · route `/quickstart` · under “Expose your agent via AG-UI” · in a `python` block
+
+4 code lines changed.
+
+````diff
+- model_id="gpt-5.4",
++ model_id="gpt-6-luna",
+- modelId: "gpt-5.4",
++ modelId: "gpt-6-luna",
+````
+
+**High — Reading agent state**
+
+`/strands/shared-state/in-app-agent-read` · route `/shared-state/in-app-agent-read` · under “Setup your agent with state” · in a `python` block
+
+4 code lines changed.
+
+````diff
+- model_id="gpt-4o",
++ model_id="gpt-6-luna",
+- modelId: "gpt-4o",
++ modelId: "gpt-6-luna",
+````
+
+**High — Writing agent state**
+
+`/strands/shared-state/in-app-agent-write` · route `/shared-state/in-app-agent-write` · under “Setup your agent with state” · in a `python` block
+
+4 code lines changed.
+
+````diff
+- model_id="gpt-4o",
++ model_id="gpt-6-luna",
+- modelId: "gpt-4o",
++ modelId: "gpt-6-luna",
+````
+
+**High — Import & Synchronize History**
+
+`/strands/threads-import` · route `/threads-import` · under “Add AG-UI Streams to Existing Threads”
+
+1 code line, 7 headings, 32 prose lines changed. The number of fenced code blocks changed.
+
+````diff
+- # Add AG-UI Streams to Existing Threads
++ # Add AG-UI Streams to Strands Conversations
+- 
+- Add reconnection, catch-up, and delivery across devices to the conversations your agent already manages. Follow the [Intelligence quickstart](/strands/intelligence/quickstart) to connect your existing CopilotKit app and Runtime, then verify that a new conversation is saved. That setup enables AG-UI streams for runs through CopilotKit; importing old conversations is not required.
+- 
+- Your framework continues managing agent context and execution state. Keep your durable LangGraph checkpointer or durable ADK session service configured and keep the mapping between CopilotKit `threadId` values and native framework conversation identifiers stable. See [AG-UI Streams & Framework Threads](/strands/intelligence/threads-explained#how-threads-work-with-framework-storage) for the responsibilities of each layer.
++ Give users reconnection, catch-up, and delivery across devices around your Strands agent. Follow the [Intelligence quickstart](/strands/intelligence/quickstart) to connect your existing CopilotKit app and Runtime, then verify that a new conversation is saved. This enables AG-UI streams for runs through CopilotKit; no historical import is required.
+- For a concrete example without historical import, see [keep an existing LangGraph conversation](/strands/intelligence/bring-your-own-thread-system#example-keep-an-existing-langgraph-conversation).
+````
+
+**Low — Copilot Runtime**
+
+`/strands/copilot-runtime` · route `/copilot-runtime` · under “CopilotKit Intelligence”
+
+4 prose lines changed.
+
+````diff
+- Features like [threads](/strands/threads) and the [inspector](/strands/inspector) are provided through the runtime and CopilotKit Intelligence. These give you conversation persistence and debugging capabilities out of the box.
++ Features like [threads](/strands/AG-UI-Streams) and the [inspector](/strands/inspector) are provided through the runtime and CopilotKit Intelligence. These give you conversation persistence and debugging capabilities out of the box.
+- 2. **Many ecosystem features won't work.** The AG-UI protocol supports a middleware layer designed to run on the backend. Many features in the CopilotKit ecosystem depend on this server-side middleware. Without the runtime, these features — including [threads](/strands/threads) and other capabilities — will not be available.
++ 2. **Many ecosystem features won't work.** The AG-UI protocol supports a middleware layer designed to run on the backend. Many features in the CopilotKit ecosystem depend on this server-side middleware. Without the runtime, these features — including [threads](/strands/AG-UI-Streams) and other capabilities — will not be available.
+````
+
+**Low — Open Generative UI**
+
+`/strands/generative-ui/open-generative-ui` · route `/generative-ui/open-generative-ui` · under “Minimal setup”
+
+24 prose lines changed.
+
+````diff
+- auto-registered by `CopilotKit`, so no extra wiring is needed.
++ auto-registered by `CopilotKit`, so no extra frontend wiring is needed. Your
++ agent must still give the run's frontend tools to its model (see the warning
++ below).
++ 
++ <Callout type="warn" title="Your agent must pass frontend tools to its model">
++ `generateSandboxedUi` reaches the agent as a frontend tool in the run input.
++ The agent calls it only if it gives the run's frontend tools to its model.
+````
+
+**Low — Open, close, and feedback**
+
+`/strands/prebuilt-components/chat-controls` · route `/prebuilt-components/chat-controls` · under “Capture message feedback (thumbs up / down)”
+
+12 prose lines changed.
+
+````diff
+- slot**. The buttons only render when a handler is provided:
++ slot**. Without Automatic Learning capture, the buttons only render when a
++ handler or a custom thumb slot is provided:
++ 
++ With [Automatic Learning capture](/strands/intelligence/capture-interactions#collect-reply-ratings)
++ on and a Trajectory started, the buttons appear without handlers in every chat
++ that renders messages with `CopilotChatMessageView` inside a
++ `CopilotChatConfigurationProvider`, as `CopilotChat`, `CopilotPopup`, and
+````
+
+**Low — Voice**
+
+`/strands/voice` · route `/voice` · under “Custom transcription backends”
+
+18 prose lines changed.
+
+````diff
++ <Callout type="info" title="TranscriptionServiceOpenAI takes an openai 5.x client">
++ `@copilotkit/voice` depends on `openai` `^5.9.0`, and the `openai` option of
++ `TranscriptionServiceOpenAI` is typed against the copy of `openai` that
++ `@copilotkit/voice` resolves. Pass an `OpenAI` instance created from that same
++ installed copy. The `OpenAI` class has private (`#private`) members, so an
++ instance from another copy or another major version fails type-checking, even
++ when it looks the same.
++ 
+````
+
+---
+
 ## 2026-10-19
 
 ### 07:35 UTC — 15 pages, highest severity high
@@ -170,6 +454,8 @@ Now tracked for the first time.
 `/strands/human-in-the-loop/headless` · route `/human-in-the-loop/headless`
 
 Now tracked for the first time.
+
+---
 
 ---
 
@@ -506,202 +792,6 @@ Now tracked for the first time.
 + <Callout type="warn" title="Calling `/transcribe` yourself">
 + The chat handles this for you; these are the rules if you post to the route directly. As
 ````
-
----
-
----
-
-## 2026-09-11
-
-### 08:00 UTC — 14 pages, highest severity high
-
-**High — Agent Config**
-
-`/strands/agent-config` · route `/agent-config` · under “How it works”
-
-36 code lines, 5 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- The backend half is also a single node. Read the latest config context at the top of every run and use it to build the system prompt for that turn:
-- 
-- ```python title="backend/agent.py — agent reads config and rebuilds the system prompt"
-- import json
-- 
-- CONFIG_KEYS = ("tone", "expertise", "responseLength")
-- 
-- def read_config_value(entry):
-````
-
-**High — Frontend Tools**
-
-`/strands/frontend-tools` · route `/frontend-tools` · under “Frontend Tools”
-
-27 code lines, 2 headings, 36 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- <Callout type="info" title="See this in Inspector">
-- Open Inspector on localhost. Go to **Inspect**, then **Event Snippets**.
-- You can compile a tool call, reasoning, text, or activity, run it on the live
-- agent, and save it. Saved snippets are grouped by recipe. On localhost chat,
-- **Save as snippet** uses the recipe for the thing you click and fills the form.
-- On a tool call, generative UI, or A2UI, the bookmark sits to the right of the
-- block (or to the left if there is no room on the right).
-- Run of a `generateSandboxedUi` tool call paints the sandbox UI in chat.
-````
-
-**High — Components as Tools**
-
-`/strands/generative-ui/tool-based` · route `/generative-ui/tool-based` · under “How it works in code”
-
-27 code lines, 2 headings, 28 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-- <!-- setup skipped: frontend-tools-setup is not bundled for strands -->
-+ <Steps>
-+ <Step>
-+ ### Nothing to wire on the agent
-+ 
-+ On every run the AG-UI Strands adapter registers a proxy tool in the
-+ agent's tool registry for each tool the request carries, so the agent
-+ declares none of its own. A component registered with `useComponent`
-````
-
-**High — Multimodal Attachments**
-
-`/strands/multimodal-attachments` · route `/multimodal-attachments` · under “Configuration”
-
-9 code lines, 1 heading, 11 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-+ | `maxConcurrentUploads` | `number` | `1` | How many files upload at the same time. See [Upload concurrency](#upload-concurrency). |
-+ 
-+ ## Upload concurrency
-+ 
-+ When a user attaches several files at once, they upload one at a time by default. Every picked file shows in the attachment queue immediately, whether or not its upload has started.
-+ 
-+ Set `maxConcurrentUploads` to upload several together — worth raising when your upload endpoint handles parallel requests:
-+ 
-````
-
-**High — Open, close, and feedback**
-
-`/strands/prebuilt-components/chat-controls` · route `/prebuilt-components/chat-controls` · under “Control the open state from your own UI”
-
-20 code lines, 1 heading, 36 prose lines changed. The number of fenced code blocks changed.
-
-````diff
-+ ## Control the open state from your own UI
-+ 
-+ Pass `open` and `onOpenChange` to `<CopilotSidebar>` or `<CopilotPopup>` to own
-+ the open state yourself. This is the controlled pattern: the surface renders
-+ whatever `open` says, and every request to open or close (the toggle button,
-+ click-outside on the popup) arrives on `onOpenChange` instead of moving the
-+ surface directly.
-+ 
-````
-
-**High — Programmatic Control**
-
-`/strands/programmatic-control` · route `/programmatic-control` · under “Sending a message from code” · in a `tsx` block
-
-2 code lines changed.
-
-````diff
-+ "use client";
-+ 
-````
-
-**High — Quickstart**
-
-`/strands/quickstart` · route `/quickstart` · under “Quickstart”
-
-4 code lines, 11 prose lines changed.
-
-````diff
-- <OpsPlatformCTA
-- variant="card"
-- title="Ship AWS Strands to production"
-- body="Add persistent threads and the inspector with CopilotKit Intelligence."
-- ctaLabel="Create a free account"
-+ <IntelligenceOnboardingPrompt
-+ feature="learning"
-- apiKey: process.env.INTELLIGENCE_API_KEY!,
-````
-
-**High — Reading agent state**
-
-`/strands/shared-state/in-app-agent-read` · route `/shared-state/in-app-agent-read` · under “Use the `useAgent` Hook”
-
-30 code lines, 2 headings, 9 prose lines changed.
-
-````diff
-- With your agent connected and running, call the `useAgent` hook, pass the agent's name, and
-- optionally provide an initial state.
-+ With your agent connected and running, call the `useAgent` hook, wait for the real agent, and
-+ initialize any missing UI-owned state with `agent.setState`.
-+ import { useEffect } from "react";
-+ import { useAgent } from "@copilotkit/react-core/v2";
-- // [!code highlight:5]
-- const { agent } = useAgent({
-````
-
-**High — Writing agent state**
-
-`/strands/shared-state/in-app-agent-write` · route `/shared-state/in-app-agent-write` · under “Use the `useAgent` Hook” · in a `tsx` block
-
-14 code lines changed.
-
-````diff
-+ import { useEffect } from "react";
-+ import { useAgent } from "@copilotkit/react-core/v2";
-- const { agent } = useAgent({
-+ const { agent, isReady } = useAgent({
-- // optionally provide a type-safe initial state
-- initialState: { language: "spanish" }
-+ const state = (agent.state ?? {}) as Partial<AgentState>;
-+ useEffect(() => {
-````
-
-**Low — A2UI · Fixed Schema**
-
-`/strands/generative-ui/a2ui/fixed-schema` · route `/generative-ui/a2ui/fixed-schema` · under “Fixed Schema A2UI”
-
-14 prose lines changed.
-
-````diff
-+ <Callout type="info" title="The flight card is an illustrative domain">
-+ Everything below uses flight booking so the wiring has something concrete to
-+ render — `display_flight`, `flight-fixed-catalog`, and the airport/airline
-+ components are this page's example, not part of the API.
-+ 
-+ What transfers is the **shape**: a fixed catalog, a tool that returns data
-+ against it, and `a2ui.render(...)` with `createSurface` + `updateComponents` +
-+ `updateDataModel`. Keep your own application's domain and substitute your own
-````
-
-**Info — Headless Threads**
-
-`/strands/headless-threads` · route `/headless-threads`
-
-Now tracked for the first time.
-
-**Info — Threads Drawer**
-
-`/strands/prebuilt-components/copilot-threads-drawer` · route `/prebuilt-components/copilot-threads-drawer`
-
-Now tracked for the first time.
-
-**Info — Import & Synchronize History**
-
-`/strands/threads-import` · route `/threads-import`
-
-Now tracked for the first time.
-
-**Info — Thread & History Lifecycle**
-
-`/strands/threads-lifecycle` · route `/threads-lifecycle`
-
-Now tracked for the first time.
 
 ---
 

@@ -50,7 +50,7 @@ as this guide uses it as a starting point.
 
             model = OpenAIModel(
                 client_args={"api_key": os.getenv("OPENAI_API_KEY", "")},
-                model_id="gpt-4o",
+                model_id="gpt-6-luna",
             )
 
             # Create the Strands agent
@@ -88,7 +88,7 @@ as this guide uses it as a starting point.
 
             const model = new OpenAIModel({
               apiKey: process.env.OPENAI_API_KEY ?? "",
-              modelId: "gpt-4o",
+              modelId: "gpt-6-luna",
             });
 
             // Create the Strands agent
