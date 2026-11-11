@@ -271,6 +271,16 @@ export const NAV: NavGroup[] = [
     title: "Generative UI",
     routes: [
       {
+        path: "/generative-ui/state-rendering",
+        title: "State Rendering",
+        docPath: "/strands/generative-ui/state-rendering",
+        summary:
+          "UI rendered from agent state via useAgent; the page's Strands code is not published.",
+        status: "broken",
+        statusNote:
+          "Not supported on AWS Strands (Python): the rendered page has no Code tab and no Strands code. Only the Markdown export's useAgent fragment is printed; no agent, tool or demo component. Reference only.",
+      },
+      {
         path: "/generative-ui/tool-based",
         hasDemo: true,
         agentId: "gen-ui-tool-based",
