@@ -53,6 +53,32 @@ is a bug in the harness.
      this harness doesn't use aimock, diagnostic logging, e2e/test helpers)
      → leave it out. At most mention it in the doc-gap entry.
    Keep the code the page itself shows verbatim; trim only the extras around it.
+   **Backend: page code only.** Never add a backend tool, agent, graph
+   assembly or system prompt that the referenced doc pages don't print — not
+   from the showcase, not from a sibling, not written by you. If the page
+   prints a tool but never builds the agent, copy just the tool, register
+   nothing, and mark the route `broken`. If a page publishes no backend, use
+   the generic backend snippet its own doc section prints (e.g. the
+   `create_agent(tools=[], ...)` middleware snippet), not a custom prompt.
+   Broken stays broken.
+
+   **If it's broken, leave it broken. Never fix it, never silently.** This
+   overrides everything above in this rule. When the page's code is missing a
+   tool, an agent, a function, a helper or wiring, or the code as published
+   doesn't work, do **not** fill the gap with sibling, showcase or your own
+   code to make it run. Copy what the page prints, leave the gap, set the
+   route `broken`, and say exactly what is missing in the route callout, the
+   doc-gap entry, README Known issues and your final message. A silent fix (a
+   workaround with no label, a stand-in that hides the gap, a "helpful"
+   prompt tweak) is the worst outcome: the harness exists to show where the
+   docs break.
+
+   **Custom UI components: only the ones the page's code references.** If
+   page code imports or renders a component it never defines (a card, badge,
+   button, picker, surface…), add that one component, borrowed from a sibling
+   or the showcase where possible, minimal otherwise. Label it as not from
+   the doc page and record it as a gap. Add nothing else: no components the
+   page code doesn't name, no extra styling primitives, no layout wrappers.
 3. **If a working remedy already exists, keep it.** Some routes have the
    verbatim doc class in one `#region` and a remedy subclass in a separate
    `#region <name>-remedy`. Update the verbatim part from the docs. Leave the
