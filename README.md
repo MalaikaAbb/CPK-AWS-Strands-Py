@@ -222,6 +222,11 @@ The `messageView.assistantMessage.markdownRenderer` slot in its three forms, one
 ✅ *components map* — in DevTools the `<h2>` has `class="my-heading"` and the `<a>` has `class="my-link"` plus `target="_blank" rel="noopener noreferrer"`, with no `data-streamdown` or `node` attribute. Nothing changes visually, because the page defines no CSS for those classes. *class string* — the markdown container has `text-sm leading-7`. *PlainText* — the raw `##` / `[…](…)` markup shows inside a `<pre>`. A `<reference-chip>` echoed in a reply is removed and its text kept; `<kbd>` / `<sup>` render as elements.
 ❌ The anchor still has `data-streamdown="link"`, the PlainText tab shows formatted HTML, or "agent not found" (the `chat-markdown` backend agent is not mounted).
 
+**`/custom-look-and-feel/reasoning-messages` — reasoning messages** ⚠️ (agent `reasoning-default`, new 2026-11-10, not yet run)
+The reasoning card's sub-slots (`header`, `contentView`) and a render-prop layout, one variant each. All four snippets are verbatim. The render-prop's `reasoningMessage: MyReasoningLayout` fails TS2322 (it's kept under `@ts-expect-error` and cast in the demo). Try `Explain step by step why the sky appears blue during the day but red at sunset.`
+✅ Custom header shows 🧠 → 💡 with Show/Hide; custom content is gray monospace with a ▊ cursor; render-prop puts the default pieces in a yellow box.
+❌ The default card on every variant, or no reasoning block at all.
+
 **`/custom-look-and-feel/headless-ui` — headless UI**
 A chat assembled from `useAgent` + `useCopilotKit` alone, no CopilotKit chrome.
 ✅ Messages, streaming and send all work through a UI with none of the package's CSS.
@@ -387,6 +392,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | Not in the doc sidebar. v1/v2 token split — §9.10. |
 | `/strands/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | Not in the doc sidebar. New `toolCallsView` tab (2026-11-10) typechecks but hasn't been run. |
 | `/strands/custom-look-and-feel/markdown` | `/custom-look-and-feel/markdown` | ✅ Working | All three snippets verbatim, and they type-check. `my-link` / `my-heading` have no CSS on the page, so example 1 is verifiable only in DevTools. Frontend-only page; `chat-markdown` agent is repo-authored — see §9.22. |
+| `/strands/custom-look-and-feel/reasoning-messages` | `/custom-look-and-feel/reasoning-messages` | ⚠️ Partial | New 2026-11-10. Snippets verbatim; render-prop slot fails TS2322 (suppressed). Typecheck only. |
 | `/strands/custom-look-and-feel/headless-ui` | `/custom-look-and-feel/headless-ui` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/copilot-threads-drawer` | `/prebuilt-components/copilot-threads-drawer` | ⚠️ Partial | Integration reproduced in full; locked without an Intelligence key. Own-button / controlled / CSS-parts variants added 2026-11-10, not yet run. |
 | `/strands/headless-threads` | `/headless-threads` | ⚠️ Partial | All three snippets run; the page's own step-2/step-3 prop mismatch reconciled — §9.21. |
@@ -762,7 +768,7 @@ Grouped as the Strands doc sidebar groups them, with the pages this repo tracks 
 
 **Prebuilt Components** *(not in the sidebar; reachable by URL)* — ▸ [CopilotChat](https://docs.copilotkit.ai/strands/prebuilt-components/chat) · ▸ [CopilotSidebar](https://docs.copilotkit.ai/strands/prebuilt-components/sidebar) · ▸ [CopilotPopup](https://docs.copilotkit.ai/strands/prebuilt-components/popup) · ▸ [Open, close, and feedback](https://docs.copilotkit.ai/strands/prebuilt-components/chat-controls)
 
-**Custom Look and Feel** *(not in the sidebar; reachable by URL)* — ▸ [CSS](https://docs.copilotkit.ai/strands/custom-look-and-feel/css) · ▸ [Slots](https://docs.copilotkit.ai/strands/custom-look-and-feel/slots) · ▸ [Markdown Rendering](https://docs.copilotkit.ai/strands/custom-look-and-feel/markdown) · ▸ [Headless UI](https://docs.copilotkit.ai/strands/custom-look-and-feel/headless-ui)
+**Custom Look and Feel** *(not in the sidebar; reachable by URL)* — ▸ [CSS](https://docs.copilotkit.ai/strands/custom-look-and-feel/css) · ▸ [Slots](https://docs.copilotkit.ai/strands/custom-look-and-feel/slots) · ▸ [Markdown Rendering](https://docs.copilotkit.ai/strands/custom-look-and-feel/markdown) · [Reasoning Messages](https://docs.copilotkit.ai/strands/custom-look-and-feel/reasoning-messages) · ▸ [Headless UI](https://docs.copilotkit.ai/strands/custom-look-and-feel/headless-ui)
 
 **Build Generative UI** — ▸ [Components as Tools](https://docs.copilotkit.ai/strands/generative-ui/tool-based) · ▸ [Tool Call Rendering](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering) · ▸ [A2UI · Dynamic Schema](https://docs.copilotkit.ai/strands/generative-ui/a2ui/dynamic-schema) · ▸ [A2UI · Fixed Schema](https://docs.copilotkit.ai/strands/generative-ui/a2ui/fixed-schema) · ▸ [Open Generative UI](https://docs.copilotkit.ai/strands/generative-ui/open-generative-ui) · ▸ [MCP Apps](https://docs.copilotkit.ai/strands/generative-ui/mcp-apps) · ▸ [JSON Render](https://docs.copilotkit.ai/strands/generative-ui/json-render) · ▸ [Hashbrown](https://docs.copilotkit.ai/strands/generative-ui/hashbrown) · ▸ [Your Components · Display-only](https://docs.copilotkit.ai/strands/generative-ui/your-components/display-only) *(not in sidebar)* · ▸ [Your Components · Interactive](https://docs.copilotkit.ai/strands/generative-ui/your-components/interactive) *(not in sidebar)*
 
