@@ -258,10 +258,10 @@ All four need CopilotKit Intelligence. Without it they compile and render, and t
 
 ### Generative UI
 
-**`/generative-ui/state-rendering` — state rendering** ⚠️ (new 2026-11-10, not yet run)
-`useAgent` with state + run-status updates renders `agent.state.document` in a document panel. The Code-tab frontend is verbatim. The page publishes no Strands backend, so `write_document` and its `ToolBehavior(state_from_args=…)` hook come from the GitHub showcase (`backend/src/agents/state_streaming_agent.py`). Try `Write a short poem about autumn leaves.`
-✅ The LIVE badge lights, and the poem lands in the panel once the tool's arguments are complete (on Strands it arrives whole, not per token).
-❌ The poem shows up in the chat and the panel stays empty.
+**`/generative-ui/state-rendering` — state rendering** ❌ (reference only)
+The rendered page says "Not supported on AWS Strands (Python)" and has no Code tab, so the route only shows the Markdown export's `useAgent` fragment and a gap panel. Nothing to try.
+✅ The route renders the fragment and the "not supported" callout.
+❌ (n/a: there is no demo or agent; see §9.33.)
 
 **`/generative-ui/tool-based` — components as tools** ✅
 `useComponent` registers a bar chart. Try `Chart the number of days in each month of 2026`.
@@ -402,7 +402,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/threads-import` | `/threads-import` | 📘 Reference | No Strands importer exists — §9.20. |
 | `/strands/multimodal-attachments` | `/multimodal-attachments` | ✅ Working | Images fine on gpt-4o; audio parts are refused by the model. |
 | `/strands/voice` | `/voice` | ✅ Working | Mic needs `OPENAI_API_KEY` in the Next process too. |
-| `/strands/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ⚠️ Partial | New 2026-11-10. Code-tab frontend verbatim; backend borrowed from GitHub showcase; state from complete tool args, not per token. Typecheck only. |
+| `/strands/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ❌ Broken | New 2026-11-10. Not supported on Strands Python: no Code tab, no Strands code. Reference only (Markdown `useAgent` fragment) — §9.33. |
 | `/strands/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | Works with no documented backend wiring — see §9.3. |
 | `/strands/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ✅ Working | Doc now publishes WeatherCard, FlightListCard and parseJsonResult; search_flights renderer added. |
 | `/strands/generative-ui/your-components/display-only` | `/generative-ui/your-components/display-only` | ✅ Working | Not in the doc sidebar. Needs no backend section — see §9.3. |
@@ -653,6 +653,9 @@ Four findings:
 4. **The `tools` package has no `__init__.py`.** The tab ships `tools/generate_a2ui.py`, a module inside the package, but not the package, so `from tools import build_a2ui_operations_from_tool_call` fails as published.
 
 Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
+
+### 9.33 State Rendering — not supported on Strands Python, nothing printed
+[State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering) (re-checked 2026-11-11): the rendered page replaces each code block with "Not supported on AWS Strands (Python)" and has no Code tab. The Markdown export skips the Strands backend setup and the `state-streaming-middleware` snippet, and prints only a `useAgent` fragment of the showcase's `page.tsx`. Not printed: the demo's `page.tsx`, `demo-layout.tsx`, `document-view.tsx`, `suggestions.ts`, and any `shared-state-streaming` agent (`write_document` + `ToolBehavior(state_from_args=…)`). The route is reference-only and broken.
 
 ## 10. Troubleshooting
 

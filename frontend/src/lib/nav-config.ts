@@ -260,15 +260,13 @@ export const NAV: NavGroup[] = [
     routes: [
       {
         path: "/generative-ui/state-rendering",
-        hasDemo: true,
-        agentId: "shared-state-streaming",
         title: "State Rendering",
         docPath: "/strands/generative-ui/state-rendering",
         summary:
-          "A document panel rendered from agent.state.document via useAgent, filled by the agent's write_document tool.",
-        status: "partial",
+          "UI rendered from agent state via useAgent; the page's Strands code is not published.",
+        status: "broken",
         statusNote:
-          "Frontend is the Code tab's, verbatim. The page publishes no Strands backend; write_document and its state_from_args hook are borrowed from the GitHub showcase. Strands emits state from complete tool args, so the document arrives whole, not per token. Typecheck only.",
+          "Not supported on AWS Strands (Python): the rendered page has no Code tab and no Strands code. Only the Markdown export's useAgent fragment is printed; no agent, tool or demo component. Reference only.",
       },
       {
         path: "/generative-ui/tool-based",

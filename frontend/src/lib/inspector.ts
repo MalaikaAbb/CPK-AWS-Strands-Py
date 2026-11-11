@@ -38,7 +38,6 @@ export const NESTED_PROVIDER_ROUTES = [
   // default (localhost-only) and ignore the kill switch. One mounted at a time.
   "/generative-ui/json-render/demo-chat",
   "/generative-ui/hashbrown/demo-chat",
-  "/generative-ui/state-rendering/demo-chat",
   "/generative-ui/open-generative-ui/demo-chat",
   "/generative-ui/mcp-apps/demo-chat",
   "/prebuilt-components/copilot-threads-drawer/demo-chat",
