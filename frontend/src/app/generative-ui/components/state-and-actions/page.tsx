@@ -1,6 +1,7 @@
 // Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
 // The strands doc page is byte-identical to the langgraph-typescript one
-// (diffed 2026-11-10). Harness glue points at this repo's Strands `genui` agent.
+// (diffed 2026-11-10). The page prints no Strands agent, so no agent stands
+// behind these providers' runtime: chats fail (see the route callout).
 
 import { RouteHeader } from "@/components/route-header";
 import { SourceCodeGroup } from "@/components/source-code";
@@ -13,6 +14,17 @@ export default function Page() {
     <>
       <RouteHeader path="/generative-ui/components/state-and-actions" />
 
+      <Callout tone="warn" title="Broken: no Strands agent is printed">
+        <p>
+          The Components and surfaces pages publish a backend only as a TanStack{" "}
+          <code>BuiltInAgent</code> factory; nothing for Strands. The
+          repo-authored Strands <code>genui</code> agent (and its{" "}
+          <code>/api/copilotkit-genui</code> runtime) was removed, so the
+          demo&apos;s chat has no agent and its requests fail. The page&apos;s
+          frontend code below is kept verbatim and type-checked.
+        </p>
+      </Callout>
+
       <Panel title="What it demonstrates">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
           Generated components can be wired back into the app. A catalog can
@@ -24,18 +36,14 @@ export default function Page() {
         </p>
         <div className="mt-4 space-y-3">
           <TryIt
-            prompts={["(App state) add p1 twice, then: show product cards for p1 Trail Runner and p2 City Sneaker"]}
-            expect="Trail Runner's card reads 'In cart: 2' and City Sneaker's 'In cart: 0'. Pressing + p2 afterwards updates the card without a new run."
+            prompts={["(App state) show a product card for p1 Trail Runner"]}
+            expect="The card reads 'In cart: 0' from app state (nothing on the page adds to the cart), not from the agent."
             fail="'In cart' missing or wrong — the bind selector did not run, or the agent set inCart itself."
           />
           <TryIt
-            prompts={["(Run code on click) show product cards for p1 Trail Runner and p3 Track Spike"]}
-            expect="Each card's Add to cart button adds that product to the Cart panel, and no new chat message appears."
+            prompts={["(Run code on click) show a product card for p1 Trail Runner"]}
+            expect="The card renders. The page prints no ProductCard, so the stand-in has no Add to cart button and the addToCart function can't be clicked here."
             fail="A chat message appears on click — the event did not match addToCart."
-          />
-          <TryIt
-            prompts={["(Send a click) show plan cards for Starter and Team"]}
-            expect="Choosing a plan posts a visible user message and the agent answers it."
           />
           <TryIt
             prompts={["(Writable) show a checkout form with the email set to me@example.com"]}
@@ -50,9 +58,7 @@ export default function Page() {
             { file: `${BASE}/state-catalog.tsx` },
             { file: `${BASE}/functions-catalog.tsx` },
             { file: `${BASE}/declarations.ts` },
-            { file: `${BASE}/events-catalog.tsx` },
             { file: `${BASE}/writable-catalog.tsx` },
-            { file: `${BASE}/layout-catalogs.ts` },
           ]}
         />
       </Panel>
@@ -76,18 +82,19 @@ export default function Page() {
             React-state cart stands in.
           </li>
           <li>
-            · &ldquo;Who may call&rdquo;, &ldquo;Send a click&rdquo; and
-            &ldquo;Keep what the user types&rdquo; are fragments; the catalogs
-            around them (and <code>PlanCard</code>) are scaffolding.
+            · &ldquo;Who may call&rdquo; and &ldquo;Keep what the user
+            types&rdquo; are fragments; the catalogs around them are
+            scaffolding. &ldquo;Send a click to the agent&rdquo; prints only an{" "}
+            <code>events</code> fragment and names no component, so it is not
+            exercised here.
           </li>
           <li>
             · The state and functions catalogs declare only{" "}
             <code>ProductCard</code>, and a surface has one root, so two cards
             have nothing to sit in: the agent invents a container and the
-            browser rejects the <code>createSurface</code>. Those two tabs give
-            the provider a harness wrapper (<code>layout-catalogs.ts</code>)
-            that extends the published catalog with <code>standardUI</code>;
-            the published catalogs are unchanged.
+            browser rejects the <code>createSurface</code>. The catalogs are
+            used as published, with no layout container added, so ask for one
+            card at a time.
           </li>
           <li>
             · The page says the agent cannot call renderer functions in this

@@ -1,6 +1,7 @@
 // Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
 // The strands doc page is byte-identical to the langgraph-typescript one
-// (diffed 2026-11-10). Harness glue points at this repo's Strands `genui` agent.
+// (diffed 2026-11-10). The page prints no Strands agent, so no agent stands
+// behind these providers' runtime: chats fail (see the route callout).
 
 import { RouteHeader } from "@/components/route-header";
 import { SourceCode, SourceCodeGroup } from "@/components/source-code";
@@ -35,6 +36,17 @@ export default function Page() {
   return (
     <>
       <RouteHeader path="/generative-ui/components/from-a2ui" />
+
+      <Callout tone="warn" title="Broken: no Strands agent is printed">
+        <p>
+          The Components and surfaces pages publish a backend only as a TanStack{" "}
+          <code>BuiltInAgent</code> factory; nothing for Strands. The
+          repo-authored Strands <code>genui</code> agent (and its{" "}
+          <code>/api/copilotkit-genui</code> runtime) was removed, so the
+          demo&apos;s chat has no agent and its requests fail. The page&apos;s
+          frontend code below is kept verbatim and type-checked.
+        </p>
+      </Callout>
 
       <Panel title="What it demonstrates">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">

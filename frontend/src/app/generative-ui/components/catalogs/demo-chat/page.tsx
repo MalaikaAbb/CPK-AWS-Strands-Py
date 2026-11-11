@@ -2,7 +2,8 @@
 
 // Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
 // The strands doc page is byte-identical to the langgraph-typescript one
-// (diffed 2026-11-10). Harness glue points at this repo's Strands `genui` agent.
+// (diffed 2026-11-10). The page prints no Strands agent, so no agent stands
+// behind these providers' runtime: chats fail (see the route callout).
 
 import { DemoFrame } from "@/components/demo-frame";
 
@@ -39,9 +40,9 @@ export default function DemoPage() {
           {
             id: "schemas",
             label: "zod vs Valibot props",
-            note: "Two components whose props come from different schema libraries, plus standardUI (harness) so both fit in one surface.",
+            note: "Two components whose props come from different schema libraries. No layout container, so ask for one at a time.",
             generativeUI: { ui: schemaLibrariesUI },
-            welcome: "Try: show one ZodProductCard and one ValibotProductCard for a $40 mug.",
+            welcome: "Try: show a ValibotProductCard for a $40 mug.",
           },
           {
             id: "export",

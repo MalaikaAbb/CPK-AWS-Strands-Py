@@ -2,7 +2,8 @@
 
 // Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
 // The strands doc page is byte-identical to the langgraph-typescript one
-// (diffed 2026-11-10). Harness glue points at this repo's Strands `genui` agent.
+// (diffed 2026-11-10). The page prints no Strands agent, so no agent stands
+// behind these providers' runtime: chats fail (see the route callout).
 
 import { DemoFrame } from "@/components/demo-frame";
 
@@ -35,18 +36,9 @@ export default function DemoPage() {
             welcome: WELCOME,
           },
           {
-            id: "shop",
-            label: "agentIds: [\"shop\"] — chat as shop",
-            note: "This chat talks to the shop agent, which is in agentIds, so it gets the catalog.",
-            runtimeUrl: RUNTIME_URL,
-            generativeUI: someAgents,
-            agentId: "shop",
-            welcome: WELCOME,
-          },
-          {
             id: "default",
             label: "agentIds: [\"shop\"] — chat as default",
-            note: "Same config, chatting with default, which is not in agentIds: no catalog, no guide.",
+            note: "agentIds lists \"shop\", which this runtime doesn't register (the page never builds a shop agent). The chat talks to default, which is not in the list, so it should get no catalog and no guide.",
             runtimeUrl: RUNTIME_URL,
             generativeUI: someAgents,
             welcome: WELCOME,

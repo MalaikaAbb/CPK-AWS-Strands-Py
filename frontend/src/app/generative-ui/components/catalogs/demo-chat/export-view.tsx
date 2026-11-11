@@ -15,6 +15,7 @@ import { panelUI } from "./panel-order";
  */
 export function ExportView() {
   const catalog = exportA2UICatalog(appUI, { title: "Acme app" });
+  // doc: fs.writeFileSync("acme-catalog.json", JSON.stringify(catalog, null, 2));  (Node-only; can't run in the browser)
 
   const panel = exportA2UICatalog(panelUI);
   const panelEntry = panel.components.Panel as { properties?: Record<string, unknown> };

@@ -335,110 +335,101 @@ export const NAV: NavGroup[] = [
       {
         path: "/generative-ui/components",
         hasDemo: true,
-        agentId: "genui",
         title: "Components and surfaces",
         docPath: "/strands/generative-ui/components",
         summary:
           "standardUI on the provider: the runtime adds render_ui and its guide, and the agent answers with streamed A2UI 1.0 components.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "The page's runtime is a BuiltInAgent TanStack factory (shown, not run); here the same provider config is served by a repo-authored Strands genui agent (no tools; ag_ui_strands forwards render_ui and the guide). Needs @copilotkit 1.85 (bumped here). Not yet checked in a browser.",
+          "No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. The page's TanStack runtime is shown, not run; the provider config is verbatim. Needs @copilotkit 1.85 (bumped here). Not yet checked in a browser.",
       },
       {
         path: "/generative-ui/components/surfaces",
         hasDemo: true,
-        agentId: "genui",
         title: "Components · Surfaces",
         docPath: "/strands/generative-ui/components/surfaces",
         summary:
           "GenerativeUISurface page targets the chat can fill, limit, scroll to, and replace, with per-component error boundaries.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). All published snippets run. Product, ProductRow and the product list are repo scaffolding; ./catalog is taken to be the Catalogs page's shopUI; the model invents the products (no products tool).",
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. Product, ProductRow and the product list are repo scaffolding; ./catalog is taken to be the Catalogs page's shopUI; the page's undefined product is the first scaffolding product (no picker).",
       },
       {
         path: "/generative-ui/components/catalogs",
         hasDemo: true,
-        agentId: "genui",
         title: "Components · Catalogs",
         docPath: "/strands/generative-ui/components/catalogs",
         summary:
           "createGenerativeUI catalogs: typed components, zod and Valibot props, extends, parameterOrder and exportA2UICatalog.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Every snippet runs; Hero, Panel and cartUI are repo scaffolding. fs.writeFileSync is replaced by printing the exported catalog.",
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. Hero, Panel and cartUI are repo scaffolding. The catalog is used as published (no standardUI layout added). fs.writeFileSync is kept as a // doc: comment (Node-only).",
       },
       {
         path: "/generative-ui/components/standard-catalog",
         hasDemo: true,
-        agentId: "genui",
         title: "Components · Standard catalog",
         docPath: "/strands/generative-ui/components/standard-catalog",
         summary:
           "standardUI's 69 components as is, extended with a ProductCard, with Map/Video/HtmlView omitted, and with Card overridden.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). ProductCard and productSchema are repo scaffolding.",
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. ProductCard and productSchema are repo scaffolding.",
       },
       {
         path: "/generative-ui/components/state-and-actions",
         hasDemo: true,
-        agentId: "genui",
         title: "Components · State and actions",
         docPath: "/strands/generative-ui/components/state-and-actions",
         summary:
           "App state bound into props, functions run on click, events sent to the agent, and writable props that keep user input.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Cart, cart.addItem, the state-catalog ProductCard and the catalogs around the fragment snippets are repo scaffolding. Renderer functions cannot be called by the agent in this version, so allowedCallers is shown as exported only.",
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. Cart, cart.addItem, the state-catalog ProductCard and the catalogs around the fragment snippets are repo scaffolding; the catalogs are used as published (no layout container), and there is no cart view, add-to-cart buttons or PlanCard. The \"Send a click\" events fragment names no component and is not exercised. Renderer functions cannot be called by the agent in this version, so allowedCallers is shown as exported only.",
       },
       {
         path: "/generative-ui/components/theming",
         hasDemo: true,
-        agentId: "genui",
         title: "Components · Theming",
         docPath: "/strands/generative-ui/components/theming",
         summary:
           "The theme option's CSS variables, a typed GenerativeUITheme file, dark-mode overrides, map styles, and .a2ui-surface CSS.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). The dark-mode script renders in the demo body, not <head>. The page's mapStyle URLs are placeholders, so the Map variant draws no basemap.",
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. The dark-mode script renders in the demo body, not <head>; there is no manual dark toggle. The page's mapStyle URLs are placeholders, so the Map variant draws no basemap.",
       },
       {
         path: "/generative-ui/components/transports",
         hasDemo: true,
-        agentId: "genui",
         title: "Components · Transports",
         docPath: "/strands/generative-ui/components/transports",
         summary:
           "The render_ui tool transport vs the markdown transport, the runtime's generativeUI flag, and agentIds scoping.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). The runtime sample's agent is undefined; this repo's Strands genui agent stands in, plus an identical genui-shop agent so agentIds has one agent inside and one outside.",
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. The runtime sample is verbatim and its agent is undefined, so the route throws on load; no shop agent is registered.",
       },
       {
         path: "/generative-ui/components/markdown-mode",
         hasDemo: true,
-        agentId: "genui",
         title: "Components · Markdown mode",
         docPath: "/strands/generative-ui/components/markdown-mode",
         summary:
           "The agent writes A2UI operations in a2ui code blocks inside its reply; sendContext: false moves the catalog into forwardedProps.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). The sendContext: false variant renders no UI by design: the only backend shown for it is Python reading forwarded_props, which this repo's Strands genui agent does not.",
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. The only backend shown for sendContext: false is a Python fragment reading forwarded_props.",
       },
       {
         path: "/generative-ui/components/from-a2ui",
         hasDemo: true,
-        agentId: "genui",
         title: "Components · Adopt from A2UI",
         docPath: "/strands/generative-ui/components/from-a2ui",
         summary:
           "The v0.9 a2ui renderer → A2UI 1.0 migration: the After catalog running on the new engine, with the Before code shown.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Airport and Arrow are repo scaffolding. The support matrix rules out @ag-ui/a2ui-toolkit 0.0.5 agent tools, (aws-strands-ts's fixed-schema agent).",
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). No Strands agent is printed (only a TanStack BuiltInAgent factory), so the demo has no agent and its chat fails. Airport and Arrow are repo scaffolding. The support matrix rules out @ag-ui/a2ui-toolkit 0.0.5 agent tools, (aws-strands-ts's fixed-schema agent).",
       },
       {
         path: "/generative-ui/open-generative-ui",

@@ -10,12 +10,12 @@ import { GenUIDemo } from "../_shared/genui-demo";
  * The Components and surfaces overview: `generativeUI={{ ui: standardUI }}`
  * on the provider, a bare chat, and "Compare the Starter, Team, and
  * Enterprise plans in a table". Provider shape is the page's; it points at
- * /api/copilotkit-genui (this repo's Strands `genui` agent) rather than the
+ * /api/copilotkit-genui (no agent: the page prints none for Strands) rather than the
  * page's BuiltInAgent TanStack runtime.
  */
 export default function DemoPage() {
   return (
-    <DemoFrame parentPath="/generative-ui/components" subtitle="standardUI · agent: genui">
+    <DemoFrame parentPath="/generative-ui/components" subtitle="standardUI · no agent">
       <GenUIDemo
         variants={[
           {

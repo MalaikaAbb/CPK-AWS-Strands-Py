@@ -14,16 +14,3 @@ const colorSchemeScript = `(() => {
 export function ColorSchemeScript() {
   return <script dangerouslySetInnerHTML={{ __html: colorSchemeScript }} />;
 }
-
-/** Harness glue: flip the `dark` class by hand, without changing the OS setting. */
-export function DarkToggle() {
-  return (
-    <button
-      type="button"
-      onClick={() => document.documentElement.classList.toggle("dark")}
-      className="rounded border px-2 py-1 text-xs"
-    >
-      Toggle {"<html class=\"dark\">"}
-    </button>
-  );
-}

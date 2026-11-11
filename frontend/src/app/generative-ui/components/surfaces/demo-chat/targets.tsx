@@ -1,7 +1,6 @@
 "use client";
 
 import { GenerativeUISurface } from "@copilotkit/react-core/v2/generative-ui";
-import { useState } from "react";
 
 import { PRODUCTS } from "../../_shared/scaffolding";
 import { shopUI } from "./catalog";
@@ -22,28 +21,14 @@ export function SidebarNotes() {
   return <GenerativeUISurface id="sidebar-notes" autoScroll={false} />;
 }
 
-/** "One target for each item". The picker is scaffolding; the surface is verbatim. */
+/** "One target for each item". `product` is undefined on the page; the first scaffolding product stands in. */
 export function Recommendations() {
-  const [product, setProduct] = useState(PRODUCTS[0]);
+  const product = PRODUCTS[0];
   return (
-    <div className="space-y-2">
-      <div className="flex gap-2 text-xs">
-        {PRODUCTS.map((p) => (
-          <button
-            key={p.id}
-            type="button"
-            onClick={() => setProduct(p)}
-            className={`rounded border px-2 py-1 ${p.id === product.id ? "border-[var(--accent)] text-[var(--accent)]" : "border-slate-300"}`}
-          >
-            {p.name}
-          </button>
-        ))}
-      </div>
-      <GenerativeUISurface
-        key={product.id}
-        id={`recommendations-${product.id}`}
-        description={`The "You might also like" row under ${product.name}. Show related products here. Never include ${product.name} itself.`}
-      />
-    </div>
+    <GenerativeUISurface
+      key={product.id}
+      id={`recommendations-${product.id}`}
+      description={`The "You might also like" row under ${product.name}. Show related products here. Never include ${product.name} itself.`}
+    />
   );
 }

@@ -2,19 +2,17 @@
 // not a catalog; the catalog around them is repo-authored scaffolding so each
 // line can be used by a real component. The two `props` values are verbatim.
 //
-// The catalog extends `standardUI` so the agent has a Row or Column to hold
-// both cards. A surface has one root, and without a container the agent made a
-// card the root and gave it `children`, which the card does not declare.
+// No layout container is added: a surface has one root, so asking for both
+// cards at once may fail (the agent tends to nest one card in the other).
 import { z } from "zod";
 import * as v from "valibot";
 import { toStandardJsonSchema } from "@valibot/to-json-schema";
-import { createGenerativeUI, standardUI } from "@copilotkit/react-core/v2/generative-ui";
+import { createGenerativeUI } from "@copilotkit/react-core/v2/generative-ui";
 
 import { ScaffoldProductCard } from "../../_shared/scaffolding";
 
 export const schemaLibrariesUI = createGenerativeUI({
   id: "harness/schema-libraries@1",
-  extends: [standardUI],
   components: {
     ZodProductCard: {
       component: ScaffoldProductCard,

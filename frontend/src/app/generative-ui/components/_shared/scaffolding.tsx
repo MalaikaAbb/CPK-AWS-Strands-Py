@@ -2,7 +2,8 @@
 
 // Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
 // The strands doc page is byte-identical to the langgraph-typescript one
-// (diffed 2026-11-10). Harness glue points at this repo's Strands `genui` agent.
+// (diffed 2026-11-10). The page prints no Strands agent, so no agent stands
+// behind these providers' runtime: chats fail (see the route callout).
 
 /**
  * Repo-authored scaffolding — NOT from the docs.
@@ -73,26 +74,6 @@ export function useCart(): Cart {
     });
   }, []);
   return { items, addItem };
-}
-
-/** Repo-authored scaffolding: shows the cart so the effect of a click is visible. */
-export function CartView({ cart }: { cart: Cart }) {
-  return (
-    <div className="rounded-lg border border-slate-200 p-3 text-xs dark:border-slate-700">
-      <p className="font-semibold">Cart (app state)</p>
-      {cart.items.length === 0 ? (
-        <p className="text-slate-500">Empty</p>
-      ) : (
-        <ul>
-          {cart.items.map((i) => (
-            <li key={i.productId} className="font-mono">
-              {i.productId} × {i.quantity}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
 }
 
 /** Repo-authored scaffolding: `Hero` is used by Catalogs' "Combine catalogs" but not defined. */

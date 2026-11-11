@@ -1,23 +1,17 @@
-import { HttpAgent } from "@ag-ui/client";
 import {
   CopilotRuntime,
   createCopilotRuntimeHandler,
 } from "@copilotkit/runtime/v2";
 
-import { agentUrl } from "@/lib/agents";
-
 // The Transports page's `app/api/copilotkit/route.ts`. The page prints only the
-// `CopilotRuntime` call, with an `agent` it never defines.
-//
-// Harness glue (pattern from CPK-LangGraph-TS / aws-strands-ts): `agent` (this
-// repo's Strands `genui` agent), the `shop` entry, and the handler. `shop` is
-// the id the page's "Only some agents" sample lists in `agentIds`, so the demo
-// has one agent inside that list and one (`default`) outside it.
-const agent = new HttpAgent({ url: agentUrl("genui") });
+// `CopilotRuntime` call, with an `agent` it never defines, and no Strands
+// agent anywhere. Kept verbatim, so this route throws a ReferenceError when it
+// loads. Harness glue: the imports and the handler.
 
 //#region transports-runtime
 const runtime = new CopilotRuntime({
-  agents: { default: agent, shop: new HttpAgent({ url: agentUrl("genui-shop") }) /* harness glue */ },
+  // @ts-expect-error verbatim doc code: `agent` is never defined on the page (TS2304); throws on load
+  agents: { default: agent },
   generativeUI: true,
 });
 //#endregion

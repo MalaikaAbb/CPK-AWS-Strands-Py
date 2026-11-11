@@ -1,6 +1,7 @@
 // Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
 // The strands doc page is byte-identical to the langgraph-typescript one
-// (diffed 2026-11-10). Harness glue points at this repo's Strands `genui` agent.
+// (diffed 2026-11-10). The page prints no Strands agent, so no agent stands
+// behind these providers' runtime: chats fail (see the route callout).
 
 import { RouteHeader } from "@/components/route-header";
 import { SourceCodeGroup } from "@/components/source-code";
@@ -50,6 +51,17 @@ export default function Page() {
     <>
       <RouteHeader path="/generative-ui/components/markdown-mode" />
 
+      <Callout tone="warn" title="Broken: no Strands agent is printed">
+        <p>
+          The Components and surfaces pages publish a backend only as a TanStack{" "}
+          <code>BuiltInAgent</code> factory; nothing for Strands. The
+          repo-authored Strands <code>genui</code> agent (and its{" "}
+          <code>/api/copilotkit-genui</code> runtime) was removed, so the
+          demo&apos;s chat has no agent and its requests fail. The page&apos;s
+          frontend code below is kept verbatim and type-checked.
+        </p>
+      </Callout>
+
       <Panel title="What it demonstrates">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
           No tool call at all: the agent writes A2UI operations, one per line,
@@ -95,10 +107,9 @@ export default function Page() {
             · The <code>sendContext: false</code> path needs a backend that reads
             the envelope. The page shows one only in Python (no{" "}
             <code>MY_PROMPT</code>, no <code>json</code> import), and that
-            Python reads <code>input.forwarded_props</code>. This
-            repo&apos;s Strands <code>genui</code> agent doesn&apos;t, and the
-            snippet is a fragment (not a Strands agent), so that variant
-            renders no UI by design.
+            Python reads <code>input.forwarded_props</code>. The snippet is a
+            fragment, not a Strands agent, and no Strands agent is printed, so
+            no variant here has an agent to answer.
           </li>
           <li>
             · The page points to <code>examples/v2/a2ui-markdown</code> to run

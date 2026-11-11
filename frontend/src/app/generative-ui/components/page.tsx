@@ -59,6 +59,17 @@ export default function Page() {
     <>
       <RouteHeader path="/generative-ui/components" />
 
+      <Callout tone="warn" title="Broken: no Strands agent is printed">
+        <p>
+          The Components and surfaces pages publish a backend only as a TanStack{" "}
+          <code>BuiltInAgent</code> factory; nothing for Strands. The
+          repo-authored Strands <code>genui</code> agent (and its{" "}
+          <code>/api/copilotkit-genui</code> runtime) was removed, so the
+          demo&apos;s chat has no agent and its requests fail. The page&apos;s
+          frontend code below is kept verbatim and type-checked.
+        </p>
+      </Callout>
+
       <Panel title="What it demonstrates">
         <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
           A2UI 1.0 components drawn by the agent: put a catalog on the provider
@@ -74,7 +85,7 @@ export default function Page() {
               "add a column for support",
             ]}
             expect="A table streams into the chat; the follow-up changes the same table in place."
-            fail="Plain markdown text: render_ui never reached the model. Check that the Strands genui agent is registered (/health), and that the provider has a generativeUI catalog."
+            fail="Expected today: the chat errors, because no Strands agent is printed and none is registered behind /api/copilotkit-genui."
           />
         </div>
       </Panel>
@@ -82,14 +93,12 @@ export default function Page() {
       <Callout tone="warn" title="Runtime differs from the page">
         <p>
           The page&apos;s runtime is a <code>BuiltInAgent</code> TanStack
-          factory (below, shown verbatim). This Strands harness serves the
-          same provider config through a repo-authored Strands{" "}
-          <code>genui</code> agent at <code>/api/copilotkit-genui</code>. It
-          needs no glue for the two things the page asks of an agent:{" "}
-          <code>ag_ui_strands</code> proxies the run&apos;s{" "}
-          <code>render_ui</code> as a client tool, and puts the run&apos;s
-          context (the catalog guide) into the model request. Its one
-          instruction is the page&apos;s own system prompt.
+          factory (below, shown verbatim, not run). It prints no Strands agent,
+          so this harness has none for these routes: the demo&apos;s provider
+          points at <code>/api/copilotkit-genui</code>, which no longer exists.
+          A Strands agent would only need to pass the run&apos;s{" "}
+          <code>render_ui</code> tool and context to its model, but none is
+          printed, so none is written here.
         </p>
       </Callout>
 
@@ -104,8 +113,6 @@ export default function Page() {
         <SourceCodeGroup
           files={[
             { file: "frontend/src/app/generative-ui/components/demo-chat/page.tsx" },
-            { file: "frontend/src/app/api/copilotkit-genui/[[...slug]]/route.ts" },
-            { file: "backend/src/agents/genui_agent.py", region: "agent" },
           ]}
         />
       </Panel>
