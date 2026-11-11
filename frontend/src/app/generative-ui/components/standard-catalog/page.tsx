@@ -1,0 +1,89 @@
+// Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
+// The strands doc page is byte-identical to the langgraph-typescript one
+// (diffed 2026-11-10). The page prints only a TanStack BuiltInAgent; these
+// providers' runtime runs the Strands `genui` agent instead (route callout).
+
+import { RouteHeader } from "@/components/route-header";
+import { SourceCodeGroup } from "@/components/source-code";
+import { Callout, Panel, TryIt } from "@/components/ui";
+
+const BASE = "frontend/src/app/generative-ui/components/standard-catalog/demo-chat";
+
+export default function Page() {
+  return (
+    <>
+      <RouteHeader path="/generative-ui/components/standard-catalog" />
+
+      <Callout tone="warn" title="Agent: Strands, not the doc's BuiltInAgent">
+        <p>
+          The Components and surfaces pages publish a backend only as a TanStack{" "}
+          <code>BuiltInAgent</code> factory, which is not a Strands agent. This
+          harness runs its own framework&apos;s agent in that slot: a
+          tool-free Strands <code>genui</code> agent
+          (<code>backend/src/agents/genui_agent.py</code>) whose prompt is the
+          factory&apos;s, verbatim, reached over AG-UI through{" "}
+          <code>/api/copilotkit-genui</code>. Doc gap, README §9.35. The
+          page&apos;s frontend code below is kept verbatim and type-checked.
+          Not yet checked in a browser.
+        </p>
+      </Callout>
+
+      <Panel title="What it demonstrates">
+        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+          <code>standardUI</code> is a ready-made catalog of 69 components —
+          layout, text, inputs, tables, charts, maps, media. You can use it as
+          is, put your own components on top with <code>extends</code>, trim it
+          with <code>omit</code> so the prompt is shorter, or swap the React
+          component behind a standard name with <code>overrides</code>.
+        </p>
+        <div className="mt-4 space-y-3">
+          <TryIt
+            prompts={["Show the Eiffel Tower and the Louvre on a map"]}
+            expect="standardUI: a MapLibre map with two markers. omit variant: no map — the agent uses a list or text, because Map was dropped from what it sees."
+            fail="On standardUI, a plain list of places means maplibre-gl did not load."
+          />
+          <TryIt
+            prompts={["Put a short summary of our three plans in a card"]}
+            expect="On the override variant the card has the large rounded corners and padding of MyCard; on standardUI it has the default card look."
+          />
+        </div>
+      </Panel>
+
+      <Panel title="The page's catalogs">
+        <SourceCodeGroup
+          files={[
+            { file: `${BASE}/extend.ts` },
+            { file: `${BASE}/omit.ts` },
+            { file: `${BASE}/override.tsx` },
+          ]}
+        />
+      </Panel>
+
+      <Panel title="The demo">
+        <SourceCodeGroup files={[{ file: `${BASE}/page.tsx` }]} />
+      </Panel>
+
+      <Callout tone="warn" title="Gaps and harness changes">
+        <ul className="space-y-1.5">
+          <li>
+            · &ldquo;Add your own components&rdquo; uses <code>ProductCard</code>{" "}
+            and <code>productSchema</code> without defining them — scaffolding
+            supplies both.
+          </li>
+          <li>
+            · &ldquo;Drop components&rdquo; omits its imports; added, marked in
+            the file.
+          </li>
+          <li>
+            · The same id <code>acme/app@1</code> is used by all three samples;
+            each lives in its own file and only one is mounted at a time.
+          </li>
+          <li>
+            · <code>maplibre-gl</code> is installed, as the page says to for{" "}
+            <code>Map</code>.
+          </li>
+        </ul>
+      </Callout>
+    </>
+  );
+}

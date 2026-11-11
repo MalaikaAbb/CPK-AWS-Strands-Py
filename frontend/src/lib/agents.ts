@@ -26,6 +26,9 @@ export const AGENT_IDS = [
   "headless-complete",
   "multimodal",
   "voice",
+  // Components and surfaces: the Strands agent standing in for the pages'
+  // TanStack BuiltInAgent, reached only through /api/copilotkit-genui*.
+  "genui",
   "reasoning-default",
   "reasoning-custom",
   "gen-ui-tool-based",
