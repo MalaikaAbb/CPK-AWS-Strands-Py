@@ -165,6 +165,18 @@ export const NAV: NavGroup[] = [
           "All three snippets run exactly as published. The page defines no CSS for its my-link and my-heading classes, so the first example is only visible in DevTools. No backend code is printed; the agent is repo-authored.",
       },
       {
+        path: "/custom-look-and-feel/reasoning-messages",
+        hasDemo: true,
+        agentId: "reasoning-default",
+        title: "Reasoning Messages",
+        docPath: "/strands/custom-look-and-feel/reasoning-messages",
+        summary:
+          "The reasoning card part by part: custom header and content sub-slots, and a render-prop layout over the built-in pieces.",
+        status: "partial",
+        statusNote:
+          "All four snippets verbatim; the render-prop slot assignment fails TS2322 (kept under @ts-expect-error, cast in the demo). Runs on the showcase reasoning agent. Typecheck only — not run against the model or in a browser.",
+      },
+      {
         path: "/custom-look-and-feel/headless-ui",
         hasDemo: true,
         agentId: "headless-simple",
@@ -221,10 +233,10 @@ export const NAV: NavGroup[] = [
         title: "Import & Synchronize History",
         docPath: "/strands/threads-import",
         summary:
-          "Moving existing framework conversations into Intelligence as Rich Threads — a CLI migration with no React surface.",
+          "Copying saved Strands conversations (session files, S3, AgentCore Memory) into Intelligence as Rich Threads — a CLI import with no React surface.",
         status: "reference",
         statusNote:
-          "Nothing to run: the page's own supported-sources table is Google ADK and LangGraph only. There is no Strands importer.",
+          "Since 2026-11-10 the page documents a Strands importer (--source strands-python / strands-typescript; the CLI lists both). Still nothing to run here: this repo keeps conversations in memory, which can't be imported, and a real import needs an Intelligence key.",
       },
     ],
   },
@@ -364,7 +376,7 @@ export const NAV: NavGroup[] = [
           "A remote MCP server (Excalidraw) supplies both the tool and its UI; the runtime's mcpApps config does the rest, with a plain chat on the frontend.",
         status: "partial",
         statusNote:
-          "Runtime statement verbatim. Its fallback URL https://mcp.excalidraw.com 308-redirects to /mcp and the middleware refuses redirects, so it only discovers tools with MCP_SERVER_URL set to …/mcp (.env.example does). Not yet observed in a browser; no agent is published.",
+          "Runtime statement verbatim. Its fallback URL https://mcp.excalidraw.com 308-redirects to /mcp and the middleware refuses redirects, so it only discovers tools with MCP_SERVER_URL set to …/mcp (.env.example does). Not yet observed in a browser; no agent is published. The Intelligence snippet's BuiltInAgent is swapped for the Strands mcp-apps agent (agent: Strands, not the doc's BuiltInAgent); that route needs a premium Intelligence key and is not mounted.",
       },
       {
         path: "/generative-ui/json-render",
@@ -376,7 +388,7 @@ export const NAV: NavGroup[] = [
           "The agent replies with a { root, elements } spec that @json-render/react draws against a component catalog, plugged in through the assistant-message slot.",
         status: "partial",
         statusNote:
-          "Two published versions, both verbatim. The prose snippets are broken by design here: <Renderer catalog> is kept, so any spec that passes the prose Zod catalog throws \"useVisibility must be used within a VisibilityProvider\". The embedded demo source (defineRegistry + JSONUIProvider, its own route.ts and Strands agent) is predicted to work — confirmed only by server-rendering, not yet in a browser.",
+          "The page now prints only its demo source (defineRegistry + JSONUIProvider, its own route.ts and Strands agent), all verbatim here; catalog.ts imports zod4 (alias installed), so it type-checks with no suppression. The old prose snippets were removed (2026-11-10). Predicted to work — confirmed only by server-rendering, not yet in a browser.",
       },
       {
         path: "/generative-ui/hashbrown",
@@ -388,7 +400,7 @@ export const NAV: NavGroup[] = [
           "The agent streams a UI envelope that @hashbrownai/react parses progressively and renders through a UI kit, plugged in through the assistant-message slot.",
         status: "partial",
         statusNote:
-          "Two published versions, both verbatim. The prose snippets are broken by design here: all three Hashbrown calls are kept, so the first assistant message throws \"Cannot read properties of undefined (reading 'forEach')\". The embedded demo source (exposeComponent kit, its own route.ts and Strands agent) is predicted to work — confirmed only by server-rendering, not yet in a browser.",
+          "The page now prints only its demo source (exposeComponent kit, its own route.ts and Strands agent), all verbatim here; the old prose snippets were removed with it (2026-11-10). Predicted to work — confirmed only by server-rendering, not yet in a browser. Repo stays on @hashbrownai 0.6.1; the page names 0.5.0-beta.4.",
       },
     ],
   },
