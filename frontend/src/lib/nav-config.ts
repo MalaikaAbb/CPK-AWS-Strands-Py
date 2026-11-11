@@ -331,6 +331,16 @@ export const NAV: NavGroup[] = [
           "The gate itself works. The page is still almost empty — one React placeholder tag and one generic snippet — and is reproduced as-is, unstyled markup included.",
       },
       {
+        path: "/generative-ui/a2ui",
+        title: "A2UI",
+        docPath: "/strands/generative-ui/a2ui",
+        summary:
+          "The A2UI overview: three operations, two approaches, two ways to switch it on, and the surface color variables.",
+        status: "reference",
+        statusNote:
+          "Overview page. Its setup paths run on the Dynamic Schema (catalog on provider) and Fixed Schema (runtime a2ui block) routes; the snippets are type-checked verbatim (myCatalog, myAgent, children undefined), the CSS variables are shown, not applied.",
+      },
+      {
         path: "/generative-ui/a2ui/dynamic-schema",
         hasDemo: true,
         agentId: "declarative-gen-ui",
