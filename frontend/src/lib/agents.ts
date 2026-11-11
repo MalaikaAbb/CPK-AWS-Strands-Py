@@ -29,6 +29,8 @@ export const AGENT_IDS = [
   // Components and surfaces: the Strands agent standing in for the pages'
   // TanStack BuiltInAgent, reached only through /api/copilotkit-genui*.
   "genui",
+  "reasoning-default",
+  "reasoning-custom",
   "gen-ui-tool-based",
   "tool-rendering",
   "gen-ui-display-only",
@@ -36,7 +38,7 @@ export const AGENT_IDS = [
   "a2ui-fixed-schema",
   "declarative-gen-ui",
   // JSON Render / Hashbrown: the doc's own Strands agents, reached only
-  // through /api/copilotkit-byoc-* and /api/copilotkit-declarative-*.
+  // through /api/copilotkit-declarative-*.
   "byoc-json-render",
   "byoc-hashbrown",
   // Open Generative UI / MCP Apps. Their middleware lives on their own

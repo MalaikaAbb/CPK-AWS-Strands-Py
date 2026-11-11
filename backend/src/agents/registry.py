@@ -27,6 +27,7 @@ from agents.a2ui_fixed import build_a2ui_fixed_schema_agent
 from agents.byoc_hashbrown import build_byoc_hashbrown_agent
 from agents.byoc_json_render import build_byoc_json_render_agent
 from agents.genui_agent import genui_agent
+from agents.reasoning_agent import build_reasoning_agent
 from agents.language_agent import shared_state_language_agent
 
 #: Reusable gap descriptions. Each string is a fact about the docs, not about
@@ -190,6 +191,14 @@ REGISTRY: dict[str, RegisteredAgent] = {
         genui_agent,
         "/strands/generative-ui/components",
         gaps=(GENUI_BUILTIN_AGENT,),
+    # --- Chat: reasoning ---------------------------------------------------
+    # The page's two demos share one agent in the showcase (`/reasoning/`);
+    # here each id gets its own mount of the same verbatim factory.
+    "reasoning-default": RegisteredAgent(
+        build_reasoning_agent, "/strands/generative-ui/reasoning"
+    ),
+    "reasoning-custom": RegisteredAgent(
+        build_reasoning_agent, "/strands/generative-ui/reasoning"
     ),
 
     # --- Generative UI ----------------------------------------------------
