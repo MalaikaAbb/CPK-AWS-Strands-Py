@@ -550,6 +550,17 @@ export const NAV: NavGroup[] = [
           "useFrontendTool exactly as the page shows, and the agent calls it — even though the page's Strands setup section is a placeholder.",
       },
       {
+        path: "/webmcp",
+        hasDemo: true,
+        title: "WebMCP",
+        docPath: "/strands/webmcp",
+        summary:
+          "A frontend tool mirrored onto document.modelContext so WebMCP browser agents can call it, plus the core-only registration with no agent.",
+        status: "broken",
+        statusNote:
+          "Both snippets verbatim (ported from aws-strands-ts). Doc gap: searchOrders is called but never defined on the page, so the tool handler throws (no stub). The page prints no agent, so there is no chat; the tool only registers (WebMCP needs a browser exposing document.modelContext). Typecheck only.",
+      },
+      {
         path: "/human-in-the-loop",
         hasDemo: true,
         agentId: "hitl-in-chat",
