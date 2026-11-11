@@ -572,6 +572,30 @@ export const NAV: NavGroup[] = [
         statusNote:
           "The tool-based pause works. The page's other half is `useInterrupt`, which is LangGraph-only and does not apply to Strands at all.",
       },
+      {
+        path: "/human-in-the-loop/overview",
+        hasDemo: true,
+        agentId: "hitl-in-chat",
+        title: "HITL Overview",
+        docPath: "/strands/human-in-the-loop/index",
+        summary:
+          "useHumanInTheLoop (a frontend tool the model calls) next to useInterrupt (a Strands tool that pauses with tool_context.interrupt).",
+        status: "partial",
+        statusNote:
+          "Both Code-tab demos verbatim; gen-ui-interrupt runs on the existing interrupt_agent.py. Doc gaps: its fallback-slots helper and suggestions.ts are imported but not printed (kept as // doc: comments; generateFallbackSlots() throws if a payload has no slots), and card/button/badge are minimal stand-ins. Typecheck only — not run live.",
+      },
+      {
+        path: "/human-in-the-loop/use-interrupt",
+        hasDemo: true,
+        agentId: "gen-ui-interrupt",
+        title: "Pausing the Agent for Input",
+        docPath: "/strands/human-in-the-loop/useInterrupt",
+        summary:
+          "A Strands tool pausing with tool_context.interrupt and resuming from a useInterrupt render prop.",
+        status: "partial",
+        statusNote:
+          "Demo verbatim, backend snippet matches interrupt_agent.py. The enabled / handler / multi-interrupt snippets are type-checked only (their cards and lookup are undefined on the page). Same demo gaps as the HITL overview (unprinted fallback-slots helper and suggestions). Typecheck only — not run live.",
+      },
       // The doc sidebar nests these two under its Human-in-the-loop group.
       {
         path: "/human-in-the-loop/headless",
