@@ -177,6 +177,18 @@ export const NAV: NavGroup[] = [
           "All three snippets run exactly as published. The page defines no CSS for its my-link and my-heading classes, so the first example is only visible in DevTools. No backend code is printed; the agent is repo-authored.",
       },
       {
+        path: "/custom-look-and-feel/reasoning-messages",
+        hasDemo: true,
+        agentId: "reasoning-default",
+        title: "Reasoning Messages",
+        docPath: "/strands/custom-look-and-feel/reasoning-messages",
+        summary:
+          "The reasoning card part by part: custom header and content sub-slots, and a render-prop layout over the built-in pieces.",
+        status: "partial",
+        statusNote:
+          "All four snippets verbatim; the render-prop slot assignment fails TS2322 (kept under @ts-expect-error, cast in the demo). Runs on the showcase reasoning agent. Typecheck only — not run against the model or in a browser.",
+      },
+      {
         path: "/custom-look-and-feel/headless-ui",
         hasDemo: true,
         agentId: "headless-simple",
@@ -271,6 +283,16 @@ export const NAV: NavGroup[] = [
     title: "Generative UI",
     routes: [
       {
+        path: "/generative-ui/state-rendering",
+        title: "State Rendering",
+        docPath: "/strands/generative-ui/state-rendering",
+        summary:
+          "UI rendered from agent state via useAgent; the page's Strands code is not published.",
+        status: "broken",
+        statusNote:
+          "Not supported on AWS Strands (Python): the rendered page has no Code tab and no Strands code. Only the Markdown export's useAgent fragment is printed; no agent, tool or demo component. Reference only.",
+      },
+      {
         path: "/generative-ui/tool-based",
         hasDemo: true,
         agentId: "gen-ui-tool-based",
@@ -319,6 +341,16 @@ export const NAV: NavGroup[] = [
         status: "working",
         statusNote:
           "The gate itself works. The page is still almost empty — one React placeholder tag and one generic snippet — and is reproduced as-is, unstyled markup included.",
+      },
+      {
+        path: "/generative-ui/a2ui",
+        title: "A2UI",
+        docPath: "/strands/generative-ui/a2ui",
+        summary:
+          "The A2UI overview: three operations, two approaches, two ways to switch it on, and the surface color variables.",
+        status: "reference",
+        statusNote:
+          "Overview page. Its setup paths run on the Dynamic Schema (catalog on provider) and Fixed Schema (runtime a2ui block) routes; the snippets are type-checked verbatim (myCatalog, myAgent, children undefined), the CSS variables are shown, not applied.",
       },
       {
         path: "/generative-ui/a2ui/dynamic-schema",

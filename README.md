@@ -227,6 +227,11 @@ The `messageView.assistantMessage.markdownRenderer` slot in its three forms, one
 ✅ *components map* — in DevTools the `<h2>` has `class="my-heading"` and the `<a>` has `class="my-link"` plus `target="_blank" rel="noopener noreferrer"`, with no `data-streamdown` or `node` attribute. Nothing changes visually, because the page defines no CSS for those classes. *class string* — the markdown container has `text-sm leading-7`. *PlainText* — the raw `##` / `[…](…)` markup shows inside a `<pre>`. A `<reference-chip>` echoed in a reply is removed and its text kept; `<kbd>` / `<sup>` render as elements.
 ❌ The anchor still has `data-streamdown="link"`, the PlainText tab shows formatted HTML, or "agent not found" (the `chat-markdown` backend agent is not mounted).
 
+**`/custom-look-and-feel/reasoning-messages` — reasoning messages** ⚠️ (agent `reasoning-default`, new 2026-11-10, not yet run)
+The reasoning card's sub-slots (`header`, `contentView`) and a render-prop layout, one variant each. All four snippets are verbatim. The render-prop's `reasoningMessage: MyReasoningLayout` fails TS2322 (it's kept under `@ts-expect-error` and cast in the demo). Try `Explain step by step why the sky appears blue during the day but red at sunset.`
+✅ Custom header shows 🧠 → 💡 with Show/Hide; custom content is gray monospace with a ▊ cursor; render-prop puts the default pieces in a yellow box.
+❌ The default card on every variant, or no reasoning block at all.
+
 **`/custom-look-and-feel/headless-ui` — headless UI**
 A chat assembled from `useAgent` + `useCopilotKit` alone, no CopilotKit chrome.
 ✅ Messages, streaming and send all work through a UI with none of the package's CSS.
@@ -264,6 +269,11 @@ All four need CopilotKit Intelligence. Without it they compile and render, and t
 
 ### Generative UI
 
+**`/generative-ui/state-rendering` — state rendering** ❌ (reference only)
+The rendered page says "Not supported on AWS Strands (Python)" and has no Code tab, so the route only shows the Markdown export's `useAgent` fragment and a gap panel. Nothing to try.
+✅ The route renders the fragment and the "not supported" callout.
+❌ (n/a: there is no demo or agent; see §9.33.)
+
 **`/generative-ui/tool-based` — components as tools** ✅
 `useComponent` registers a bar chart. Try `Chart the number of days in each month of 2026`.
 ✅ A bar chart renders inline in the chat with the model's numbers, and the reply does not repeat them as a list.
@@ -286,6 +296,8 @@ Two caveats. `get_weather_impl` is borrowed from the Google ADK page (§9.4), an
 ✅ The run pauses, an unstyled block appears with the command in a `<pre>` and two buttons, and nothing further streams until you press one.
 ❌ Prose with no gate, or a gate that appears while the run continues underneath it (meaning `respond` was never called).
 The doc page's entire published source is four lines — see §9.7.
+
+**`/generative-ui/a2ui`** 📘 — the A2UI overview (new 2026-11-10): `createSurface` → `updateComponents` → `updateDataModel`, Dynamic vs Fixed Schema, a catalog on the provider vs an `a2ui` block on the runtime (`injectA2UITool: true` without a catalog), and `.a2ui-surface` color variables. The snippets are byte-for-byte in `generative-ui/a2ui/_doc/` (type-checked; `myCatalog`, `myAgent` and `children` are undefined on the page and suppressed), and the Python `copilotkit.a2ui` helpers are in `backend/docs_verbatim/`. Nothing to run here; the two setups run on the routes below. Structure ported from CPK-LangGraph-TS.
 
 **`/generative-ui/a2ui/dynamic-schema`** ❌ — catalog, definitions and renderers all wired as printed. Try `Build me a dashboard for a SaaS company's Q3`.
 ✅ *(what actually passes)* `createCatalog` builds, the nested provider mounts, the chat streams.
@@ -393,6 +405,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/custom-look-and-feel/css` | `/custom-look-and-feel/css` | ✅ Working | Not in the doc sidebar. v1/v2 token split — §9.10. |
 | `/strands/custom-look-and-feel/slots` | `/custom-look-and-feel/slots` | ✅ Working | Not in the doc sidebar. New `toolCallsView` tab (2026-11-10) typechecks but hasn't been run. |
 | `/strands/custom-look-and-feel/markdown` | `/custom-look-and-feel/markdown` | ✅ Working | All three snippets verbatim, and they type-check. `my-link` / `my-heading` have no CSS on the page, so example 1 is verifiable only in DevTools. Frontend-only page; `chat-markdown` agent is repo-authored — see §9.22. |
+| `/strands/custom-look-and-feel/reasoning-messages` | `/custom-look-and-feel/reasoning-messages` | ⚠️ Partial | New 2026-11-10. Snippets verbatim; render-prop slot fails TS2322 (suppressed). Typecheck only. |
 | `/strands/custom-look-and-feel/headless-ui` | `/custom-look-and-feel/headless-ui` | ✅ Working | Not in the doc sidebar. |
 | `/strands/prebuilt-components/copilot-threads-drawer` | `/prebuilt-components/copilot-threads-drawer` | ⚠️ Partial | Integration reproduced in full; locked without an Intelligence key. Own-button / controlled / CSS-parts variants added 2026-11-10, not yet run. |
 | `/strands/headless-threads` | `/headless-threads` | ⚠️ Partial | All three snippets run; the page's own step-2/step-3 prop mismatch reconciled — §9.21. |
@@ -400,10 +413,12 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/threads-import` | `/threads-import` | 📘 Reference | Strands importer documented 2026-11-10 (CLI lists it); nothing to import here: in-memory sessions — §9.20. |
 | `/strands/multimodal-attachments` | `/multimodal-attachments` | ✅ Working | Images fine on gpt-4o; audio parts are refused by the model. |
 | `/strands/voice` | `/voice` | ✅ Working | Mic needs `OPENAI_API_KEY` in the Next process too. |
+| `/strands/generative-ui/state-rendering` | `/generative-ui/state-rendering` | ❌ Broken | New 2026-11-10. Not supported on Strands Python: no Code tab, no Strands code. Reference only (Markdown `useAgent` fragment) — §9.33. |
 | `/strands/generative-ui/tool-based` | `/generative-ui/tool-based` | ✅ Working | Works with no documented backend wiring — see §9.3. |
 | `/strands/generative-ui/tool-rendering` | `/generative-ui/tool-rendering` | ✅ Working | Doc now publishes WeatherCard, FlightListCard and parseJsonResult; search_flights renderer added. 2026-11-10: "Grouping tool calls" (`group: true`, `toolCallDisplay`, `group` slot) is type-checked only; none of it exists in 1.79.1. |
 | `/strands/generative-ui/your-components/display-only` | `/generative-ui/your-components/display-only` | ✅ Working | Not in the doc sidebar. Needs no backend section — see §9.3. |
 | `/strands/generative-ui/your-components/interactive` | `/generative-ui/your-components/interactive` | ✅ Working | Not in the doc sidebar. Page is still four lines — §9.7. |
+| `/strands/generative-ui/a2ui` | `/generative-ui/a2ui` | 📘 Reference | New 2026-11-10. Overview; snippets type-checked verbatim; setups run on Dynamic / Fixed Schema. |
 | `/strands/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ❌ Broken | `renderers.tsx` has no imports — §9.6. A2UI tool unattached. |
 | `/strands/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ✅ Working | `display_flight` + `flight_schema.json` run as described, but come from the GitHub showcase, not the page (2026-10-19) — §9.29. Action handlers documented as unsupported. |
 | `/strands/generative-ui/open-generative-ui` | `/generative-ui/open-generative-ui` | ⚠️ Partial | Not yet checked in a browser. No agent published; `Chat` / `VISUALIZATION_DESIGN_SKILL` / `./suggestions` undefined; advanced snippet truncated — §9.23. |
@@ -643,6 +658,8 @@ Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight
 
 ### 9.30 Tool Call Rendering — "Grouping tool calls" is ahead of the installed CopilotKit
 [tool-rendering](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering), re-fetched 2026-11-10. A new section covers default-card grouping ("Used 3 tools"), `useDefaultRenderTool({ render, group: true })`, `messageView.toolCallDisplay` (`grouped` · `line` · `stacked` · `turn` · `separate`) and a `group` slot on `toolCallsView`. All three snippets are in `generative-ui/tool-rendering/_doc/grouping.tsx`, verbatim inside wrapper components, and type-checked only. In `@copilotkit/react-core` 1.79.1, `group`, `toolCallDisplay` and the `group` slot don't exist (TS2353), and `MyToolRow` / `ToolTimeline` are undefined (TS2304). All are under `@ts-expect-error`. The page's `agent.py` excerpt also shrank to a 90-line prefix (it was 322) of the same revision the Sub-Agents page now prints. That line-count update is left to the Sub-Agents sync PR, which owns `docs_verbatim/`.
+### 9.33 State Rendering — not supported on Strands Python, nothing printed
+[State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering) (re-checked 2026-11-11): the rendered page replaces each code block with "Not supported on AWS Strands (Python)" and has no Code tab. The Markdown export skips the Strands backend setup and the `state-streaming-middleware` snippet, and prints only a `useAgent` fragment of the showcase's `page.tsx`. Not printed: the demo's `page.tsx`, `demo-layout.tsx`, `document-view.tsx`, `suggestions.ts`, and any `shared-state-streaming` agent (`write_document` + `ToolBehavior(state_from_args=…)`). The route is reference-only and broken.
 
 ## 10. Troubleshooting
 
@@ -772,9 +789,10 @@ Grouped as the Strands doc sidebar groups them, with the pages this repo tracks 
 
 **Prebuilt Components** *(not in the sidebar; reachable by URL)* — ▸ [CopilotChat](https://docs.copilotkit.ai/strands/prebuilt-components/chat) · ▸ [CopilotSidebar](https://docs.copilotkit.ai/strands/prebuilt-components/sidebar) · ▸ [CopilotPopup](https://docs.copilotkit.ai/strands/prebuilt-components/popup) · ▸ [Open, close, and feedback](https://docs.copilotkit.ai/strands/prebuilt-components/chat-controls)
 
-**Custom Look and Feel** *(not in the sidebar; reachable by URL)* — ▸ [CSS](https://docs.copilotkit.ai/strands/custom-look-and-feel/css) · ▸ [Slots](https://docs.copilotkit.ai/strands/custom-look-and-feel/slots) · ▸ [Markdown Rendering](https://docs.copilotkit.ai/strands/custom-look-and-feel/markdown) · ▸ [Headless UI](https://docs.copilotkit.ai/strands/custom-look-and-feel/headless-ui)
+**Custom Look and Feel** *(not in the sidebar; reachable by URL)* — ▸ [CSS](https://docs.copilotkit.ai/strands/custom-look-and-feel/css) · ▸ [Slots](https://docs.copilotkit.ai/strands/custom-look-and-feel/slots) · ▸ [Markdown Rendering](https://docs.copilotkit.ai/strands/custom-look-and-feel/markdown) · [Reasoning Messages](https://docs.copilotkit.ai/strands/custom-look-and-feel/reasoning-messages) · ▸ [Headless UI](https://docs.copilotkit.ai/strands/custom-look-and-feel/headless-ui)
 
-**Build Generative UI** — ▸ [Components as Tools](https://docs.copilotkit.ai/strands/generative-ui/tool-based) · ▸ [Tool Call Rendering](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering) · ▸ [A2UI · Dynamic Schema](https://docs.copilotkit.ai/strands/generative-ui/a2ui/dynamic-schema) · ▸ [A2UI · Fixed Schema](https://docs.copilotkit.ai/strands/generative-ui/a2ui/fixed-schema) · ▸ [Open Generative UI](https://docs.copilotkit.ai/strands/generative-ui/open-generative-ui) · ▸ [MCP Apps](https://docs.copilotkit.ai/strands/generative-ui/mcp-apps) · ▸ [JSON Render](https://docs.copilotkit.ai/strands/generative-ui/json-render) · ▸ [Hashbrown](https://docs.copilotkit.ai/strands/generative-ui/hashbrown) · ▸ [Your Components · Display-only](https://docs.copilotkit.ai/strands/generative-ui/your-components/display-only) *(not in sidebar)* · ▸ [Your Components · Interactive](https://docs.copilotkit.ai/strands/generative-ui/your-components/interactive) *(not in sidebar)*
+**Build Generative UI** — ▸ [Components as Tools](https://docs.copilotkit.ai/strands/generative-ui/tool-based) · ▸ [Tool Call Rendering](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering) · ▸ [A2UI](https://docs.copilotkit.ai/strands/generative-ui/a2ui) · [A2UI · Dynamic Schema](https://docs.copilotkit.ai/strands/generative-ui/a2ui/dynamic-schema) · ▸ [A2UI · Fixed Schema](https://docs.copilotkit.ai/strands/generative-ui/a2ui/fixed-schema) · ▸ [Open Generative UI](https://docs.copilotkit.ai/strands/generative-ui/open-generative-ui) · ▸ [MCP Apps](https://docs.copilotkit.ai/strands/generative-ui/mcp-apps) · ▸ [JSON Render](https://docs.copilotkit.ai/strands/generative-ui/json-render) · ▸ [Hashbrown](https://docs.copilotkit.ai/strands/generative-ui/hashbrown) · ▸ [Your Components · Display-only](https://docs.copilotkit.ai/strands/generative-ui/your-components/display-only) *(not in sidebar)* · ▸ [Your Components · Interactive](https://docs.copilotkit.ai/strands/generative-ui/your-components/interactive) *(not in sidebar)*
+**Build Generative UI** — [State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering) · ▸ [Components as Tools](https://docs.copilotkit.ai/strands/generative-ui/tool-based) · ▸ [Tool Call Rendering](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering) · [State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering) · ▸ [A2UI · Dynamic Schema](https://docs.copilotkit.ai/strands/generative-ui/a2ui/dynamic-schema) · ▸ [A2UI · Fixed Schema](https://docs.copilotkit.ai/strands/generative-ui/a2ui/fixed-schema) · ▸ [Open Generative UI](https://docs.copilotkit.ai/strands/generative-ui/open-generative-ui) · ▸ [MCP Apps](https://docs.copilotkit.ai/strands/generative-ui/mcp-apps) · ▸ [JSON Render](https://docs.copilotkit.ai/strands/generative-ui/json-render) · ▸ [Hashbrown](https://docs.copilotkit.ai/strands/generative-ui/hashbrown) · ▸ [Your Components · Display-only](https://docs.copilotkit.ai/strands/generative-ui/your-components/display-only) *(not in sidebar)* · ▸ [Your Components · Interactive](https://docs.copilotkit.ai/strands/generative-ui/your-components/interactive) *(not in sidebar)*
 
 **Add Agent Powers** — ▸ [Frontend Tools](https://docs.copilotkit.ai/strands/frontend-tools) · ▸ [Human-in-the-Loop](https://docs.copilotkit.ai/strands/human-in-the-loop) (▸ [Headless Interrupts](https://docs.copilotkit.ai/strands/human-in-the-loop/headless) · ▸ [Governed Action Approval UI](https://docs.copilotkit.ai/strands/human-in-the-loop/governed-actions)) · ▸ [Sub-Agents](https://docs.copilotkit.ai/strands/multi-agent/subagents) · ▸ [Agent Config](https://docs.copilotkit.ai/strands/agent-config) · ▸ [Programmatic Control](https://docs.copilotkit.ai/strands/programmatic-control)
 
