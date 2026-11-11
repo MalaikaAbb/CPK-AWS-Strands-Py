@@ -26,6 +26,8 @@ from agents import gen_ui_agents
 from agents.a2ui_fixed import build_a2ui_fixed_schema_agent
 from agents.byoc_hashbrown import build_byoc_hashbrown_agent
 from agents.byoc_json_render import build_byoc_json_render_agent
+from agents.genui_agent import genui_agent
+from agents.reasoning_agent import build_reasoning_agent
 from agents.language_agent import shared_state_language_agent
 
 #: Reusable gap descriptions. Each string is a fact about the docs, not about
@@ -90,6 +92,12 @@ NO_MCP_APPS_AGENT = (
     "The MCP Apps runtime snippet registers `agents` with the id `mcp-apps` "
     "but never shows the agent. This repo serves the Quickstart agent; the "
     "MCP server's UI tools are appended to each run by the runtime middleware."
+)
+GENUI_BUILTIN_AGENT = (
+    "The Components and surfaces pages print their backend only as a TanStack "
+    "`BuiltInAgent` factory, not a Strands agent. This repo runs a tool-free "
+    "Strands agent with the factory's prompt in its place (agent: Strands, "
+    "not the doc's BuiltInAgent)."
 )
 
 GOVERNED_NO_BACKEND = (
@@ -174,6 +182,24 @@ REGISTRY: dict[str, RegisteredAgent] = {
     ),
     # Mounted at /voice; the voice runtime route forwards `voice-demo` here.
     "voice": RegisteredAgent(chat_agents.voice_agent, "/strands/voice"),
+
+    # --- Components and surfaces (A2UI 1.0 engine) -----------------------
+    # The pages print a TanStack BuiltInAgent; this is the Strands agent in its
+    # place. Reached only through /api/copilotkit-genui and
+    # /api/copilotkit-genui-transports.
+    "genui": RegisteredAgent(
+        genui_agent,
+        "/strands/generative-ui/components",
+        gaps=(GENUI_BUILTIN_AGENT,),
+    # --- Chat: reasoning ---------------------------------------------------
+    # The page's two demos share one agent in the showcase (`/reasoning/`);
+    # here each id gets its own mount of the same verbatim factory.
+    "reasoning-default": RegisteredAgent(
+        build_reasoning_agent, "/strands/generative-ui/reasoning"
+    ),
+    "reasoning-custom": RegisteredAgent(
+        build_reasoning_agent, "/strands/generative-ui/reasoning"
+    ),
 
     # --- Generative UI ----------------------------------------------------
     # No gaps: `useComponent` registrations reach this agent and it calls them,

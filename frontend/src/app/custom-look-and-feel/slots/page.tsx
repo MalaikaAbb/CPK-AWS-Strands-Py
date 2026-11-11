@@ -46,6 +46,34 @@ export default function Page() {
         <SourceCode file="frontend/src/app/custom-look-and-feel/slots/demo-chat/page.tsx" />
       </Panel>
 
+      <Panel title="Tool calls: the toolCallsView sub-slot">
+        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+          <code>messageView.assistantMessage.toolCallsView</code> renders the
+          tool calls of one assistant message. The page wraps the default{" "}
+          <code>CopilotChatToolCallsView</code> in a dashed border, so the
+          registered tool renderers still draw inside it. It&apos;s the demo&apos;s
+          second tab.
+        </p>
+        <div className="mt-4">
+          <TryIt
+            prompts={["What's the weather in Tokyo?"]}
+            expect="On the toolCallsView tab, the get_weather call renders inside a dashed rounded border, followed by the reply."
+            fail="No dashed border around the tool call: the sub-slot was ignored. Plain text with no tool call means the chat isn't talking to the tool-rendering agent."
+          />
+        </div>
+        <div className="mt-3">
+          <SourceCode file="frontend/src/app/custom-look-and-feel/slots/demo-chat/tool-calls-view.tsx" />
+        </div>
+        <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+          Harness glue: the snippet&apos;s <code>&lt;CopilotChat&gt;</code> names
+          no agent, so the demo mounts it inside a{" "}
+          <code>CopilotChatConfigurationProvider agentId=&quot;tool-rendering&quot;</code>,
+          the one agent here with a backend tool. The page&apos;s pointer to{" "}
+          <code>toolCallDisplay</code> grouping lives on the Tool Rendering
+          route.
+        </p>
+      </Panel>
+
       <Panel title="Available slots">
         <p className="text-sm text-slate-700 dark:text-slate-300">
           On all three chat components:

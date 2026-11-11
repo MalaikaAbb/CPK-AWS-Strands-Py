@@ -124,6 +124,18 @@ export const NAV: NavGroup[] = [
           "Driving modal state from your own UI with useCopilotChatConfiguration, and capturing thumbs up/down.",
         status: "working",
       },
+      {
+        path: "/generative-ui/reasoning",
+        hasDemo: true,
+        agentId: "reasoning-default",
+        title: "Reasoning",
+        docPath: "/strands/generative-ui/reasoning",
+        summary:
+          "Reasoning tokens drawn inline, in the default Thinking… card or a custom reasoningMessage slot.",
+        status: "partial",
+        statusNote:
+          "Both Code-tab demos and the Code tab's Responses-API reasoning agent, verbatim. Doc gap: the printed pages import ./suggestions, which is not printed — kept as // doc: comments, no chips. Typecheck and registry import only — not run against the model or in a browser.",
+      },
     ],
   },
   {
@@ -163,6 +175,18 @@ export const NAV: NavGroup[] = [
         status: "working",
         statusNote:
           "All three snippets run exactly as published. The page defines no CSS for its my-link and my-heading classes, so the first example is only visible in DevTools. No backend code is printed; the agent is repo-authored.",
+      },
+      {
+        path: "/custom-look-and-feel/reasoning-messages",
+        hasDemo: true,
+        agentId: "reasoning-default",
+        title: "Reasoning Messages",
+        docPath: "/strands/custom-look-and-feel/reasoning-messages",
+        summary:
+          "The reasoning card part by part: custom header and content sub-slots, and a render-prop layout over the built-in pieces.",
+        status: "partial",
+        statusNote:
+          "All four snippets verbatim; the render-prop slot assignment fails TS2322 (kept under @ts-expect-error, cast in the demo). Runs on the showcase reasoning agent. Typecheck only — not run against the model or in a browser.",
       },
       {
         path: "/custom-look-and-feel/headless-ui",
@@ -221,10 +245,10 @@ export const NAV: NavGroup[] = [
         title: "Import & Synchronize History",
         docPath: "/strands/threads-import",
         summary:
-          "Moving existing framework conversations into Intelligence as Rich Threads — a CLI migration with no React surface.",
+          "Copying saved Strands conversations (session files, S3, AgentCore Memory) into Intelligence as Rich Threads — a CLI import with no React surface.",
         status: "reference",
         statusNote:
-          "Nothing to run: the page's own supported-sources table is Google ADK and LangGraph only. There is no Strands importer.",
+          "Since 2026-11-10 the page documents a Strands importer (--source strands-python / strands-typescript; the CLI lists both). Still nothing to run here: this repo keeps conversations in memory, which can't be imported, and a real import needs an Intelligence key.",
       },
     ],
   },
@@ -258,6 +282,16 @@ export const NAV: NavGroup[] = [
   {
     title: "Generative UI",
     routes: [
+      {
+        path: "/generative-ui/state-rendering",
+        title: "State Rendering",
+        docPath: "/strands/generative-ui/state-rendering",
+        summary:
+          "UI rendered from agent state via useAgent; the page's Strands code is not published.",
+        status: "broken",
+        statusNote:
+          "Not supported on AWS Strands (Python): the rendered page has no Code tab and no Strands code. Only the Markdown export's useAgent fragment is printed; no agent, tool or demo component. Reference only.",
+      },
       {
         path: "/generative-ui/tool-based",
         hasDemo: true,
@@ -309,6 +343,16 @@ export const NAV: NavGroup[] = [
           "The gate itself works. The page is still almost empty — one React placeholder tag and one generic snippet — and is reproduced as-is, unstyled markup included.",
       },
       {
+        path: "/generative-ui/a2ui",
+        title: "A2UI",
+        docPath: "/strands/generative-ui/a2ui",
+        summary:
+          "The A2UI overview: three operations, two approaches, two ways to switch it on, and the surface color variables.",
+        status: "reference",
+        statusNote:
+          "Overview page. Its setup paths run on the Dynamic Schema (catalog on provider) and Fixed Schema (runtime a2ui block) routes; the snippets are type-checked verbatim (myCatalog, myAgent, children undefined), the CSS variables are shown, not applied.",
+      },
+      {
         path: "/generative-ui/a2ui/dynamic-schema",
         hasDemo: true,
         agentId: "declarative-gen-ui",
@@ -333,6 +377,114 @@ export const NAV: NavGroup[] = [
           "display_flight + flight_schema.json run as described — but the page publishes neither; both are byte-exact from CopilotKit's GitHub showcase. Catalog, primitives and runtime are the page's Code tab, byte-exact. The Book button is inert, as the page documents.",
       },
       {
+        path: "/generative-ui/components",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components and surfaces",
+        docPath: "/strands/generative-ui/components",
+        summary:
+          "standardUI on the provider: the runtime adds render_ui and its guide, and the agent answers with streamed A2UI 1.0 components.",
+        status: "partial",
+        statusNote:
+          "Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). The page's TanStack runtime is shown, not run; the provider config is verbatim. Needs @copilotkit 1.85 (bumped here). Not yet checked in a browser.",
+      },
+      {
+        path: "/generative-ui/components/surfaces",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components · Surfaces",
+        docPath: "/strands/generative-ui/components/surfaces",
+        summary:
+          "GenerativeUISurface page targets the chat can fill, limit, scroll to, and replace, with per-component error boundaries.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). Product, ProductRow and the product list are repo scaffolding; ./catalog is taken to be the Catalogs page's shopUI; the page's undefined product is the first scaffolding product (no picker).",
+      },
+      {
+        path: "/generative-ui/components/catalogs",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components · Catalogs",
+        docPath: "/strands/generative-ui/components/catalogs",
+        summary:
+          "createGenerativeUI catalogs: typed components, zod and Valibot props, extends, parameterOrder and exportA2UICatalog.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). Hero, Panel and cartUI are repo scaffolding. The catalog is used as published (no standardUI layout added). fs.writeFileSync is kept as a // doc: comment (Node-only).",
+      },
+      {
+        path: "/generative-ui/components/standard-catalog",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components · Standard catalog",
+        docPath: "/strands/generative-ui/components/standard-catalog",
+        summary:
+          "standardUI's 69 components as is, extended with a ProductCard, with Map/Video/HtmlView omitted, and with Card overridden.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). ProductCard and productSchema are repo scaffolding.",
+      },
+      {
+        path: "/generative-ui/components/state-and-actions",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components · State and actions",
+        docPath: "/strands/generative-ui/components/state-and-actions",
+        summary:
+          "App state bound into props, functions run on click, events sent to the agent, and writable props that keep user input.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). Cart, cart.addItem, the state-catalog ProductCard and the catalogs around the fragment snippets are repo scaffolding; the catalogs are used as published (no layout container), and there is no cart view, add-to-cart buttons or PlanCard. The \"Send a click\" events fragment names no component and is not exercised. Renderer functions cannot be called by the agent in this version, so allowedCallers is shown as exported only.",
+      },
+      {
+        path: "/generative-ui/components/theming",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components · Theming",
+        docPath: "/strands/generative-ui/components/theming",
+        summary:
+          "The theme option's CSS variables, a typed GenerativeUITheme file, dark-mode overrides, map styles, and .a2ui-surface CSS.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). The dark-mode script renders in the demo body, not <head>; there is no manual dark toggle. The page's mapStyle URLs are placeholders, so the Map variant draws no basemap.",
+      },
+      {
+        path: "/generative-ui/components/transports",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components · Transports",
+        docPath: "/strands/generative-ui/components/transports",
+        summary:
+          "The render_ui tool transport vs the markdown transport, the runtime's generativeUI flag, and agentIds scoping.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). The runtime sample's undefined agent is the Strands genui agent; no page builds the shop agent agentIds names, so none is registered.",
+      },
+      {
+        path: "/generative-ui/components/markdown-mode",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components · Markdown mode",
+        docPath: "/strands/generative-ui/components/markdown-mode",
+        summary:
+          "The agent writes A2UI operations in a2ui code blocks inside its reply; sendContext: false moves the catalog into forwardedProps.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). The only backend shown for sendContext: false is a Python fragment reading forwarded_props.",
+      },
+      {
+        path: "/generative-ui/components/from-a2ui",
+        hasDemo: true,
+        agentId: "genui",
+        title: "Components · Adopt from A2UI",
+        docPath: "/strands/generative-ui/components/from-a2ui",
+        summary:
+          "The v0.9 a2ui renderer → A2UI 1.0 migration: the After catalog running on the new engine, with the Before code shown.",
+        status: "partial",
+        statusNote:
+          "Ported from CPK-LangGraph-TS (itself from aws-strands-ts); built, not yet checked in a browser. Needs @copilotkit 1.85 (bumped here). Agent: Strands, not the doc's BuiltInAgent: the pages print only a TanStack BuiltInAgent factory, so a tool-free Strands genui agent with that factory's prompt stands in (README §9.35). Airport and Arrow are repo scaffolding. The support matrix rules out @ag-ui/a2ui-toolkit 0.0.5 agent tools, (aws-strands-ts's fixed-schema agent).",
+      },
+      {
         path: "/generative-ui/open-generative-ui",
         hasDemo: true,
         agentId: "open-gen-ui",
@@ -354,7 +506,7 @@ export const NAV: NavGroup[] = [
           "A remote MCP server (Excalidraw) supplies both the tool and its UI; the runtime's mcpApps config does the rest, with a plain chat on the frontend.",
         status: "partial",
         statusNote:
-          "Runtime statement verbatim. Its fallback URL https://mcp.excalidraw.com 308-redirects to /mcp and the middleware refuses redirects, so it only discovers tools with MCP_SERVER_URL set to …/mcp (.env.example does). Not yet observed in a browser; no agent is published.",
+          "Runtime statement verbatim. Its fallback URL https://mcp.excalidraw.com 308-redirects to /mcp and the middleware refuses redirects, so it only discovers tools with MCP_SERVER_URL set to …/mcp (.env.example does). Not yet observed in a browser; no agent is published. The Intelligence snippet's BuiltInAgent is swapped for the Strands mcp-apps agent (agent: Strands, not the doc's BuiltInAgent); that route needs a premium Intelligence key and is not mounted.",
       },
       {
         path: "/generative-ui/json-render",
@@ -366,7 +518,7 @@ export const NAV: NavGroup[] = [
           "The agent replies with a { root, elements } spec that @json-render/react draws against a component catalog, plugged in through the assistant-message slot.",
         status: "partial",
         statusNote:
-          "Two published versions, both verbatim. The prose snippets are broken by design here: <Renderer catalog> is kept, so any spec that passes the prose Zod catalog throws \"useVisibility must be used within a VisibilityProvider\". The embedded demo source (defineRegistry + JSONUIProvider, its own route.ts and Strands agent) is predicted to work — confirmed only by server-rendering, not yet in a browser.",
+          "The page now prints only its demo source (defineRegistry + JSONUIProvider, its own route.ts and Strands agent), all verbatim here; catalog.ts imports zod4 (alias installed), so it type-checks with no suppression. The old prose snippets were removed (2026-11-10). Predicted to work — confirmed only by server-rendering, not yet in a browser.",
       },
       {
         path: "/generative-ui/hashbrown",
@@ -378,7 +530,7 @@ export const NAV: NavGroup[] = [
           "The agent streams a UI envelope that @hashbrownai/react parses progressively and renders through a UI kit, plugged in through the assistant-message slot.",
         status: "partial",
         statusNote:
-          "Two published versions, both verbatim. The prose snippets are broken by design here: all three Hashbrown calls are kept, so the first assistant message throws \"Cannot read properties of undefined (reading 'forEach')\". The embedded demo source (exposeComponent kit, its own route.ts and Strands agent) is predicted to work — confirmed only by server-rendering, not yet in a browser.",
+          "The page now prints only its demo source (exposeComponent kit, its own route.ts and Strands agent), all verbatim here; the old prose snippets were removed with it (2026-11-10). Predicted to work — confirmed only by server-rendering, not yet in a browser. Repo stays on @hashbrownai 0.6.1; the page names 0.5.0-beta.4.",
       },
     ],
   },
@@ -396,6 +548,17 @@ export const NAV: NavGroup[] = [
         status: "working",
         statusNote:
           "useFrontendTool exactly as the page shows, and the agent calls it — even though the page's Strands setup section is a placeholder.",
+      },
+      {
+        path: "/webmcp",
+        hasDemo: true,
+        title: "WebMCP",
+        docPath: "/strands/webmcp",
+        summary:
+          "A frontend tool mirrored onto document.modelContext so WebMCP browser agents can call it, plus the core-only registration with no agent.",
+        status: "broken",
+        statusNote:
+          "Both snippets verbatim (ported from aws-strands-ts). Doc gap: searchOrders is called but never defined on the page, so the tool handler throws (no stub). The page prints no agent, so there is no chat; the tool only registers (WebMCP needs a browser exposing document.modelContext). Typecheck only.",
       },
       {
         path: "/human-in-the-loop",
