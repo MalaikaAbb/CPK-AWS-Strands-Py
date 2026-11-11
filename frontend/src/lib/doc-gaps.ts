@@ -147,10 +147,10 @@ const GAP_LIST: DocGap[] = [
   },
   {
     id: "quickstart-model-id",
-    title: "The Quickstart names a model that does not exist",
+    title: "The Quickstart's model id changed and is unverified here",
     detail:
-      'The code block sets `model_id="gpt-5.4"`. The callout immediately under it says the example "uses OpenAI\'s GPT-4o", and the two Shared State pages build the same model with `model_id="gpt-4o"`. This repo defaults to `gpt-4o` and exposes `MODEL_ID` so you can set it back to the literal value and watch it fail.',
-    severity: "degraded",
+      'Until 2026-11-10 the code block set `model_id="gpt-5.4"`, which did not resolve, under a callout saying GPT-4o. It now sets `model_id="gpt-6-luna"` (the TypeScript tab: `modelId: "gpt-6-luna"`) and the GPT-4o callout is gone. The new id was not checked against the OpenAI API. This repo still defaults to `gpt-4o`, the Shared State pages\' value, and `MODEL_ID` sets the published one.',
+    severity: "note",
     docPath: "/strands/quickstart?agent=bring-your-own",
   },
   {
