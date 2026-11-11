@@ -91,6 +91,57 @@ export default function Page() {
         <SourceCode file="backend/src/agents/gen_ui_agents.py" region="mcp-apps-agent" />
       </Panel>
 
+      <Panel title="With Intelligence, and widget storage (added 2026-11-10, not run)">
+        <p className="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+          Two new sections on the page. <strong>MCP Apps with
+          Intelligence</strong>: keep <code>mcpApps</code> as it is, drop{" "}
+          <code>runner</code>, add <code>intelligence</code> and{" "}
+          <code>identifyUser</code>, and keep the same <code>serverId</code>s so
+          stored widgets still resolve. A per-server <code>agentId</code>{" "}
+          scopes a server to one agent. <strong>Sandbox and widget
+          storage</strong>: widgets run in an opaque-origin iframe with no
+          storage of their own, and <code>mcpApps=&#123;&#123;
+          allowSameOriginFallback: true &#125;&#125;</code> on{" "}
+          <code>&lt;CopilotKit&gt;</code> gives them your page&apos;s origin, for
+          trusted widgets only.
+        </p>
+        <Callout tone="warn" title="Kept verbatim except the agent, type-checked, not run">
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              <strong>Agent: Strands, not the doc&apos;s BuiltInAgent.</strong>{" "}
+              The page&apos;s Intelligence route builds a framework-generic{" "}
+              <code>BuiltInAgent</code>. The file here keeps every CopilotKit
+              part verbatim (<code>intelligence</code>,{" "}
+              <code>identifyUser</code>, <code>mcpApps</code>, handler) but
+              points <code>agents.default</code> at this route&apos;s Strands{" "}
+              <code>mcp-apps</code> agent via <code>HttpAgent</code>, as the
+              page&apos;s Code-tab <code>route.ts</code> does. Doc gap, README
+              §9.24.
+            </li>
+            <li>
+              Requires premium — not testable locally. It needs a{" "}
+              <code>CPK_INTELLIGENCE_API_KEY</code>, so it type-checks but
+              isn&apos;t mounted.
+            </li>
+            <li>
+              <code>mcpApps</code> is not a prop of <code>&lt;CopilotKit&gt;</code>{" "}
+              in the installed <code>@copilotkit/react-core</code> 1.79.1
+              (TS2322). The snippet is also a bare JSX expression over an
+              undefined <code>children</code>. Both are under{" "}
+              <code>@ts-expect-error</code>.
+            </li>
+          </ul>
+        </Callout>
+        <div className="mt-3">
+          <SourceCodeGroup
+            files={[
+              { file: "frontend/src/app/generative-ui/mcp-apps/_doc/intelligence-route.ts" },
+              { file: "frontend/src/app/generative-ui/mcp-apps/_doc/same-origin-fallback.tsx" },
+            ]}
+          />
+        </div>
+      </Panel>
+
       <Panel title="Transport types (reference only)">
         <p className="mb-3 text-sm text-slate-600 dark:text-slate-400">
           The page&apos;s two <code>servers</code> entry shapes. Both point at

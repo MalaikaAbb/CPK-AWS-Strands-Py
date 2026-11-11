@@ -7,7 +7,6 @@ import { MetricCard, type MetricCardComponentProps } from "./metric-card";
 import { BarChart, type BarChartComponentProps } from "./charts/bar-chart";
 import { PieChart, type PieChartComponentProps } from "./charts/pie-chart";
 
-// @ts-expect-error version drift, kept as published — @json-render/react 0.21's DefineRegistryOptions requires an `actions` key because catalog.ts declares `actions: {}` (the demo pins 0.18); at runtime defineRegistry treats a missing `actions` as none
 export const { registry } = defineRegistry(catalog, {
   components: {
     // The agent may nest charts inside a MetricCard root — forward children.

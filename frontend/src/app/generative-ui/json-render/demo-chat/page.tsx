@@ -1,60 +1,26 @@
 "use client";
 
-import { useState } from "react";
-
 import { DemoErrorBoundary } from "@/components/demo-error-boundary";
 import { DemoFrame } from "@/components/demo-frame";
 
-import ByocJsonRenderDemo from "../_snippets/page";
 import ByocJsonRenderDemoSource from "../_demo-source/page";
 
-type Mode = "doc snippets" | "doc demo source";
-
 /**
- * The page publishes two versions of this example, and both are mounted here
- * unedited so they can be compared side by side:
+ * The page's demo source (../_demo-source), mounted unedited against its own
+ * verbatim `/api/copilotkit-declarative-json-render` route. It brings its own
+ * `<CopilotKit>`, so this route keeps a single Inspector (see lib/inspector.ts).
  *
- *  - **doc snippets** — the prose code blocks (../_snippets). Its runtime is
- *    `/api/copilotkit-byoc-json-render` (repo-authored; the page never shows it).
- *  - **doc demo source** — the embedded demo's code tabs (../_demo-source),
- *    against the demo's own verbatim `/api/copilotkit-declarative-json-render` route.
- *
- * Each brings its own `<CopilotKit>`, so switching remounts the provider and
- * starts a fresh conversation. Only one is mounted at a time, which keeps this
- * route to a single Inspector (see lib/inspector.ts).
+ * Until 2026-11-10 the page also printed separate prose snippets with a
+ * different @json-render API, mounted here as a second "doc snippets" mode.
+ * The page now prints the demo source itself, so that mode was removed.
  */
 export default function Page() {
-  const [mode, setMode] = useState<Mode>("doc snippets");
-
   return (
     <DemoFrame parentPath="/generative-ui/json-render" subtitle="backend agent: byoc-json-render">
-      <div className="flex h-full flex-col">
-        <div className="flex shrink-0 items-center gap-2 border-b border-slate-200 px-4 py-2 dark:border-slate-800">
-          {(["doc snippets", "doc demo source"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={`rounded-md px-3 py-1 text-xs font-medium ${
-                mode === m
-                  ? "bg-[var(--accent)] text-white"
-                  : "border border-slate-300 text-slate-600 dark:border-slate-700 dark:text-slate-300"
-              }`}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-        <div className="min-h-0 flex-1 overflow-auto">
-          {mode === "doc snippets" ? (
-            <DemoErrorBoundary key="snippets">
-              <ByocJsonRenderDemo />
-            </DemoErrorBoundary>
-          ) : (
-            <DemoErrorBoundary key="demo-source">
-              <ByocJsonRenderDemoSource />
-            </DemoErrorBoundary>
-          )}
-        </div>
+      <div className="h-full overflow-auto">
+        <DemoErrorBoundary key="demo-source">
+          <ByocJsonRenderDemoSource />
+        </DemoErrorBoundary>
       </div>
     </DemoFrame>
   );

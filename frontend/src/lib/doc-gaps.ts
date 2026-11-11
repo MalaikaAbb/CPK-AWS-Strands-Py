@@ -330,62 +330,6 @@ const GAP_LIST: DocGap[] = [
     docPath: "/strands/generative-ui/mcp-apps",
   },
   {
-    id: "byoc-snippets-vs-demo",
-    title: "JSON Render and Hashbrown each publish two versions that disagree",
-    detail:
-      "Each page's prose code blocks and its embedded demo's code tabs describe different programs. Runtime URL (`/api/copilotkit-byoc-*` vs `/api/copilotkit-declarative-*`), agent id (Hashbrown: `byoc_hashbrown` vs `declarative-hashbrown-demo`), library API, catalog props (JSON Render prose: `{ title, value: number, delta }`; demo and its agent prompt: `{ label, value: string, trend }`) and output shape (Hashbrown prose: `{ type, … }`; demo agent: `{ ui: [{ tag: { props } }] }`) all differ. Only the demo version matches the page's own Strands agent. Both are reproduced verbatim, side by side, on the route's demo.",
-    severity: "degraded",
-    docPath: "/strands/generative-ui/json-render",
-  },
-  {
-    id: "json-render-renderer-api",
-    title: "The JSON Render prose renderer calls <Renderer> with an API @json-render/react 0.21 does not have",
-    detail:
-      "`<Renderer spec={spec} catalog={catalog} />`: there is no `catalog` prop (0.21 takes `registry`, built with `defineRegistry`), and nothing wraps it in `<JSONUIProvider>`. Kept as published under `@ts-expect-error`; the first spec that passes the prose catalog throws `Error: useVisibility must be used within a VisibilityProvider` (confirmed by server-rendering the same call). The page's own demo tab does it correctly.",
-    severity: "blocking",
-    docPath: "/strands/generative-ui/json-render",
-  },
-  {
-    id: "hashbrown-hook-api",
-    title: "The Hashbrown prose renderer calls all three hooks with an API @hashbrownai/react 0.6.1 does not have",
-    detail:
-      "`useJsonParser(content)` has no schema, `useUiKit({ catalog, value })` has no `components`, and the returned kit object is dropped into JSX instead of `kit.render(value)`. Kept as published under three `@ts-expect-error` lines; the first assistant message throws `TypeError: Cannot read properties of undefined (reading 'forEach')` from `createUiKit` (confirmed in the library source). The page's own demo tab (`exposeComponent`, `useUiKit({ components })`, `kit.render`) is correct.",
-    severity: "blocking",
-    docPath: "/strands/generative-ui/hashbrown",
-  },
-  {
-    id: "hashbrown-example-shape",
-    title: "The Hashbrown prose example output is not a shape Hashbrown renders",
-    detail:
-      "The prose shows `{ \"type\": \"MetricCard\", \"title\": … }` and a `Stack` tree; Hashbrown 0.6.1's UI kit schema is a `{ \"ui\": [{ \"<name>\": { \"props\": {…} } }] }` envelope, and `Stack` is in no catalog on the page. The page's own agent prompt (`byoc_hashbrown.py`) asks for the envelope, so it contradicts the prose above it.",
-    severity: "degraded",
-    docPath: "/strands/generative-ui/hashbrown",
-  },
-  {
-    id: "byoc-snippets-unpublished-code",
-    title: "The prose snippets reference code the page never shows",
-    detail:
-      "JSON Render: `stripCodeFencesAndPrelude`, `tolerantJsonParse`, `validateAgainstCatalog` and the `AssistantMessage` import. Hashbrown: the `AssistantMessage` import and a `./charts` module (the demo publishes only `charts/bar-chart` and `charts/pie-chart`). Both: the `/api/copilotkit-byoc-*` runtime route. Written in here and labelled repo-authored; the leaf components are re-exports of the demo's published ones.",
-    severity: "degraded",
-    docPath: "/strands/generative-ui/json-render",
-  },
-  {
-    id: "byoc-slot-type",
-    title: "The prose passes a plain component to messageView.assistantMessage",
-    detail:
-      "CopilotKit 1.75 types the slot as `typeof CopilotChatAssistantMessage`, including its static sub-components, so the prose `page.tsx` line fails `tsc` (TS2322) and would fail `next build`. Kept under `@ts-expect-error`; at runtime the slot still receives `{ message, … }`, so it does not throw. The demo tabs use the `as unknown as typeof CopilotChatAssistantMessage` cast.",
-    severity: "note",
-    docPath: "/strands/generative-ui/json-render",
-  },
-  {
-    id: "byoc-suggestions-outside-provider",
-    title: "The prose calls useConfigureSuggestions outside the <CopilotKit> it renders",
-    detail:
-      "The hook runs in the component that renders the page's own provider, so it registers on the provider above it (this app's root) and the page's chat shows no suggestion pills. Nothing errors. The demo tabs call it inside a child of `<CopilotKit>`.",
-    severity: "note",
-    docPath: "/strands/generative-ui/hashbrown",
-  },
-  {
     id: "byoc-build-model-unpublished",
     title: "The JSON Render and Hashbrown agents import a model factory no page publishes",
     detail:
@@ -483,21 +427,10 @@ export const ROUTE_GAPS: Record<string, GapId[]> = {
   "/generative-ui/mcp-apps": ["mcp-apps-default-url-redirects", "mcp-apps-no-agent"],
 
   "/generative-ui/json-render": [
-    "json-render-renderer-api",
-    "byoc-snippets-vs-demo",
-    "byoc-snippets-unpublished-code",
-    "byoc-slot-type",
-    "byoc-suggestions-outside-provider",
     "byoc-build-model-unpublished",
   ],
 
   "/generative-ui/hashbrown": [
-    "hashbrown-hook-api",
-    "hashbrown-example-shape",
-    "byoc-snippets-vs-demo",
-    "byoc-snippets-unpublished-code",
-    "byoc-slot-type",
-    "byoc-suggestions-outside-provider",
     "byoc-build-model-unpublished",
   ],
 };
