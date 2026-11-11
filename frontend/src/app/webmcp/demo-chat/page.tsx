@@ -1,23 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { CopilotChat } from "@copilotkit/react-core/v2";
 
 import { DemoFrame } from "@/components/demo-frame";
 
-import { ModelContextStatus } from "../_demo/model-context-status";
 import { OrderSearch } from "../_demo/OrderSearch";
 
 /**
  * "React frontend tool": the page's `OrderSearch`, mounted inside the app's
- * root `CopilotKitProvider` as the page requires, next to a chat on the
- * `webmcp` agent so the same handler can be called from both sides.
+ * root `CopilotKitProvider` as the page requires. The page prints no agent, so
+ * there is no chat here; the tool only registers (and mirrors onto
+ * `document.modelContext` in a WebMCP browser). Its handler calls the
+ * undefined `searchOrders` and throws.
  */
 export default function Page() {
   return (
-    <DemoFrame parentPath="/webmcp" subtitle="agent: webmcp · tool: searchOrders">
+    <DemoFrame parentPath="/webmcp" subtitle="tool: searchOrders · no agent">
       <div className="flex h-full flex-col">
-        <ModelContextStatus />
         <p className="shrink-0 border-b border-slate-200 px-4 py-1.5 text-xs text-slate-500 dark:border-slate-800">
           React frontend tool.{" "}
           <Link href="/webmcp/demo-chat/core-only" className="text-[var(--accent)] underline underline-offset-4">
@@ -25,9 +24,6 @@ export default function Page() {
           </Link>
         </p>
         <OrderSearch />
-        <div className="chat-host min-h-0 flex-1">
-          <CopilotChat agentId="webmcp" />
-        </div>
       </div>
     </DemoFrame>
   );

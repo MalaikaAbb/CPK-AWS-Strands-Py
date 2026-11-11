@@ -249,8 +249,6 @@ REGISTRY: dict[str, RegisteredAgent] = {
     "frontend_tools": RegisteredAgent(
         chat_agents.frontend_tools_agent, "/strands/frontend-tools"
     ),
-    # The WebMCP page publishes no agent; the frontend tool is the whole demo.
-    "webmcp": RegisteredAgent(chat_agents.webmcp_agent, "/strands/webmcp"),
     "hitl-in-chat": RegisteredAgent(
         chat_agents.hitl_agent, "/strands/human-in-the-loop"
     ),

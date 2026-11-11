@@ -1,6 +1,5 @@
 import { CopilotKitCore } from "@copilotkit/core";
 import { z } from "zod";
-import { searchOrders } from "./search-orders"; // Repo-authored stub: the page never defines searchOrders.
 
 export const copilotkit = new CopilotKitCore({
   tools: [
@@ -11,6 +10,7 @@ export const copilotkit = new CopilotKitCore({
         status: z.enum(["open", "shipped", "delivered"]),
       }),
       handler: async ({ status }) => {
+        // @ts-expect-error verbatim doc code: `searchOrders` is never defined on the page (TS2304); it throws a ReferenceError when the tool is called
         const orders = await searchOrders(status);
         return JSON.stringify(orders);
       },

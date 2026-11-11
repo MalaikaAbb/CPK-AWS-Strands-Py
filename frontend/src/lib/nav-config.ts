@@ -400,14 +400,13 @@ export const NAV: NavGroup[] = [
       {
         path: "/webmcp",
         hasDemo: true,
-        agentId: "webmcp",
         title: "WebMCP",
         docPath: "/strands/webmcp",
         summary:
           "A frontend tool mirrored onto document.modelContext so WebMCP browser agents can call it, plus the core-only registration with no agent.",
-        status: "partial",
+        status: "broken",
         statusNote:
-          "Ported from aws-strands-ts; both snippets verbatim, searchOrders is a repo-authored stub (the page never defines it). WebMCP needs a browser that exposes document.modelContext (Chrome flag / origin trial); elsewhere only the chat path works. Typecheck only.",
+          "Both snippets verbatim (ported from aws-strands-ts). Doc gap: searchOrders is called but never defined on the page, so the tool handler throws (no stub). The page prints no agent, so there is no chat; the tool only registers (WebMCP needs a browser exposing document.modelContext). Typecheck only.",
       },
       {
         path: "/human-in-the-loop",

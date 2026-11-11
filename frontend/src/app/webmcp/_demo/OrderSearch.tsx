@@ -2,7 +2,6 @@
 
 import { useFrontendTool } from "@copilotkit/react-core/v2";
 import { z } from "zod";
-import { searchOrders } from "./search-orders"; // Repo-authored stub: the page never defines searchOrders.
 
 export function OrderSearch() {
   useFrontendTool({
@@ -12,6 +11,7 @@ export function OrderSearch() {
       status: z.enum(["open", "shipped", "delivered"]),
     }),
     handler: async ({ status }) => {
+      // @ts-expect-error verbatim doc code: `searchOrders` is never defined on the page (TS2304); it throws a ReferenceError when the tool is called
       const orders = await searchOrders(status);
       return JSON.stringify(orders);
     },

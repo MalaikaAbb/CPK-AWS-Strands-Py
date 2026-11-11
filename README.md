@@ -311,7 +311,7 @@ The doc page's entire published source is four lines — see §9.7.
 ✅ The page background changes within a second or two, the CSS value under the heading updates to match, and the agent confirms in words.
 ❌ The agent describes a gradient without applying one — the tool was not on its list, or the handler threw before `setState` ran.
 
-**`/webmcp`** ⚠️ (new 2026-11-10, not yet run) — `useFrontendTool({ …, webmcp: { annotations } })` mirrors `searchOrders` onto `document.modelContext` for WebMCP browser agents. A second page registers it through `CopilotKitCore` alone, with no provider or agent. Ported from aws-strands-ts; both snippets are verbatim, and `searchOrders` is a repo-authored stub. Try `Which of my orders have shipped?` ✅ The agent calls `searchOrders` and lists A-1002 and A-1004. In a WebMCP browser the status banner turns green. ❌ Plain text with no tool call.
+**`/webmcp`** ❌ (new 2026-11-10, not yet run) — `useFrontendTool({ …, webmcp: { annotations } })` mirrors `searchOrders` onto `document.modelContext` for WebMCP browser agents. A second page registers it through `CopilotKitCore` alone, with no provider or agent. Ported from aws-strands-ts; both snippets are verbatim. `searchOrders` is never defined on the page and is not stubbed, and the page prints no agent, so the demo only mounts the tool (no chat) — see §9.36. Try (Chrome 149+, WebMCP flag) calling `searchOrders` from the Model Context Tool Inspector. ✅ The inspector lists `searchOrders` with its schema and `readOnlyHint`. ❌ Expected today: calling it fails with `ReferenceError: searchOrders is not defined`.
 
 **`/human-in-the-loop`** ✅ — `useHumanInTheLoop` registers a time picker. Try `Book an intro call with the sales team`.
 ✅ A picker renders inline with four slots and nothing further streams until you pick; the card then collapses to a green "Booked" badge and the agent's confirmation names your slot.
@@ -410,7 +410,7 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/generative-ui/json-render` | `/generative-ui/json-render` | ⚠️ Partial | Not yet checked in a browser. Two published versions, both verbatim. *doc snippets* ❌ by design: `<Renderer catalog>` throws `useVisibility must be used within a VisibilityProvider`. *doc demo source* predicted ✅ (server-rendered). §9.27. |
 | `/strands/generative-ui/hashbrown` | `/generative-ui/hashbrown` | ⚠️ Partial | Not yet checked in a browser. Two published versions, both verbatim. *doc snippets* ❌ by design: `useUiKit({ catalog, value })` throws `Cannot read properties of undefined (reading 'forEach')`. *doc demo source* predicted ✅ (server-rendered). §9.28. |
 | `/strands/frontend-tools` | `/frontend-tools` | ✅ Working | Works despite `setup skipped` — §9.3. |
-| `/strands/webmcp` | `/webmcp` | ⚠️ Partial | New 2026-11-10. Ported from aws-strands-ts; snippets verbatim, `searchOrders` stub repo-authored; needs a WebMCP browser for the modelContext half. |
+| `/strands/webmcp` | `/webmcp` | ❌ Broken | New 2026-11-10. Ported from aws-strands-ts; snippets verbatim. `searchOrders` undefined on the page (handler throws); no agent printed, so no chat — §9.36. |
 | `/strands/human-in-the-loop` | `/human-in-the-loop` | ✅ Working | Works despite `setup skipped`; the page's other pattern is LangGraph-only. |
 | `/strands/human-in-the-loop/headless` | `/human-in-the-loop/headless` | ⚠️ Partial | Not yet checked in a browser. The backend is published in full, with one import swapped. The demo file is truncated (`TimeSlotPopup`, `AppSurface` and the `_shared` helper are rebuilt), and `useHeadlessInterrupt` exists nowhere, so the Raw snippet throws. See §9.25. |
 | `/strands/human-in-the-loop/governed-actions` | `/human-in-the-loop/governed-actions` | ⚠️ Partial | Not yet checked in a browser. No backend is published. The `useHumanInTheLoop` half uses the same channel as `/human-in-the-loop`. The `useInterrupt` half never shows its card because it reads `metadata.action` and the bridge sends `metadata.reason`. See §9.26. |
@@ -650,6 +650,9 @@ Four findings:
 4. **The `tools` package has no `__init__.py`.** The tab ships `tools/generate_a2ui.py`, a module inside the package, but not the package, so `from tools import build_a2ui_operations_from_tool_call` fails as published.
 
 Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
+
+### 9.36 WebMCP — `searchOrders` is never defined, and no agent is printed
+[WebMCP](https://docs.copilotkit.ai/strands/webmcp): both snippets (`OrderSearch` with `useFrontendTool({ …, webmcp })`, and the bare `CopilotKitCore` registration) call `searchOrders(status)`, which the page never defines or imports. It is kept verbatim under `@ts-expect-error` (TS2304), with no stub, so the handler throws `ReferenceError` when called. The page prints no backend agent, so the route has no chat: the tool only registers.
 
 ## 10. Troubleshooting
 

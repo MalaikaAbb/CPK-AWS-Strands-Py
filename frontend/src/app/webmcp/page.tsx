@@ -20,11 +20,10 @@ export default function Page() {
         <div className="mt-4">
           <TryIt
             prompts={[
-              "Which of my orders have shipped?",
               "(Chrome 149+, WebMCP flag) Call searchOrders with status \"open\" from the Model Context Tool Inspector.",
             ]}
-            expect="In any browser: the CopilotKit agent calls searchOrders and lists A-1002 and A-1004. In a WebMCP browser: the banner turns green, and the inspector lists searchOrders with its schema and readOnlyHint and returns the open order A-1001. On the core-only page, the button returns the two shipped orders."
-            fail="The banner is amber in a browser that should support WebMCP: check the flag or origin trial. If the inspector shows no tool, the description or the webmcp option did not reach the registry."
+            expect="The inspector lists searchOrders with its schema and readOnlyHint. Calling it is expected to fail today (see the gap below)."
+            fail="The inspector shows no tool: the browser does not expose document.modelContext, or the webmcp option did not reach the registry."
           />
         </div>
       </Panel>
@@ -32,32 +31,30 @@ export default function Page() {
       <Panel title="The code — as published">
         <SourceCodeGroup
           files={[{ file: `${DIR}/OrderSearch.tsx` }, { file: `${DIR}/webmcp.ts` }]}
-          note="Each file is the page's snippet with one added import line: the repo-authored searchOrders stub."
+          note="Each file is the page's snippet, verbatim, with a @ts-expect-error on the undefined searchOrders call."
         />
       </Panel>
 
       <Panel title="Harness around it">
         <SourceCodeGroup
           files={[
-            { file: `${DIR}/search-orders.ts` },
-            { file: `${DIR}/model-context-status.tsx` },
             { file: "frontend/src/app/webmcp/demo-chat/page.tsx" },
             { file: "frontend/src/app/webmcp/demo-chat/core-only/page.tsx" },
           ]}
         />
       </Panel>
 
-      <Callout tone="warn" title="Written in">
+      <Callout tone="warn" title="Broken as published">
         <ul className="space-y-1.5">
           <li>
-            · <code>searchOrders(status)</code> is called by both snippets and
-            defined by neither. <code>search-orders.ts</code> returns four fixed
-            orders.
+            · Doc gap: <code>searchOrders(status)</code> is called by both
+            snippets and defined by neither. It is not stubbed, so calling the
+            tool throws <code>ReferenceError: searchOrders is not defined</code>.
           </li>
           <li>
-            · The page needs no backend agent. The <code>webmcp</code> agent is
-            Quickstart-shaped and exists only so the chat path can be tried on
-            the same page.
+            · The page prints no backend agent, so there is no chat on this
+            route; the tool only registers with the provider and with{" "}
+            <code>document.modelContext</code>.
           </li>
           <li>
             · The core-only snippet is loaded on its own page so its{" "}
