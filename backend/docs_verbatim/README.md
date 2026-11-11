@@ -12,18 +12,24 @@ AWS Strands showcase:
 | Page | Lines printed |
 | --- | --- |
 | [`generative-ui/tool-rendering`](https://docs.copilotkit.ai/strands/generative-ui/tool-rendering) | 1–322 |
-| [`multi-agent/subagents`](https://docs.copilotkit.ai/strands/multi-agent/subagents) | 1–626 **and** 1–794 |
+| [`multi-agent/subagents`](https://docs.copilotkit.ai/strands/multi-agent/subagents) | 1–425 **and** 1–595 (was 626 / 794 before the 2026-11-10 sync) |
 
 **Updated for the 2026-08-26 sync, and the file got shorter.** It used to appear
 at 332 / 585 / 947 lines across three pages. `generative-ui/a2ui/fixed-schema`
 stopped printing it entirely, and the docs pulled the A2UI machinery out of the
 file itself: `_A2uiError` (16 lines), the whole `generate_a2ui` tool (145
 lines), and the `TypedDict` import are gone. Net effect — **the longest
-published prefix shrank from 947 lines to 794.** The copy in this directory is
-the current 794-line one.
+published prefix shrank from 947 lines to 794.** **Updated again for the
+2026-11-10 sync:** the subagents page now prints 425 and 595 lines. The
+`_MessagesSnapshotWrapper` (~240 lines that injected `MessagesSnapshotEvent`)
+is replaced by a 20-line `_StateContextWrapper`, the sales-todo tools now use
+`tools.todos` (`BoardTodoInput`, `manage_todos_impl`) and read native agent
+state, `agents.todo_state_sync` is a new unpublished import, and the sub-agent
+completion call moved to `reasoning_effort="none", model="gpt-6-luna"`. The
+copy in this directory is the current 595-line one.
 
 They are still prefixes of one file — the subagents page prints it twice, at
-626 and 794 lines — and the longest of them, the 794 lines in this directory,
+425 and 595 lines — and the longest of them, the 595 lines in this directory,
 is still a prefix. It stops mid-file exactly where it used to; the rest is
 never published anywhere.
 
@@ -169,3 +175,7 @@ Diffing the first 794 lines against the excerpt: this copy adds
 `_MessagesSnapshotWrapper.run`, and turns `manage_sales_todos` into a
 `@tool(context=True)` that writes native agent state. The prose pages are
 printing an older file than the demo tab.
+
+## `a2ui_helpers.py`
+
+The Python helper snippet from [`generative-ui/a2ui`](https://docs.copilotkit.ai/strands/generative-ui/a2ui) (added 2026-11-10), byte-exact. It uses `from copilotkit import a2ui`, a package this Strands backend doesn't install, and its arguments (`surface_id`, `components`, `data`, `catalog_id=...`) are placeholders. Not imported. The Fixed Schema route builds the same `a2ui_operations` envelope by hand in `display_flight`.

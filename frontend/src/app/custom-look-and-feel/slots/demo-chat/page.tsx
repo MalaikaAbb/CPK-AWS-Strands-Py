@@ -3,12 +3,15 @@
 import {
   CopilotChat,
   CopilotChatAssistantMessage,
+  CopilotChatConfigurationProvider,
   CopilotChatInput,
   CopilotChatView,
 } from "@copilotkit/react-core/v2";
-import type { ComponentProps, ReactNode } from "react";
+import { useState, type ComponentProps, type ReactNode } from "react";
 
 import { DemoFrame } from "@/components/demo-frame";
+
+import { Chat as ToolCallsViewChat } from "./tool-calls-view";
 
 /**
  * All three levels of the slot system on one chat, plus the doc's three
@@ -81,6 +84,7 @@ function CustomDisclaimer() {
 }
 
 export default function Page() {
+  const [tab, setTab] = useState<"slots" | "tool-calls">("slots");
   const welcomeScreen =
     CustomWelcomeScreen as unknown as typeof CopilotChatView.WelcomeScreen;
 
@@ -102,13 +106,44 @@ export default function Page() {
       parentPath="/custom-look-and-feel/slots"
       subtitle="agent: chat-slots"
     >
-      <CopilotChat
-        agentId="chat-slots"
-        className="h-full"
-        welcomeScreen={welcomeScreen}
-        messageView={messageView}
-        input={input}
-      />
+      <div className="flex h-full flex-col">
+        <div className="flex shrink-0 gap-2 border-b border-slate-200 p-2 dark:border-slate-800">
+          {(
+            [
+              ["slots", "Three levels + overrides (chat-slots)"],
+              ["tool-calls", "toolCallsView (tool-rendering)"],
+            ] as const
+          ).map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setTab(id)}
+              className={`rounded-md border px-3 py-1 text-xs font-medium ${
+                tab === id
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-slate-300 text-slate-600 dark:border-slate-600 dark:text-slate-300"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="min-h-0 flex-1">
+          {tab === "slots" ? (
+            <CopilotChat
+              agentId="chat-slots"
+              className="h-full"
+              welcomeScreen={welcomeScreen}
+              messageView={messageView}
+              input={input}
+            />
+          ) : (
+            <CopilotChatConfigurationProvider agentId="tool-rendering">
+              <ToolCallsViewChat />
+            </CopilotChatConfigurationProvider>
+          )}
+        </div>
+      </div>
     </DemoFrame>
   );
 }
