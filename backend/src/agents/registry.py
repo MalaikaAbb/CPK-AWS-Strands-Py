@@ -26,8 +26,6 @@ from agents import gen_ui_agents
 from agents.a2ui_fixed import build_a2ui_fixed_schema_agent
 from agents.byoc_hashbrown import build_byoc_hashbrown_agent
 from agents.byoc_json_render import build_byoc_json_render_agent
-from agents.state_streaming_agent import build_state_streaming_agent
-from agents.shared_state_rw_agent import build_shared_state_rw_agent
 from agents.language_agent import shared_state_language_agent
 
 #: Reusable gap descriptions. Each string is a fact about the docs, not about
@@ -177,13 +175,6 @@ REGISTRY: dict[str, RegisteredAgent] = {
     # Mounted at /voice; the voice runtime route forwards `voice-demo` here.
     "voice": RegisteredAgent(chat_agents.voice_agent, "/strands/voice"),
 
-    # --- Shared state streaming -------------------------------------------
-    # /generative-ui/state-rendering and /shared-state/streaming embed the
-    # same demo. No Strands backend is published; borrowed from the showcase.
-    "shared-state-streaming": RegisteredAgent(
-        build_state_streaming_agent, "/strands/generative-ui/state-rendering"
-    ),
-
     # --- Generative UI ----------------------------------------------------
     # No gaps: `useComponent` registrations reach this agent and it calls them,
     # even though the page's backend section is a `setup skipped` placeholder.
@@ -294,13 +285,8 @@ REGISTRY: dict[str, RegisteredAgent] = {
     "shared-state-language": RegisteredAgent(
         shared_state_language_agent, "/strands/shared-state/in-app-agent-read"
     ),
-    # Shared by /shared-state/rendering-in-app and /shared-state, whose
-    # published demos both address this id. Since 2026-11-10 it is the
-    # showcase's shared-state-read-write agent (set_notes + preferences
-    # context, borrowed; see agents/shared_state_rw_agent.py) instead of the
-    # tool-free Quickstart agent, so the /shared-state demo can work.
     "shared-state-read-write": RegisteredAgent(
-        build_shared_state_rw_agent,
+        chat_agents.shared_state_read_write_agent,
         "/strands/shared-state/rendering-in-app",
         gaps=(NO_TOOL_WIRING, NO_STATE_FROM_RESULT),
     ),

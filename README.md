@@ -338,9 +338,9 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 
 ### Shared State
 
-**`/shared-state`** ⚠️ (new 2026-11-10, not yet run) — two-way state: `useAgent` (`OnStateChanged`) reads `notes`, and `agent.setState({ preferences, notes })` writes back. The page has no demo and no Strands backend, so its snippets' source demo (`shared-state-read-write`) is copied verbatim, and so is the showcase agent (`set_notes` + `state_from_args`, plus `with_state_context` for preferences) in `backend/src/agents/shared_state_rw_agent.py`. The `shared-state-read-write` id is shared with `/shared-state/rendering-in-app`, which now runs on this agent too. Try `Remember that I prefer short answers and I'm learning Spanish.`, then edit the tone. ✅ Notes appear in the Agent Scratch pad, and the next answer follows the preferences. ❌ An empty notes card, or preferences ignored.
+**`/shared-state`** ❌ (reference only) — two-way state: `useAgent` (`OnStateChanged`) reads `notes`, and `agent.setState({ preferences, notes })` writes back. The page prints only these fragments plus `NotesCard`: no demo, no Code tab, no Strands backend. The route shows the three fragments verbatim and a gap panel; nothing to try — §9.38. `/shared-state/rendering-in-app` keeps its own `shared-state-read-write` agent, unchanged.
 
-**`/shared-state/streaming`** ⚠️ (new 2026-11-10, not yet run) — State Streaming: the same `shared-state-streaming` demo and borrowed `write_document` agent as Generative UI › State Rendering. Try `Write a short poem about autumn leaves.` ✅ The poem lands in the panel (whole, since Strands emits state from complete tool args). ❌ The poem appears in the chat instead.
+**`/shared-state/streaming`** ❌ (reference only) — State Streaming. The rendered page says "Not supported on AWS Strands (Python)" and has no Code tab, so the route shows only the Markdown export's `useAgent` fragment and a gap panel. Nothing to try — §9.38.
 
 **`/shared-state/rendering-in-app`** ⚠️ — Google ADK's implementation, carried over verbatim on request. The doc's `<Canvas>` reading `agent.state` outside the chat.
 ✅ Whatever the UI writes with `setState` shows in the canvas immediately and survives a chat turn.
@@ -416,8 +416,8 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/human-in-the-loop/headless` | `/human-in-the-loop/headless` | ⚠️ Partial | Not yet checked in a browser. The backend is published in full, with one import swapped. The demo file is truncated (`TimeSlotPopup`, `AppSurface` and the `_shared` helper are rebuilt), and `useHeadlessInterrupt` exists nowhere, so the Raw snippet throws. See §9.25. |
 | `/strands/human-in-the-loop/governed-actions` | `/human-in-the-loop/governed-actions` | ⚠️ Partial | Not yet checked in a browser. No backend is published. The `useHumanInTheLoop` half uses the same channel as `/human-in-the-loop`. The `useInterrupt` half never shows its card because it reads `metadata.action` and the bridge sends `metadata.reason`. See §9.26. |
 | `/strands/programmatic-control` | `/programmatic-control` | ✅ Working | Doc replaced the unrunnable snippet with a self-contained AgentTrigger — §9.9. |
-| `/strands/shared-state` | `/shared-state` | ⚠️ Partial | New 2026-11-10. Demo + showcase agent borrowed (page has neither); `shared-state-read-write` id now builds it (also used by rendering-in-app). Typecheck only. |
-| `/strands/shared-state/streaming` | `/shared-state/streaming` | ⚠️ Partial | New 2026-11-10. Same demo/agent as State Rendering; not per token on Strands. Typecheck only. |
+| `/strands/shared-state` | `/shared-state` | ❌ Broken | New 2026-11-10. Reference only: three printed fragments, no demo, no Code tab, no Strands backend — §9.38. |
+| `/strands/shared-state/streaming` | `/shared-state/streaming` | ❌ Broken | New 2026-11-10. Not supported on Strands Python: no Code tab, no Strands code. Reference only (Markdown `useAgent` fragment) — §9.38. |
 | `/strands/shared-state/rendering-in-app` | `/shared-state/rendering-in-app` | ✅ Working | Doc added a seeded initial state, so the canvas renders on first paint. |
 | `/strands/shared-state/agent-readonly` | `/shared-state/agent-readonly` | ❌ Broken | `setup skipped`; `CopilotKitMiddleware` named but never shown. |
 | `/strands/shared-state/in-app-agent-read` | `/shared-state/in-app-agent-read` | ✅ Working | Page's own `agentId` contradicts its own backend — §9.11. |
@@ -653,6 +653,10 @@ Four findings:
 4. **The `tools` package has no `__init__.py`.** The tab ships `tools/generate_a2ui.py`, a module inside the package, but not the package, so `from tools import build_a2ui_operations_from_tool_call` fails as published.
 
 Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
+
+### 9.38 Shared State and State Streaming — fragments only, no Strands demo or backend
+- [Shared State](https://docs.copilotkit.ai/strands/shared-state) (re-checked 2026-11-11) has no embedded demo or Code tab, and skips its Strands backend setup. It prints three fragments of the showcase's `shared-state-read-write` demo: the `useAgent` read, the `handlePreferencesChange` → `agent.setState` write, and `NotesCard`. Not printed: the component that holds them, the `Preferences` / `RWAgentState` / `NotesCardProps` types, the preferences card, the Card/Button primitives, and any agent (`set_notes`, its state mapping, the preferences-into-prompt step). The write fragment's comment credits `PreferencesInjectorMiddleware`, which is LangGraph's. The route is reference-only and broken.
+- [State Streaming](https://docs.copilotkit.ai/strands/shared-state/streaming) renders "Not supported on AWS Strands (Python)" with no Code tab, like [State Rendering](https://docs.copilotkit.ai/strands/generative-ui/state-rendering). Only the Markdown export's `useAgent` fragment is printed. The route is reference-only and broken.
 
 ## 10. Troubleshooting
 
