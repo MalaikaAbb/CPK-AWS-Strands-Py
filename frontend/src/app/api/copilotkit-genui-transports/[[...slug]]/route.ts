@@ -1,16 +1,23 @@
+import { HttpAgent } from "@ag-ui/client";
 import {
   CopilotRuntime,
   createCopilotRuntimeHandler,
 } from "@copilotkit/runtime/v2";
 
+import { agentUrl } from "@/lib/agents";
+
 // The Transports page's `app/api/copilotkit/route.ts`. The page prints only the
-// `CopilotRuntime` call, with an `agent` it never defines, and no Strands
-// agent anywhere. Kept verbatim, so this route throws a ReferenceError when it
-// loads. Harness glue: the imports and the handler.
+// `CopilotRuntime` call, with an `agent` it never defines; the section's only
+// agent is the overview's TanStack `BuiltInAgent` factory.
+//
+// Agent: Strands, not the doc's BuiltInAgent. `agent` is this repo's Strands
+// `genui` agent over AG-UI. Harness glue: the imports, `agent` and the handler.
+// The `shop` agent the "Only some agents" sample names is not built by any page
+// and is not registered. README §9.35.
+const agent = new HttpAgent({ url: agentUrl("genui") });
 
 //#region transports-runtime
 const runtime = new CopilotRuntime({
-  // @ts-expect-error verbatim doc code: `agent` is never defined on the page (TS2304); throws on load
   agents: { default: agent },
   generativeUI: true,
 });

@@ -307,33 +307,33 @@ The doc page's entire published source is four lines — see §9.7.
 
 ### Generative UI › Components and surfaces
 
-All nine routes are new as of 2026-11-10 and were ported from the CPK-LangGraph-TS harness (the strands pages are byte-identical to the langgraph-typescript ones). They need `@copilotkit/*` 1.85, since `/v2/generative-ui` isn't in 1.79.1, so this repo was bumped. **All nine are ❌ broken:** the pages print a backend only as a TanStack `BuiltInAgent` factory, with no Strands agent, so none is registered (the repo-authored `genui` / `genui-shop` agents and the `/api/copilotkit-genui` runtime were removed 2026-11-11). The demos' providers point at `/api/copilotkit-genui`, which no longer exists, and the Transports runtime is the page's sample verbatim (undefined `agent`, throws on load). The frontend snippets are verbatim and type-check; each "Try" below says what the demo would show with an agent. See §9.35.
+All nine routes are new as of 2026-11-10 and were ported from the CPK-LangGraph-TS harness (the strands pages are byte-identical to the langgraph-typescript ones). They need `@copilotkit/*` 1.85, since `/v2/generative-ui` isn't in 1.79.1, so this repo was bumped. **All nine are ⚠️ partial, not yet checked in a browser.** The pages print a backend only as a TanStack `BuiltInAgent` factory, which is not a Strands agent. **Agent: Strands, not the doc's BuiltInAgent:** one tool-free Strands `genui` agent (`backend/src/agents/genui_agent.py`, prompt = the factory's prompt verbatim) stands in, reached over AG-UI through `/api/copilotkit-genui` (the overview's `CopilotRuntime` options) and through the Transports runtime (the page's sample, with its undefined `agent` bound to `genui`). No `genui-shop` agent: no page builds the `shop` agent that `agentIds` names. The frontend snippets are verbatim and type-check. Start the agent server first. See §9.35.
 
-**`/generative-ui/components`** ❌
+**`/generative-ui/components`** ⚠️
 `standardUI` on the provider; the runtime adds `render_ui` and the agent streams real components. **Try:** "Compare the Starter, Team, and Enterprise plans in a table", then "add a column for support". **Pass:** a table streams in and the follow-up edits it in place. **Fail:** plain markdown → `render_ui` never reached the model.
 
-**`/generative-ui/components/surfaces`** ❌
+**`/generative-ui/components/surfaces`** ⚠️
 `GenerativeUISurface` page targets the chat fills, limits, scrolls to and replaces. **Try:** "Show me cheap running shoes in the featured row." then "Show the featured products again.". **Pass:** the page's own row is replaced by a ProductGrid, and the second prompt brings the row back. **Fail:** the grid lands in the chat, so the target's description never reached the agent.
 
-**`/generative-ui/components/catalogs`** ❌
+**`/generative-ui/components/catalogs`** ⚠️
 `createGenerativeUI` catalogs: typed props, zod and Valibot, `extends`, `parameterOrder`, `exportA2UICatalog`. **Try:** "Show me three running shoes as product cards.". **Pass:** ProductCards with a name, price and image each (model-invented values); the Export tab lists `component, title, children, color`. **Fail:** standard components such as Table appear on `shopUI`.
 
-**`/generative-ui/components/standard-catalog`** ❌
+**`/generative-ui/components/standard-catalog`** ⚠️
 `standardUI` as is, extended, with `omit`, and with a `Card` override. **Try:** "Show the Eiffel Tower and the Louvre on a map.". **Pass:** a MapLibre map on `standardUI`, and no map on the omit variant. **Fail:** a plain list on `standardUI`, so `maplibre-gl` did not load.
 
-**`/generative-ui/components/state-and-actions`** ❌
+**`/generative-ui/components/state-and-actions`** ⚠️
 `bind` from app state, functions on click, events sent to the agent, writable props. **Try:** "Show a product card for p1 Trail Runner.". **Pass:** "In cart: 0" from app state (nothing on the page adds to the cart; no cart view, add-to-cart buttons or PlanCard, and the catalogs are used as published with no layout container). **Fail:** the agent invents the cart count.
 
-**`/generative-ui/components/theming`** ❌
+**`/generative-ui/components/theming`** ⚠️
 `theme` variables, a typed theme file, dark overrides, map styles, `.a2ui-surface` CSS. **Try:** "Show a card with a primary button, a slider, and a bar chart of three months.". **Pass:** amber `#d97706` accent on the button and slider. **Fail:** the default accent on the Provider theme variant. The Map variant's basemap is blank by design (the page's URLs are placeholders).
 
-**`/generative-ui/components/transports`** ❌
+**`/generative-ui/components/transports`** ⚠️
 The `render_ui` tool transport vs `a2ui` fences in markdown, with `generativeUI: true` and `agentIds`. **Try:** "Compare the Starter, Team, and Enterprise plans in a table.". **Pass:** a table component (tool), a table inside the reply (markdown), and plain text as `default` under `agentIds: ["shop"]` (no shop agent is registered). **Fail:** UI as `default`, so `agentIds` was ignored.
 
-**`/generative-ui/components/markdown-mode`** ❌
+**`/generative-ui/components/markdown-mode`** ⚠️
 The agent writes A2UI operations in `a2ui` code blocks in its reply. **Try:** "Give me a seat-count slider that shows the monthly price at $29 per seat.". **Pass:** prose with a live slider card in the middle. **Fail:** raw JSON in a code block. The `sendContext: false` variant shows no UI by design.
 
-**`/generative-ui/components/from-a2ui`** ❌
+**`/generative-ui/components/from-a2ui`** ⚠️
 The A2UI 1.0 "After" catalog (`Airport`, `Arrow`) on the new engine. **Try:** "Show a flight card from SFO (San Francisco) to JFK (New York) with a Book button.". **Pass:** two Airport components with an Arrow and a Button. **Fail:** a rejection naming a v0.9 shape.
 
 ### App Control
@@ -434,15 +434,15 @@ Note that the other half of this doc page, `useInterrupt`, is LangGraph-only and
 | `/strands/generative-ui/your-components/interactive` | `/generative-ui/your-components/interactive` | ✅ Working | Not in the doc sidebar. Page is still four lines — §9.7. |
 | `/strands/generative-ui/a2ui/dynamic-schema` | `/generative-ui/a2ui/dynamic-schema` | ❌ Broken | `renderers.tsx` has no imports — §9.6. A2UI tool unattached. |
 | `/strands/generative-ui/a2ui/fixed-schema` | `/generative-ui/a2ui/fixed-schema` | ✅ Working | `display_flight` + `flight_schema.json` run as described, but come from the GitHub showcase, not the page (2026-10-19) — §9.29. Action handlers documented as unsupported. |
-| `/strands/generative-ui/components` | `/generative-ui/components` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
-| `/strands/generative-ui/components/surfaces` | `/generative-ui/components/surfaces` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
-| `/strands/generative-ui/components/catalogs` | `/generative-ui/components/catalogs` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
-| `/strands/generative-ui/components/standard-catalog` | `/generative-ui/components/standard-catalog` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
-| `/strands/generative-ui/components/state-and-actions` | `/generative-ui/components/state-and-actions` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
-| `/strands/generative-ui/components/theming` | `/generative-ui/components/theming` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
-| `/strands/generative-ui/components/transports` | `/generative-ui/components/transports` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
-| `/strands/generative-ui/components/markdown-mode` | `/generative-ui/components/markdown-mode` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
-| `/strands/generative-ui/components/from-a2ui` | `/generative-ui/components/from-a2ui` | ❌ Broken | New 2026-11-10. Ported from CPK-LangGraph-TS; no Strands agent printed, so none registered; needs @copilotkit 1.85 (bumped here). Typecheck only — §9.35. |
+| `/strands/generative-ui/components` | `/generative-ui/components` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
+| `/strands/generative-ui/components/surfaces` | `/generative-ui/components/surfaces` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
+| `/strands/generative-ui/components/catalogs` | `/generative-ui/components/catalogs` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
+| `/strands/generative-ui/components/standard-catalog` | `/generative-ui/components/standard-catalog` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
+| `/strands/generative-ui/components/state-and-actions` | `/generative-ui/components/state-and-actions` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
+| `/strands/generative-ui/components/theming` | `/generative-ui/components/theming` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
+| `/strands/generative-ui/components/transports` | `/generative-ui/components/transports` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
+| `/strands/generative-ui/components/markdown-mode` | `/generative-ui/components/markdown-mode` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
+| `/strands/generative-ui/components/from-a2ui` | `/generative-ui/components/from-a2ui` | ⚠️ Partial | New 2026-11-10. Ported from CPK-LangGraph-TS; needs @copilotkit 1.85 (bumped here). Agent: Strands `genui`, not the doc's TanStack BuiltInAgent. Not yet checked in a browser — §9.35. |
 | `/strands/generative-ui/open-generative-ui` | `/generative-ui/open-generative-ui` | ⚠️ Partial | Not yet checked in a browser. No agent published; `Chat` / `VISUALIZATION_DESIGN_SKILL` / `./suggestions` undefined; advanced snippet truncated — §9.23. |
 | `/strands/generative-ui/mcp-apps` | `/generative-ui/mcp-apps` | ⚠️ Partial | Not yet checked in a browser. Fallback URL `https://mcp.excalidraw.com` 308s and the middleware refuses redirects — works only with `MCP_SERVER_URL=…/mcp` — §9.24. No agent published. |
 | `/strands/generative-ui/json-render` | `/generative-ui/json-render` | ⚠️ Partial | Not yet checked in a browser. Two published versions, both verbatim. *doc snippets* ❌ by design: `<Renderer catalog>` throws `useVisibility must be used within a VisibilityProvider`. *doc demo source* predicted ✅ (server-rendered). §9.27. |
@@ -688,8 +688,8 @@ Four findings:
 
 Also: the inner model picks a `catalogId` at random (`a2ui.v0.9`, `custom.flight.components.v1`, …). It does not matter — the middleware takes the runtime's `defaultCatalogId`, then the provider's catalog, and only then the tool's value. That is what the tab's route comment means by "pin the catalog the page registers".
 
-### 9.35 Components and surfaces — no Strands agent is printed
-The nine [Components and surfaces](https://docs.copilotkit.ai/strands/generative-ui/components) pages are byte-identical to the LangGraph TypeScript ones. Their only backend is a TanStack `BuiltInAgent` factory; nothing for Strands. So no agent is registered for these routes and every demo's chat fails (the repo-authored `genui` / `genui-shop` agents and the `/api/copilotkit-genui` runtime were removed on 2026-11-11). The Transports page's `CopilotRuntime({ agents: { default: agent }, generativeUI: true })` is kept verbatim with `agent` undefined (`@ts-expect-error`, throws on load); its `agentIds: ["shop"]` names an agent no page builds. Other gaps, unchanged and labelled on the routes: names the snippets use but never define (`Product`, `ProductRow`, `PRODUCTS`, `Cart`/`useCart`, `Hero`, `Panel`, `productSchema`, `ProductCard`, `Airport`, `Arrow`, `cartUI`, Surfaces' `product`) are minimal scaffolding; the Catalogs `fs.writeFileSync` line is a `// doc:` comment (Node-only); the "Send a click to the agent" `events` fragment names no component and isn't exercised; catalogs are used as published with no layout container, so a request for two cards in one surface may be rejected.
+### 9.35 Components and surfaces — the doc prints a TanStack BuiltInAgent, not a Strands agent
+The nine [Components and surfaces](https://docs.copilotkit.ai/strands/generative-ui/components) pages are byte-identical to the LangGraph TypeScript ones. Their only backend is a TanStack `BuiltInAgent` factory (`new BuiltInAgent({ type: "tanstack", factory: ... })`), which is not a Strands agent. **Agent: Strands, not the doc's BuiltInAgent.** This harness uses its own framework's agent in that slot. `backend/src/agents/genui_agent.py` builds a `StrandsAgent` around a `strands.Agent` with no tools (the factory defines none of its own) and the factory's prompt verbatim (`"You are a helpful assistant. When a visual answer helps, render it with generative UI."`). It is registered as `genui`. `/api/copilotkit-genui` keeps the overview's `CopilotRuntime({ agents: { default: agent }, runner: new InMemoryAgentRunner() })` and only swaps `agent` for `new HttpAgent({ url: agentUrl("genui") })`. The overview's TanStack route is shown on `/generative-ui/components` as reference text, not run. The Transports page's `CopilotRuntime({ agents: { default: agent }, generativeUI: true })` stays verbatim, and its never-defined `agent` is bound to the same Strands agent by harness glue above it, so the `@ts-expect-error` is gone. Its `agentIds: ["shop"]` names an agent no page builds, and none is registered. Other gaps, unchanged and labelled on the routes: names the snippets use but never define (`Product`, `ProductRow`, `PRODUCTS`, `Cart`/`useCart`, `Hero`, `Panel`, `productSchema`, `ProductCard`, `Airport`, `Arrow`, `cartUI`, Surfaces' `product`) are minimal scaffolding; the Catalogs `fs.writeFileSync` line is a `// doc:` comment (Node-only); the "Send a click to the agent" `events` fragment names no component and isn't exercised; catalogs are used as published with no layout container, so a request for two cards in one surface may be rejected.
 
 ## 10. Troubleshooting
 
@@ -754,6 +754,7 @@ aws-strands-py/
 │   │       ├── model.py         # MODEL_ID + the Quickstart's OpenAIModel
 │   │       ├── chat_agents.py   # the Quickstart agent shape, per route
 │   │       ├── gen_ui_agents.py # Open Generative UI + MCP Apps agents (unpublished; Quickstart shape)
+│   │       ├── genui_agent.py  # Components and surfaces: Strands stand-in for the doc's TanStack BuiltInAgent
 │   │       ├── language_agent.py# the ONE agent the docs wire to shared state
 │   │       ├── interrupt_agent.py # Headless Interrupts' published agent (native Strands interrupt)
 │   │       ├── hitl_agents.py   # Governed Actions agents (unpublished; one interrupts)
@@ -789,6 +790,7 @@ aws-strands-py/
         ├── generative-ui/a2ui/fixed-schema/{a2ui,_components,demo-chat}/ # the Code tab's catalog, primitives, page/chat/suggestions
         ├── api/copilotkit-ogui/[[...slug]]/route.ts # Open Generative UI (openGenerativeUI flag)
         ├── api/copilotkit-mcp-apps/[[...slug]]/route.ts # MCP Apps (mcpApps.servers → Excalidraw)
+        ├── api/copilotkit-genui/[[...slug]]/route.ts # Components and surfaces runtime → Strands genui agent
         ├── api/copilotkit-byoc-{json-render,hashbrown}/[[...slug]]/route.ts # repo-authored runtimes the prose snippets point at
         ├── api/copilotkit-declarative-{json-render,hashbrown}/route.ts # the doc demos' own route.ts, byte-exact
         ├── generative-ui/{json-render,hashbrown}/_snippets/    # the page's prose blocks + repo-authored helpers/re-exports

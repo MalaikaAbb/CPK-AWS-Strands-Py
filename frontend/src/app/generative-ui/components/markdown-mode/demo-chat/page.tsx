@@ -2,8 +2,8 @@
 
 // Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
 // The strands doc page is byte-identical to the langgraph-typescript one
-// (diffed 2026-11-10). The page prints no Strands agent, so no agent stands
-// behind these providers' runtime: chats fail (see the route callout).
+// (diffed 2026-11-10). The page prints only a TanStack BuiltInAgent; these
+// providers' runtime runs the Strands `genui` agent instead (route callout).
 
 import { CopilotChat } from "@copilotkit/react-core/v2";
 import { useState } from "react";
@@ -16,7 +16,7 @@ const VARIANTS = [
   {
     id: "markdown",
     label: "transport: \"markdown\"",
-    note: "The provider sends the schema and the fence guide as context; ag_ui_strands would add the run's context entries to the model request, but no Strands agent is printed, so nothing answers.",
+    note: "The provider sends the schema and the fence guide as context; ag_ui_strands adds the run's context entries to the Strands genui agent's model request.",
     Provider: MarkdownProviders,
   },
   {

@@ -1,7 +1,7 @@
 // Ported from the CPK-LangGraph-TS harness (itself ported from aws-strands-ts).
 // The strands doc page is byte-identical to the langgraph-typescript one
-// (diffed 2026-11-10). The page prints no Strands agent, so no agent stands
-// behind these providers' runtime: chats fail (see the route callout).
+// (diffed 2026-11-10). The page prints only a TanStack BuiltInAgent; these
+// providers' runtime runs the Strands `genui` agent instead (route callout).
 
 import { RouteHeader } from "@/components/route-header";
 import { SourceCode, SourceCodeGroup } from "@/components/source-code";
@@ -37,14 +37,17 @@ export default function Page() {
     <>
       <RouteHeader path="/generative-ui/components/from-a2ui" />
 
-      <Callout tone="warn" title="Broken: no Strands agent is printed">
+      <Callout tone="warn" title="Agent: Strands, not the doc's BuiltInAgent">
         <p>
           The Components and surfaces pages publish a backend only as a TanStack{" "}
-          <code>BuiltInAgent</code> factory; nothing for Strands. The
-          repo-authored Strands <code>genui</code> agent (and its{" "}
-          <code>/api/copilotkit-genui</code> runtime) was removed, so the
-          demo&apos;s chat has no agent and its requests fail. The page&apos;s
-          frontend code below is kept verbatim and type-checked.
+          <code>BuiltInAgent</code> factory, which is not a Strands agent. This
+          harness runs its own framework&apos;s agent in that slot: a
+          tool-free Strands <code>genui</code> agent
+          (<code>backend/src/agents/genui_agent.py</code>) whose prompt is the
+          factory&apos;s, verbatim, reached over AG-UI through{" "}
+          <code>/api/copilotkit-genui</code>. Doc gap, README §9.35. The
+          page&apos;s frontend code below is kept verbatim and type-checked.
+          Not yet checked in a browser.
         </p>
       </Callout>
 
@@ -94,8 +97,9 @@ export default function Page() {
           <li>
             · &ldquo;Runtime, after&rdquo; is <code>new CopilotRuntime(
             {"{ agents }"})</code>; the shared{" "}
-            <code>/api/copilotkit-genui</code> runtime has no A2UI option either,
-            so it stands in.
+            <code>/api/copilotkit-genui</code> runtime (Strands{" "}
+            <code>genui</code> agent) has no A2UI option either, so it stands
+            in.
           </li>
           <li>
             · The support matrix says agent tools built with{" "}
