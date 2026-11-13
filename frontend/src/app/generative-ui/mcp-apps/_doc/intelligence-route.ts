@@ -29,9 +29,6 @@ import { agentUrl } from "@/lib/agents";
 const agent = new HttpAgent({ url: agentUrl("mcp-apps") });
 
 const runtime = new CopilotRuntime({
-  // @ts-expect-error harness swap only: two @ag-ui/client copies make
-  // HttpAgent "not assignable to AbstractAgent" (the same TS2769 the repo's
-  // other runtime routes carry). Not a doc bug — the doc's BuiltInAgent passed.
   agents: { default: agent },
   // Intelligence stores threads and runs. Do not pass `runner` as well.
   intelligence: new CopilotKitIntelligence({

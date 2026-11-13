@@ -8,7 +8,7 @@ import { CopilotChat, useDefaultRenderTool } from "@copilotkit/react-core/v2";
 
 function GroupedDefaultRenderer() {
   // --- snippet 1 ---
-  // @ts-expect-error verbatim doc code: `MyToolRow` is never defined (TS2304), and `group` is not a useDefaultRenderTool option in @copilotkit/react-core 1.79.1 (TS2353)
+  // @ts-expect-error verbatim doc code: `MyToolRow` is never defined (TS2304)
   useDefaultRenderTool({ render: MyToolRow, group: true });
   // --- end ---
   return null;
@@ -18,7 +18,6 @@ function LineDisplay() {
   return (
     // --- snippet 2 ---
     // "grouped" (default) | "line" | "stacked" | "turn" | "separate"
-    // @ts-expect-error verbatim doc code: `toolCallDisplay` is not a messageView prop in @copilotkit/react-core 1.79.1 (TS2353)
     <CopilotChat messageView={{ toolCallDisplay: "line" }} />
     // --- end ---
   );
@@ -30,7 +29,7 @@ function GroupSlot() {
     // ToolTimeline: your component, given the group's `calls` and a `renderCall` function
     <CopilotChat
       messageView={{
-        // @ts-expect-error verbatim doc code: no `group` slot on toolCallsView in @copilotkit/react-core 1.79.1 (TS2353), and `ToolTimeline` is never defined (TS2304)
+        // @ts-expect-error verbatim doc code: `ToolTimeline` is never defined (TS2304)
         assistantMessage: { toolCallsView: { group: ToolTimeline } },
       }}
     />
