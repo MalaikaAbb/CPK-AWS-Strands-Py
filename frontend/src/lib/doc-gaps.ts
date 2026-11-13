@@ -178,6 +178,14 @@ const GAP_LIST: DocGap[] = [
     docPath: "/strands/generative-ui/a2ui/dynamic-schema",
   },
   {
+    id: "a2ui-dynamic-undefined-tooltip-style",
+    title: "renderers.tsx uses `tooltipStyle` and `barCursor`, defined nowhere",
+    detail:
+      "Since the 2026-11-13 sync the dynamic-schema `renderers.tsx` passes `contentStyle={tooltipStyle}` to the PieChart and BarChart `<Tooltip>`s and `cursor={barCursor}` to the BarChart one. Neither constant is defined in the printed block, elsewhere on the page, or in the Strands demo Code tab. Kept verbatim behind `@ts-expect-error`; at run time rendering either chart throws `ReferenceError: tooltipStyle is not defined`. Not filled in from another framework.",
+    severity: "blocking",
+    docPath: "/strands/generative-ui/a2ui/dynamic-schema",
+  },
+  {
     id: "agent-config-wrong-framework",
     title: "The Agent Config backend sample is LangGraph, not Strands",
     detail:
@@ -406,6 +414,7 @@ export const ROUTE_GAPS: Record<string, GapId[]> = {
 
   "/generative-ui/a2ui/dynamic-schema": [
     "renderers-missing-imports",
+    "a2ui-dynamic-undefined-tooltip-style",
   ],
 
   "/generative-ui/a2ui/fixed-schema": ["a2ui-fixed-schema-is-generated"],
