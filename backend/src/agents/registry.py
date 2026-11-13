@@ -191,6 +191,8 @@ REGISTRY: dict[str, RegisteredAgent] = {
         genui_agent,
         "/strands/generative-ui/components",
         gaps=(GENUI_BUILTIN_AGENT,),
+    ),
+
     # --- Chat: reasoning ---------------------------------------------------
     # The page's two demos share one agent in the showcase (`/reasoning/`);
     # here each id gets its own mount of the same verbatim factory.
