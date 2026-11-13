@@ -109,7 +109,7 @@ const GAP_LIST: DocGap[] = [
     id: "truncated-agent-py",
     title: "The published backend file is a truncated prefix",
     detail:
-      "In the page *prose*, `src/agents/agent.py` appears at 322, 626 and 794 lines — all prefixes of one file, and even the longest stops mid-file. The 2026-08-26 sync shrank the longest prefix from 947 to 794 lines and moved `generate_a2ui` out. What the prose never shows, the A2UI Fixed Schema page's demo Code tab does: its `src/agents/agent.py` tab is the whole 1463-line module, through `build_showcase_agent`. It is a newer revision than the prose prefixes (`with_state_context`, `ToolContext`, a tool-call cap hook), and it still cannot import. Both copies are in `backend/docs_verbatim/`, with the analysis in its README.",
+      "In the page *prose*, `src/agents/agent.py` appears at 322, 626 and 794 lines — all prefixes of one file, and even the longest stops mid-file. The 2026-08-26 sync shrank the longest prefix from 947 to 794 lines and moved `generate_a2ui` out. What the prose never shows, the A2UI Fixed Schema page's demo Code tab does: its `src/agents/agent.py` tab is the whole module (1247 lines since the 2026-11-13 sync, 1463 before), through `build_showcase_agent`. It is a newer revision than the prose prefixes (`with_state_context`, `ToolContext`, a tool-call cap hook), and it still cannot import. Both copies are in `backend/docs_verbatim/`, with the analysis in its README.",
     severity: "blocking",
     docPath: "/strands/multi-agent/subagents",
   },
@@ -341,7 +341,7 @@ const GAP_LIST: DocGap[] = [
     id: "a2ui-fixed-schema-is-generated",
     title: "The page describes display_flight and publishes generate_a2ui",
     detail:
-      "The page's `How it works` describes a `display_flight` tool that returns data against a pre-authored tree, and its prose names `flight_schema.json` and `booked_schema.json`. None of the three is on the page for Strands: the intro says Strands Python is `LLM-driven`, and the Python step it prints is `generate_a2ui` — a secondary OpenAI call (`gpt-5-mini`, hardcoded) that invents the tree per request. The demo Code tab's `page.tsx` and `route.ts` comments still refer to `src/agents/a2ui_fixed.py` and `display_flight`, neither of which is in the tab. The two do exist — in CopilotKit's GitHub monorepo at `showcase/integrations/strands/src/agents/`, with a schema whose catalog id and component names match the page's catalog exactly. This route runs that copy; the doc gap is that a reader of the page cannot get there.",
+      "The page's `How it works` describes a `display_flight` tool that returns data against a pre-authored tree, and its prose names `flight_schema.json` and `booked_schema.json`. None of the three is on the page for Strands: the intro says Strands Python is `LLM-driven`, and the Python step it prints is `generate_a2ui` — a secondary OpenAI call (`gpt-6-luna` since the 2026-11-13 sync, `gpt-5-mini` before; hardcoded) that invents the tree per request. The demo Code tab's `page.tsx` and `route.ts` comments still refer to `src/agents/a2ui_fixed.py` and `display_flight`, neither of which is in the tab. The two do exist — in CopilotKit's GitHub monorepo at `showcase/integrations/strands/src/agents/`, with a schema whose catalog id and component names match the page's catalog exactly. This route runs that copy; the doc gap is that a reader of the page cannot get there.",
     severity: "degraded",
     docPath: "/strands/generative-ui/a2ui/fixed-schema",
   },
