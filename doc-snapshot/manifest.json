@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "docsRoot": "https://docs.copilotkit.ai/strands",
-  "syncedAt": "2026-11-10T10:00:31.908Z",
+  "syncedAt": "2026-11-13T13:14:48.232Z",
   "pages": {
     "/strands": {
       "file": "strands.md",
@@ -14,7 +14,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:32 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/ag-ui": {
       "file": "strands__ag-ui.md",
@@ -26,7 +26,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/agent-config": {
       "file": "strands__agent-config.md",
@@ -38,7 +38,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:32 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:48 GMT"
     },
     "/strands/copilot-runtime": {
       "file": "strands__copilot-runtime.md",
@@ -50,7 +50,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/custom-look-and-feel/css": {
       "file": "strands__custom-look-and-feel__css.md",
@@ -62,7 +62,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:32 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/custom-look-and-feel/headless-ui": {
       "file": "strands__custom-look-and-feel__headless-ui.md",
@@ -74,7 +74,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:32 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/custom-look-and-feel/markdown": {
       "file": "strands__custom-look-and-feel__markdown.md",
@@ -86,7 +86,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
+    },
+    "/strands/custom-look-and-feel/reasoning-messages": {
+      "file": "strands__custom-look-and-feel__reasoning-messages.md",
+      "sha256": "43ea8cc3a3e8dcb599cfe13e16aed14c12bab3ea55deeedd312ff7bbbc12ae08",
+      "bytes": 7377,
+      "lines": 262,
+      "routes": [
+        "/custom-look-and-feel/reasoning-messages"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/custom-look-and-feel/slots": {
       "file": "strands__custom-look-and-feel__slots.md",
@@ -98,7 +110,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:32 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/frontend-tools": {
       "file": "strands__frontend-tools.md",
@@ -110,31 +122,151 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:32 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
+    },
+    "/strands/generative-ui/a2ui": {
+      "file": "strands__generative-ui__a2ui.md",
+      "sha256": "72e7d4d2d26b287b803f793447a49abf08f01a8a2453ca65ca63b75652d4aa3f",
+      "bytes": 6199,
+      "lines": 166,
+      "routes": [
+        "/generative-ui/a2ui"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/generative-ui/a2ui/dynamic-schema": {
       "file": "strands__generative-ui__a2ui__dynamic-schema.md",
-      "sha256": "706aaf55243fb3d837ee3628e759e2205cb024c5938004c08f48d0b5dea1eaf4",
-      "bytes": 22983,
-      "lines": 688,
+      "sha256": "0c143b09612e448165e01a8305d3d3802cca7b04b7bc925f2236e6fc7b4938f4",
+      "bytes": 23139,
+      "lines": 689,
       "routes": [
         "/generative-ui/a2ui/dynamic-schema"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:32 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
     },
     "/strands/generative-ui/a2ui/fixed-schema": {
       "file": "strands__generative-ui__a2ui__fixed-schema.md",
-      "sha256": "decb316edc945d4aa9e3571b8d653db5e48ae300650f6a650b325ffd6ff58d43",
-      "bytes": 24259,
+      "sha256": "27b4a3d39ec0b50711c24935d91d7863c13a06bd15dbd7c0d8ba5177ca881d3a",
+      "bytes": 24433,
       "lines": 662,
       "routes": [
         "/generative-ui/a2ui/fixed-schema"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
+    },
+    "/strands/generative-ui/components": {
+      "file": "strands__generative-ui__components.md",
+      "sha256": "031d05d014f3e577bf2be7975b9ce690ea3cc77fb1db80b92691be1eb2376605",
+      "bytes": 33485,
+      "lines": 795,
+      "routes": [
+        "/generative-ui/components"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
+    },
+    "/strands/generative-ui/components/catalogs": {
+      "file": "strands__generative-ui__components__catalogs.md",
+      "sha256": "3af5e4cf9f465c16ccaf34e25887b7eaa8a0d2c77727791de2bda67000b81f2a",
+      "bytes": 23819,
+      "lines": 520,
+      "routes": [
+        "/generative-ui/components/catalogs"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
+    },
+    "/strands/generative-ui/components/from-a2ui": {
+      "file": "strands__generative-ui__components__from-a2ui.md",
+      "sha256": "33f4d0b775a1e56c2cbd0aadde82d8d6037aa7acca1ecbd98be7ed0584d4311d",
+      "bytes": 16640,
+      "lines": 279,
+      "routes": [
+        "/generative-ui/components/from-a2ui"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
+    },
+    "/strands/generative-ui/components/markdown-mode": {
+      "file": "strands__generative-ui__components__markdown-mode.md",
+      "sha256": "16b18053797c6e55a00998299a849e067ac8439412b7f965843ba731450a9a2d",
+      "bytes": 8726,
+      "lines": 188,
+      "routes": [
+        "/generative-ui/components/markdown-mode"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
+    },
+    "/strands/generative-ui/components/standard-catalog": {
+      "file": "strands__generative-ui__components__standard-catalog.md",
+      "sha256": "72255d2e5a5dd075d8de6933bb91a1c4476ffc397950a33d6acda1a65acb6fc3",
+      "bytes": 16143,
+      "lines": 238,
+      "routes": [
+        "/generative-ui/components/standard-catalog"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:49 GMT"
+    },
+    "/strands/generative-ui/components/state-and-actions": {
+      "file": "strands__generative-ui__components__state-and-actions.md",
+      "sha256": "5c4faac316ff8a6684fb198465d4e4e71bccb9744e0329fec1c93fc4fa25197b",
+      "bytes": 23516,
+      "lines": 556,
+      "routes": [
+        "/generative-ui/components/state-and-actions"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
+    },
+    "/strands/generative-ui/components/surfaces": {
+      "file": "strands__generative-ui__components__surfaces.md",
+      "sha256": "996f8a185e647f7e482c6b8506d5e07217583a156773afc060bc8bac2fe0950f",
+      "bytes": 21244,
+      "lines": 427,
+      "routes": [
+        "/generative-ui/components/surfaces"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
+    },
+    "/strands/generative-ui/components/theming": {
+      "file": "strands__generative-ui__components__theming.md",
+      "sha256": "0d9fdd0c50073e01e9a92a0b4e3ccafa70eebbc95938215a8ddeccdd4be403cf",
+      "bytes": 6799,
+      "lines": 203,
+      "routes": [
+        "/generative-ui/components/theming"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
+    },
+    "/strands/generative-ui/components/transports": {
+      "file": "strands__generative-ui__components__transports.md",
+      "sha256": "d75674a0abe9bf95174ca377abf2303270c66c187d7f8df4945ff7e98dae88e5",
+      "bytes": 5155,
+      "lines": 139,
+      "routes": [
+        "/generative-ui/components/transports"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/generative-ui/hashbrown": {
       "file": "strands__generative-ui__hashbrown.md",
@@ -146,7 +278,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/generative-ui/json-render": {
       "file": "strands__generative-ui__json-render.md",
@@ -158,7 +290,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/generative-ui/mcp-apps": {
       "file": "strands__generative-ui__mcp-apps.md",
@@ -170,7 +302,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/generative-ui/open-generative-ui": {
       "file": "strands__generative-ui__open-generative-ui.md",
@@ -182,7 +314,31 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
+    },
+    "/strands/generative-ui/reasoning": {
+      "file": "strands__generative-ui__reasoning.md",
+      "sha256": "92457cd81ee6cb58e275e007c76ae1aa20dfb7407ab95c9f3db3df7cb170f3ab",
+      "bytes": 5780,
+      "lines": 180,
+      "routes": [
+        "/generative-ui/reasoning"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
+    },
+    "/strands/generative-ui/state-rendering": {
+      "file": "strands__generative-ui__state-rendering.md",
+      "sha256": "361d4b48a01d91000936898f4bb6c43eec3aca3e595dc7a6b192316c8282b732",
+      "bytes": 2279,
+      "lines": 57,
+      "routes": [
+        "/generative-ui/state-rendering"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/generative-ui/tool-based": {
       "file": "strands__generative-ui__tool-based.md",
@@ -194,7 +350,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/generative-ui/tool-rendering": {
       "file": "strands__generative-ui__tool-rendering.md",
@@ -206,7 +362,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/generative-ui/your-components/display-only": {
       "file": "strands__generative-ui__your-components__display-only.md",
@@ -218,7 +374,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/generative-ui/your-components/interactive": {
       "file": "strands__generative-ui__your-components__interactive.md",
@@ -230,7 +386,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/headless-threads": {
       "file": "strands__headless-threads.md",
@@ -242,7 +398,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/human-in-the-loop": {
       "file": "strands__human-in-the-loop.md",
@@ -254,7 +410,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:33 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/human-in-the-loop/governed-actions": {
       "file": "strands__human-in-the-loop__governed-actions.md",
@@ -266,31 +422,55 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:50 GMT"
     },
     "/strands/human-in-the-loop/headless": {
       "file": "strands__human-in-the-loop__headless.md",
-      "sha256": "228ebf0f90a27133938181e3babbd4b2888ab0304c38ba1e782878596322997d",
-      "bytes": 12680,
+      "sha256": "8c19da4577ca59601f9c423c288191864fdede7e7794215d380ec21194591010",
+      "bytes": 12737,
       "lines": 371,
       "routes": [
         "/human-in-the-loop/headless"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
+    },
+    "/strands/human-in-the-loop/index": {
+      "file": "strands__human-in-the-loop__index.md",
+      "sha256": "9464871287f95915ccd49a7e75965888bb4ed7ac0358bbf24aad2934e90b72f7",
+      "bytes": 10233,
+      "lines": 278,
+      "routes": [
+        "/human-in-the-loop/overview"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
+    },
+    "/strands/human-in-the-loop/useInterrupt": {
+      "file": "strands__human-in-the-loop__useInterrupt.md",
+      "sha256": "97253072c1bae39737f37b9fa3a1c10e93ef38ad3d561e40b23e32cbee52e713",
+      "bytes": 20854,
+      "lines": 553,
+      "routes": [
+        "/human-in-the-loop/use-interrupt"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/multi-agent/subagents": {
       "file": "strands__multi-agent__subagents.md",
-      "sha256": "300406a6fb517052ea117515685a85484dc4bf11db7d7fc768281d2e6877fa20",
-      "bytes": 44654,
-      "lines": 1252,
+      "sha256": "f99ee0875afa6bca8448d4be6d5632f57262fdb12fef55d118558a1608989fbe",
+      "bytes": 45091,
+      "lines": 1254,
       "routes": [
         "/multi-agent/subagents"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/multimodal-attachments": {
       "file": "strands__multimodal-attachments.md",
@@ -302,7 +482,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/prebuilt-components/chat": {
       "file": "strands__prebuilt-components__chat.md",
@@ -314,7 +494,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/prebuilt-components/chat-controls": {
       "file": "strands__prebuilt-components__chat-controls.md",
@@ -326,7 +506,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/prebuilt-components/copilot-threads-drawer": {
       "file": "strands__prebuilt-components__copilot-threads-drawer.md",
@@ -338,7 +518,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/prebuilt-components/popup": {
       "file": "strands__prebuilt-components__popup.md",
@@ -350,7 +530,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/prebuilt-components/sidebar": {
       "file": "strands__prebuilt-components__sidebar.md",
@@ -362,19 +542,19 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/programmatic-control": {
       "file": "strands__programmatic-control.md",
-      "sha256": "1bf533fa5e53d004d95aef5bafdb6debda156a01120123b6f98ec5f6594cce61",
-      "bytes": 10285,
+      "sha256": "c4fc5c75f3c4dc76508b56f5f62ac7b4461da95b2f257562b0e8f255511060f1",
+      "bytes": 10342,
       "lines": 286,
       "routes": [
         "/programmatic-control"
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/quickstart": {
       "file": "strands__quickstart.md",
@@ -386,7 +566,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/shared-state/agent-readonly": {
       "file": "strands__shared-state__agent-readonly.md",
@@ -398,7 +578,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/shared-state/in-app-agent-read": {
       "file": "strands__shared-state__in-app-agent-read.md",
@@ -410,7 +590,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/shared-state/in-app-agent-write": {
       "file": "strands__shared-state__in-app-agent-write.md",
@@ -422,7 +602,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/shared-state/rendering-in-app": {
       "file": "strands__shared-state__rendering-in-app.md",
@@ -434,7 +614,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/threads-import": {
       "file": "strands__threads-import.md",
@@ -446,7 +626,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:51 GMT"
     },
     "/strands/threads-lifecycle": {
       "file": "strands__threads-lifecycle.md",
@@ -458,7 +638,7 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:52 GMT"
     },
     "/strands/voice": {
       "file": "strands__voice.md",
@@ -470,11 +650,23 @@
       ],
       "status": "ok",
       "age": 0,
-      "date": "Tue, 10 Nov 2026 10:00:34 GMT"
+      "date": "Fri, 13 Nov 2026 13:14:52 GMT"
+    },
+    "/strands/webmcp": {
+      "file": "strands__webmcp.md",
+      "sha256": "cc0e70c2058b75d0093757c027dc1e688b67cb2e0060f3ec93d853c0b73c0146",
+      "bytes": 7486,
+      "lines": 165,
+      "routes": [
+        "/webmcp"
+      ],
+      "status": "ok",
+      "age": 0,
+      "date": "Fri, 13 Nov 2026 13:14:52 GMT"
     }
   },
   "sitemap": {
-    "fetchedAt": "2026-11-10T10:00:31.908Z",
+    "fetchedAt": "2026-11-13T13:14:48.232Z",
     "urlsUnderRoot": 172,
     "knownUnmapped": [
       "https://docs.copilotkit.ai/strands/AG-UI-Streams",
@@ -515,6 +707,7 @@
       "https://docs.copilotkit.ai/strands/cookbook/arcade",
       "https://docs.copilotkit.ai/strands/cookbook/claude-managed-agents",
       "https://docs.copilotkit.ai/strands/cookbook/daytona",
+      "https://docs.copilotkit.ai/strands/cookbook/google-antigravity",
       "https://docs.copilotkit.ai/strands/cookbook/jev-generative-ui",
       "https://docs.copilotkit.ai/strands/cookbook/manufact",
       "https://docs.copilotkit.ai/strands/cookbook/openbox-governed-copilotkit",
