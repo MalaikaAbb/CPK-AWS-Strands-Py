@@ -362,7 +362,7 @@ export const NAV: NavGroup[] = [
           "A bring-your-own-catalog surface where a secondary LLM designs the layout per request.",
         status: "partial",
         statusNote:
-          "The catalog, definitions and renderers are wired as printed. Nothing drives them on this route: renderers.tsx ships with no import line, and this page's prose never attaches `generate_a2ui` to an agent (the Fixed Schema page's demo Code tab does — see that route).",
+          "The catalog, definitions and renderers are wired as printed. Nothing drives them on this route: renderers.tsx ships with no import line, and this page's prose never attaches `generate_a2ui` to an agent (the Fixed Schema page's demo Code tab does — see that route). Since 2026-11-13 the PieChart/BarChart renderers reference undefined `tooltipStyle`/`barCursor` (kept verbatim; they throw ReferenceError if rendered).",
       },
       {
         path: "/generative-ui/a2ui/fixed-schema",

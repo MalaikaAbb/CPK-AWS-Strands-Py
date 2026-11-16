@@ -81,7 +81,8 @@ export default function Page() {
             . <code>a2ui_fixed.py</code> imports it; the published one lives in
             the Code tab&apos;s <code>agent.py</code>, which cannot import. The
             shim runs this repo&apos;s <code>gpt-4o</code>; the published
-            function defaults to <code>gpt-5-mini</code>.
+            function defaults to <code>gpt-6-luna</code> (<code>gpt-5-mini</code>
+            before the 2026-11-13 sync).
           </li>
           <li>
             The registry entry that mounts the agent at{" "}

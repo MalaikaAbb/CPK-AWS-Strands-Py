@@ -120,8 +120,9 @@ curl -s -X POST http://localhost:8000/strands_agent/ \
 ## `agent_py_fixed_schema_code_tab.py` — the same file, complete, in a place the `.md` never shows
 
 The A2UI Fixed Schema page carries an interactive demo whose **Code** tab has
-eight files, and one of them is `src/agents/agent.py` at **1463 lines**, ending
-at `return _MessagesSnapshotWrapper(agui_agent)`. It is not in the page's
+eight files, and one of them is `src/agents/agent.py` at **1247 lines** (1463
+until the 2026-11-13 sync), ending at
+`return _StateContextWrapper(TodoStateAgent(agui_agent))`. It is not in the page's
 markdown (the `.md` holds only an `<!-- interactive demo: a2ui-fixed-schema -->`
 marker), which is why the 2026-08-26 analysis above — which read the markdown —
 concluded the file had stopped being printed. It had moved.
@@ -138,12 +139,25 @@ Byte-exact copy here. It does not run, for the same reason as the excerpt.
   `tools=` wiring no page's prose shows, and the state hooks README §9.4 said were
   only described in comments.
 - **`SYSTEM_PROMPT`** for the showcase agent, and **`_build_model()`** /
-  `model_id()` defaulting to `gpt-5-mini` with a `MODEL_ID` override.
+  `model_id()` defaulting to `gpt-6-luna` (was `gpt-5-mini` before the
+  2026-11-13 sync) with a `MODEL_ID` override.
 - **`with_state_context`** (a `state_context_builder` that copies UI state into
   transient AG-UI context), a `_ToolCallCapHook` `HookProvider` and the
   `_HookInjectingAgentDict` it is installed through — the first use of
   `HookProvider` / `HookRegistry` / `BeforeToolCallEvent` the earlier prefixes
   imported and never reached.
+
+### 2026-11-13 sync
+
+The tab's `agent.py` caught up with the subagents prose prefix: the ~240-line
+`_MessagesSnapshotWrapper` is replaced by `_StateContextWrapper`, the build now
+returns `_StateContextWrapper(TodoStateAgent(agui_agent))`, the sales-todo
+tools take `BoardTodoInput` from `tools.todos` and read native agent state, and
+both the sub-agent completion call and `DEFAULT_MODEL` moved from `gpt-5-mini`
+to `gpt-6-luna`. Two more unpublished imports came with it:
+`from tools.todos import BoardTodoInput, manage_todos_impl` and
+`from agents.todo_state_sync import TodoStateAgent, TodoStateHook`. The copy
+here is the new 1247-line file.
 
 ### What it still needs and never gets
 
